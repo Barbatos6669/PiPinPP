@@ -3,7 +3,7 @@
 This document tracks the development roadmap for PiPin++, a modern C++ GPIO library for Raspberry Pi designed to be familiar for Arduino makers.
 
 **Current Version**: 0.1.0  
-**Last Updated**: October 30, 2025
+**Last Updated**: October 30, 2025 (Updated: Roadmap Checkboxes)
 **Progress**: v0.2.0 Core Features ~65% Complete
 
 ---
@@ -11,12 +11,12 @@ This document tracks the development roadmap for PiPin++, a modern C++ GPIO libr
 ## 🚀 High Priority (Next Release - v0.2.0)
 
 ### Core API Enhancement
-- [x] **Arduino-style API Functions** ✅ **COMPLETED!**
-  - [x] Implement `pinMode(pin, mode)` wrapper function
-  - [x] Implement `digitalWrite(pin, value)` wrapper function  
-  - [x] Implement `digitalRead(pin)` wrapper function
-  - [x] Add `HIGH` and `LOW` constants for Arduino compatibility
-  - [x] Add `delay(ms)` function for Arduino compatibility
+- ✅ **Arduino-style API Functions** ✅ **COMPLETED!**
+  - ✅ Implement `pinMode(pin, mode)` wrapper function
+  - ✅ Implement `digitalWrite(pin, value)` wrapper function  
+  - ✅ Implement `digitalRead(pin)` wrapper function
+  - ✅ Add `HIGH` and `LOW` constants for Arduino compatibility
+  - ✅ Add `delay(ms)` function for Arduino compatibility
 
 ### Pin Management
 - [ ] **Pull-up/Pull-down Resistor Support**
@@ -30,21 +30,21 @@ This document tracks the development roadmap for PiPin++, a modern C++ GPIO libr
   - [ ] Add pin capability detection (input/output support per pin)
 
 ### Examples and Documentation
-- [x] **Arduino-style Example** ✅ **COMPLETED!**
-  - [x] Complete `examples/arduino_style/` with setup()/loop() pattern
-  - [x] Hardware tested LED blink example
-  - [x] CMake integration for examples working
+- ✅ **Arduino-style Example** ✅ **COMPLETED!**
+  - ✅ Complete `examples/arduino_style/` with setup()/loop() pattern
+  - ✅ Hardware tested LED blink example
+  - ✅ CMake integration for examples working
 
 - [ ] **Complete Remaining Example Programs**
   - [ ] Finish `examples/basic_led/` implementation
   - [ ] Finish `examples/button_input/` implementation  
   - [ ] Finish `examples/arduino_migration/` with side-by-side comparison
 
-- [x] **Enhanced Documentation** ✅ **COMPLETED!**
-  - [x] GitHub Wiki with comprehensive Home page
-  - [x] CODE_STANDARDS.md with formatting guidelines
-  - [x] Complete Doxygen documentation for Arduino compatibility functions
-  - [x] Usage examples in header documentation
+- ✅ **Enhanced Documentation** ✅ **COMPLETED!**
+  - ✅ GitHub Wiki with comprehensive Home page
+  - ✅ CODE_STANDARDS.md with formatting guidelines
+  - ✅ Complete Doxygen documentation for Arduino compatibility functions
+  - ✅ Usage examples in header documentation
 
 - [ ] **API Documentation**
   - [ ] Complete Doxygen documentation for all Pin class methods
@@ -66,9 +66,9 @@ This document tracks the development roadmap for PiPin++, a modern C++ GPIO libr
   - [ ] `analogWrite(pin, value)` Arduino-style function
 
 ### Code Quality & Testing
-- [x] **Hardware Testing** ✅ **COMPLETED!**
-  - [x] Arduino compatibility tested on actual Raspberry Pi hardware
-  - [x] LED blink example verified working on GPIO pin 17
+- ✅ **Hardware Testing** ✅ **COMPLETED!**
+  - ✅ Arduino compatibility tested on actual Raspberry Pi hardware
+  - ✅ LED blink example verified working on GPIO pin 17
 
 - [ ] **Comprehensive Testing Framework**
   - [ ] Unit tests for Pin class methods
