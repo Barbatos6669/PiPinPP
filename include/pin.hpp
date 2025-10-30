@@ -1,4 +1,42 @@
+/**
+ * @file Pin.hpp
+ * @brief Object-oriented GPIO pin control using libgpiod on Raspberry Pi
+ * 
+ * @details
+ * The Pin class provides a clean, Arduino-style C++ interface for interacting with
+ * GPIO pins via the libgpiod library. It abstracts low-level chip and line operations
+ * into a simple and reusable class that supports both input and output modes.
+ *
+ * Features:
+ * - Simple constructor for selecting pin and direction
+ * - Safe, RAII-based GPIO line management
+ * - High-level methods to write to or read from pins
+ * - Configurable chip name (default: "gpiochip0")
+ *
+ * Example usage:
+ * @code
+ * #include "Pin.hpp"
+ * 
+ * Pin led(17, PinDirection::OUTPUT);
+ * led.write(true);   // Set GPIO17 HIGH
+ * led.write(false);  // Set GPIO17 LOW
+ * 
+ * Pin button(18, PinDirection::INPUT);
+ * int state = button.read();
+ * @endcode
+ * 
+ * @author  
+ * HobbyHacker / Barbatos6669  
+ * @version 0.0.1
+ * @date    2025-10-29
+ */
+
 #pragma once
+
+#include <gpiod.h>
+#include <string>
+
+enum class PinDirection { INPUT, OUTPUT};
 
 /**
  * @brief A class for controlling GPIO pins on Raspberry Pi
@@ -14,23 +52,22 @@ public:
      * 
      * @param number The GPIO pin number to control
      */
-    Pin(int number);
+    Pin(int pin, PinDirection direction, const std::string& chipname = "gpiochip0");
+
+    /**
+     * @brief Destroy the Pin object
+     * 
+     * This destructor releases any resources held by the Pin object.
+     */
+    ~Pin();
     
     /**
-     * @brief Set the pin to HIGH (3.3V)
+     * @brief Write a value to the pin
      * 
-     * This method sets the GPIO pin to a high voltage state (3.3V).
-     * The pin must be configured as an output for this to have effect.
+     * @param value true to set the pin HIGH, false to set it LOW
+     * @return bool Returns true on success, false on failure
      */
-    void setHigh();
-    
-    /**
-     * @brief Set the pin to LOW (0V)
-     * 
-     * This method sets the GPIO pin to a low voltage state (0V/ground).
-     * The pin must be configured as an output for this to have effect.
-     */
-    void setLow();
+    bool write(bool value);
     
     /**
      * @brief Read the current state of the pin
@@ -40,5 +77,8 @@ public:
     int read();
     
 private:
+    gpiod_chip* chip; ///< The GPIO chip being used
+    gpiod_line* line; ///< The GPIO line being controlled
+
     int pinNumber; ///< The GPIO pin number being controlled
 };
