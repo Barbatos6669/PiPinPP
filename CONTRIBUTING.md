@@ -59,13 +59,17 @@ Welcome! We're excited to have you contribute to **PiPin++**, a modern C++ GPIO 
 - Be respectful and welcoming.
 - Review our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
 - All experience levels are welcome!
+- **Join our Discord server** for real-time discussions and support!
 
 ---
 
 ## Questions & Feedback
 
-Have questions or want to share your experience switching from Arduino?  
-Open an issue or join discussions—your input helps shape PiPin++!
+Have questions or want to share your experience switching from Arduino?
+
+**For real-time help:** Join our Discord community  
+**For formal issues:** Open a GitHub issue  
+**For casual discussion:** Discord is the best place to connect with other makers!
 
 ---
 

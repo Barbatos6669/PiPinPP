@@ -62,6 +62,20 @@ This project is just getting started! Here’s what we’re working toward:
 
 📋 **Check our [ROADMAP.md](ROADMAP.md) to see what we're working on next**
 
+## 💬 Community & Support
+
+**Join our Discord community for real-time support and discussions:**
+- 🚀 **Quick help** with setup, coding issues, and troubleshooting  
+- 💡 **Feature discussions** and Arduino migration questions
+- 🔧 **Hardware projects** and GPIO usage examples
+- 📢 **Development updates** and release announcements
+
+> **[Join PiPin++ Discord Server](https://discord.gg/wXeZP8Ev)**
+
+For formal bug reports and feature requests, please use GitHub Issues.
+
+## 🤝 Contributing
+
 - If you're an Arduino user, tell us which features or API patterns you'd love to see.
 - Open an issue for suggestions, questions, or bug reports.
 - Pull requests and documentation help are always welcome!
