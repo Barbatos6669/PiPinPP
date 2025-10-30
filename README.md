@@ -2,6 +2,10 @@
 
 A modern C++ GPIO library for Raspberry Pi. Clean API, low-level control, and room to grow.
 
+![Version](https://img.shields.io/badge/version-0.1.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-12%25-orange) ![License](https://img.shields.io/badge/license-MIT-green)
+
+📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.1.0](CHANGELOG.md)**
+
 ---
 
 ## Project Vision
@@ -54,11 +58,16 @@ This project is just getting started! Here’s what we’re working toward:
 
 ## Contributing
 
-**We’re just getting started and welcome your ideas, feedback, and contributions!**
+**We're just getting started and welcome your ideas, feedback, and contributions!**
 
-- If you’re an Arduino user, tell us which features or API patterns you’d love to see.
+📋 **Check our [ROADMAP.md](ROADMAP.md) to see what we're working on next**
+
+- If you're an Arduino user, tell us which features or API patterns you'd love to see.
 - Open an issue for suggestions, questions, or bug reports.
 - Pull requests and documentation help are always welcome!
+- Look for `good first issue` labels for beginner-friendly tasks.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ---
 
