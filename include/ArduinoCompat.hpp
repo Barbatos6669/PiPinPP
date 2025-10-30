@@ -35,3 +35,10 @@ void digitalWrite(int pin, bool value);
  * @return int 1 for HIGH, 0 for LOW, -1 for error
  */
 int digitalRead(int pin);
+
+/**
+ * @brief Delay execution for specified milliseconds (Arduino-style function)
+ * 
+ * @param ms Delay time in milliseconds
+ */
+void delay(unsigned long ms);

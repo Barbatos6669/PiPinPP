@@ -1,5 +1,4 @@
 #include "ArduinoCompat.hpp"
-#include <unistd.h>
 #include <iostream>
 
 void setup() 
@@ -13,18 +12,15 @@ void loop()
 {
     std::cout << "Blinking LED on GPIO pin 17..." << std::endl;
     
-    // Set pin 17 as output (just like Arduino!)
-    pinMode(17, OUTPUT);
-    
     // Blink the LED
     while (true) {
         digitalWrite(17, HIGH);  // Turn LED on
         std::cout << "LED ON" << std::endl;
-        sleep(1);
+        delay(1000);             // Arduino-style delay!
         
         digitalWrite(17, LOW);   // Turn LED off
         std::cout << "LED OFF" << std::endl;
-        sleep(1);
+        delay(1000);             // Arduino-style delay!
     }
 }
 

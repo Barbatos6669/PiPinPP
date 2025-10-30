@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <memory>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 // Global storage for Arduino-style pins
 static std::unordered_map<int, std::unique_ptr<Pin>> globalPins;
@@ -47,4 +49,9 @@ int digitalRead(int pin)
         std::cerr << "digitalRead: Pin " << pin << " not initialized. Call pinMode() first." << std::endl;
         return -1;
     }
+}
+
+void delay(unsigned long ms) 
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
