@@ -80,5 +80,5 @@ private:
     gpiod_chip* chip; ///< The GPIO chip being used
     gpiod_line* line; ///< The GPIO line being controlled
 
-    int pinNumber; ///< The GPIO pin number being controlled
+    int pinNumber; ///< The GPIO pin number being controlled 
 };
