@@ -27,8 +27,8 @@
  * 
  * @author  
  * HobbyHacker / Barbatos6669  
- * @version 0.0.1
- * @date    2025-10-29
+ * @version 0.1.0
+ * @date    2025-10-30
  */
 
 #pragma once
@@ -50,7 +50,9 @@ public:
     /**
      * @brief Construct a new Pin object
      * 
-     * @param number The GPIO pin number to control
+     * @param pin The GPIO pin number to control
+     * @param direction The direction of the pin (INPUT or OUTPUT)
+     * @param chipname The name of the GPIO chip (default: "gpiochip0")
      */
     Pin(int pin, PinDirection direction, const std::string& chipname = "gpiochip0");
 

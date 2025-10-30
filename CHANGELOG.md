@@ -27,6 +27,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.0] - 2025-10-30
+
+### Added
+- **Complete CMake build system** - Professional build configuration
+  - CMakeLists.txt with modern CMake practices (version 3.16+)
+  - Static library compilation with proper linking
+  - Automated test building and execution with CTest integration
+  - Example building system for demonstration programs
+  - Installation targets for system-wide deployment
+  - pkg-config file generation for easy library discovery
+  - Build configuration summary and status reporting
+
+- **Build automation scripts**
+  - build.sh script for streamlined compilation process
+  - BUILD.md documentation for build instructions and requirements
+  - Support for both Debug and Release build configurations
+
+- **Enhanced project structure**
+  - Proper library packaging with version management
+  - Public header installation support
+  - Example programs in structured directories
+  - Comprehensive test suite integration
+
+### Changed
+- **Updated Pin class implementation** - Improved from v0.0.1
+  - Enhanced error handling and resource management
+  - Better documentation and code organization
+  - Improved method signatures and return types
+
+- **Project version management**
+  - Upgraded from v0.0.1 to v0.1.0
+  - Consistent versioning across all project files
+  - Semantic versioning compliance
+
+### Fixed
+- Build system dependencies and library linking
+- Header file organization and installation paths
+- Resource cleanup and memory management in Pin class
+
+---
+
 ## [0.0.1] - 2025-10-29
 
 ### Added

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Project definition
 project(PiPinPP
-    VERSION 0.0.1
+    VERSION 0.1.0
     DESCRIPTION "A modern C++ GPIO library for Raspberry Pi"
     LANGUAGES CXX
 )
