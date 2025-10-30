@@ -31,6 +31,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Source files
 set(PIPINPP_SOURCES
     src/pin.cpp
+    src/ArduinoCompat.cpp
 )
 
 # Create the library
@@ -47,7 +48,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER include/pin.hpp
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp"
 )
 
 # Option to build tests

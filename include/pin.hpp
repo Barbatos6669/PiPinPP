@@ -15,8 +15,9 @@
  *
  * Example usage:
  * @code
- * #include "Pin.hpp"
+ * #include "pin.hpp"
  * 
+ * // Object-oriented style
  * Pin led(17, PinDirection::OUTPUT);
  * led.write(true);   // Set GPIO17 HIGH
  * led.write(false);  // Set GPIO17 LOW
@@ -24,6 +25,8 @@
  * Pin button(18, PinDirection::INPUT);
  * int state = button.read();
  * @endcode
+ * 
+ * For Arduino-style compatibility, see ArduinoCompat.hpp
  * 
  * @author  
  * HobbyHacker / Barbatos6669  
