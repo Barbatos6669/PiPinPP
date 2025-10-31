@@ -1,6 +1,11 @@
-# PiPin++
-
-A modern C++ GPIO library for Raspberry Pi. Clean API, low-level control, and room to grow.
+<div align="center">
+  <img src="assets/logo_transparent.png" alt="PiPin++ Logo" width="300">
+  
+  # PiPin++
+  
+  **A modern C++ GPIO library for Raspberry Pi**  
+  *Clean API, low-level control, and room to grow.*
+</div>
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-12%25-orange) ![License](https://img.shields.io/badge/license-MIT-green)
 
