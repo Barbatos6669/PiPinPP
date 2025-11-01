@@ -7,9 +7,9 @@
   *Clean API, low-level control, and room to grow.*
 </div>
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-12%25-orange) ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-green) ![License](https://img.shields.io/badge/license-MIT-green)
 
-📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.1.0](CHANGELOG.md)**
+📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.2.0](CHANGELOG.md)** | 📖 **[API Documentation →](docs/API_REFERENCE.md)**
 
 ---
 
@@ -32,32 +32,31 @@
 
 ## Roadmap
 
-This project is just getting started! Here’s what we’re working toward:
+**v0.2.0 COMPLETE!** ✅ All major Arduino compatibility features implemented!
 
-### Planned Features
+### ✅ Completed Features (v0.2.0)
 
-- **Digital input/output**: Arduino-style pin control (e.g. `pinMode`, `digitalWrite`, `digitalRead`)
-- **Pin abstraction**: Simple, object-oriented pin management
-- **Support for pull-up/pull-down resistors**
-- **Easy API migration from Arduino sketches**
-- **Low-level access for advanced users**
-- **Extensible design for future protocols (PWM, I2C, SPI, UART, interrupts, etc.)**
-- **Examples and migration guides** for Arduino users
+- ✅ **Digital input/output**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
+- ✅ **Pin abstraction**: Simple, object-oriented pin management with RAII
+- ✅ **Pull-up/pull-down resistors**: Built-in `INPUT_PULLUP` and `INPUT_PULLDOWN` support
+- ✅ **Arduino API migration**: Easy transition from Arduino sketches
+- ✅ **Complete examples**: LED control, button input, migration guide
+- ✅ **Comprehensive documentation**: Full API reference and hardware setup guides
 
-### Near-Term Milestones
+### Next Milestones (v0.3.0)
 
-- [ ] Project scaffolding and setup
-- [ ] Define core API and class structure
-- [ ] Implement digital I/O basics
-- [ ] Provide simple demo and usage instructions
-- [ ] Gather feedback from Arduino and Pi communities
+- [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
+- [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
+- [ ] **Timing functions**: `millis()` and `micros()` for precise timing
+- [ ] **Testing framework**: Comprehensive unit tests and continuous integration
+- [ ] **Performance optimization**: Fast GPIO operations and reduced overhead
 
-### Longer-Term Goals
+### Longer-Term Goals (v0.4.0+)
 
-- [ ] Add PWM, interrupts, and serial support
-- [ ] More protocol helpers (I2C, SPI)
-- [ ] Multi-platform support (other SBCs)
-- [ ] Community-driven feature requests
+- [ ] **Communication protocols**: I2C, SPI, and UART support
+- [ ] **Multi-platform support**: Orange Pi and other ARM SBCs
+- [ ] **Advanced features**: Analog input, GPIO monitoring tools
+- [ ] **Development tools**: VS Code extensions and debugging utilities
 
 ---
 

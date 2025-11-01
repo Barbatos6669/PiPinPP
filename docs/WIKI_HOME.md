@@ -98,7 +98,7 @@ sudo ./examples/example_arduino_style
 
 ## 🔧 Current Status
 
-**Version:** 0.1.0 (Arduino compatibility milestone complete!)  
+**Version:** 0.2.0 (Complete Arduino compatibility with pull-resistor support!)  
 **Platform:** Raspberry Pi (all models with 40-pin GPIO)  
 **Language:** C++17  
 **License:** MIT  
