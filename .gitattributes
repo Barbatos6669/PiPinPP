@@ -1,0 +1,25 @@
+# .gitattributes - Configure GitHub language detection and repository statistics
+#
+# This file helps GitHub's linguist properly identify PiPinPP as a C++ project
+# by excluding documentation and configuration files from language statistics.
+
+# Documentation files - mark as documentation to exclude from language stats
+*.md linguist-documentation
+
+# Configuration and build files - mark as vendored to exclude from language stats
+CMakeLists.txt linguist-vendored
+*.cmake linguist-vendored
+*.in linguist-vendored
+*.sh linguist-vendored
+
+# Ensure C++ files are properly detected as C++
+*.cpp linguist-language=C++
+*.hpp linguist-language=C++
+*.h linguist-language=C++
+
+# Keep examples visible in language statistics (they demonstrate the library's usage)
+examples/**/*.cpp linguist-detectable=true
+examples/**/*.hpp linguist-detectable=true
+
+# Tests are important to show but don't dominate the language stats
+tests/*.cpp linguist-language=C++
