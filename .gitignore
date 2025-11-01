@@ -4,6 +4,7 @@
 # Build directories
 build/
 dist/
+out/
 
 # Compiled Object files
 *.slo
@@ -41,5 +42,38 @@ dist/
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Testing
+Testing/
+CTestTestfile.cmake
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+.DS_Store
+
+# Package files
+*.pc
+!cmake/*.pc.in
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.backup

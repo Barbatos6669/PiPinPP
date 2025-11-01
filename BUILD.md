@@ -26,7 +26,7 @@ Use the provided build script for the easiest build experience:
 ### Build Script Options
 
 - `--debug`: Build in debug mode (default: Release)
-- `--clean`: Clean build directory before building
+- `--clean`: Clean build directory before building  
 - `--install`: Install after building
 - `--help`: Show help message
 
@@ -35,6 +35,7 @@ Examples:
 ./build.sh --debug          # Debug build
 ./build.sh --clean          # Clean and build
 ./build.sh --install        # Build and install
+./build.sh --clean --debug  # Clean debug build
 ```
 
 ## Manual Build
@@ -77,7 +78,11 @@ After building, you'll find:
 
 - **Library**: `build/libpipinpp.a` - Static library
 - **Tests**: `build/test_pipinpp` - Test executable
-- **Examples**: `build/examples/` - Example programs
+- **Examples**: `build/examples/` - Example programs:
+  - `example_arduino_style` - Arduino-compatible LED blinking
+  - `example_basic_led` - Object-oriented LED control 
+  - `example_button_input` - Button reading with debouncing
+  - `example_arduino_migration` - Arduino to PiPinPP migration guide
 
 ## Installation
 

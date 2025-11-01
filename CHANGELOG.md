@@ -27,6 +27,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2025-10-31
+
+### Added
+- **Enhanced Pin class with PinMode enum** - Complete pin mode support
+  - `PinMode::INPUT` for standard input reading
+  - `PinMode::OUTPUT` for standard output control
+  - `PinMode::INPUT_PULLUP` for input with internal pull-up resistor
+  - `PinMode::INPUT_PULLDOWN` for input with internal pull-down resistor
+  - Dual constructors supporting both legacy PinDirection and new PinMode
+  - Pin number validation with comprehensive error checking
+
+- **Complete Arduino compatibility layer** - Full ArduinoCompat.hpp implementation
+  - `pinMode(pin, mode)` function supporting INPUT, OUTPUT, INPUT_PULLUP
+  - `digitalWrite(pin, value)` for setting pin states (HIGH/LOW)
+  - `digitalRead(pin)` for reading pin values
+  - `delay(milliseconds)` for timing control
+  - Arduino constants: HIGH, LOW, INPUT, OUTPUT, INPUT_PULLUP
+  - Global pin management with automatic cleanup
+
+- **Arduino-style math functions** - Complete utility function set
+  - `Arduino::constrain(value, min, max)` for value clamping
+  - `Arduino::map(value, fromMin, fromMax, toMin, toMax)` for value mapping
+  - Namespaced to avoid conflicts with standard library functions
+  - Full floating-point and integer support
+
+- **Comprehensive example programs** - Four complete working examples
+  - `arduino_style/` - LED blinking using Arduino-compatible API
+  - `basic_led/` - Object-oriented LED control with Pin class
+  - `button_input/` - Button reading with debouncing and pull-up resistors
+  - `arduino_migration/` - Side-by-side Arduino vs PiPinPP code comparison
+
+- **Complete API documentation** - Professional Doxygen documentation
+  - Full Pin class method documentation with examples
+  - Arduino compatibility function documentation
+  - PinMode enum documentation with hardware details
+  - Code examples and usage patterns for all features
+  - Author attribution and version information
+
+- **Enhanced project documentation**
+  - Updated README.md with comprehensive feature overview
+  - SECURITY.md with responsible disclosure policy
+  - Detailed example documentation and wiring diagrams
+  - Hardware compatibility and requirements documentation
+
+### Changed
+- **Pin class constructor overloading** - Backward compatibility maintained
+  - Added PinMode constructor alongside existing PinDirection constructor
+  - Enhanced error handling with pin number validation
+  - Improved resource management with libgpiod bias flags
+
+- **Build system enhancements** - All examples build automatically
+  - CMakeLists.txt updated to build all four example programs
+  - Proper library linking for all executables
+  - Enhanced build configuration and dependency management
+
+### Fixed
+- **Namespace conflicts resolved** - Clean standard library integration
+  - Arduino math functions moved to `Arduino::` namespace
+  - Eliminated conflicts with std::abs and other standard functions
+  - Proper header inclusion and namespace management
+
+- **Hardware compatibility issues** - Pull-resistor support implemented
+  - Internal pull-up/pull-down resistor configuration via libgpiod
+  - Proper bias flag handling for GPIO lines
+  - Enhanced input pin reliability and noise immunity
+
+### Security
+- **MIT license headers** - Complete copyright protection
+  - Added MIT license headers to all source files
+  - Consistent copyright attribution throughout codebase
+  - Legal compliance for open source distribution
+
+### Technical Details
+- Uses libgpiod bias flags for internal pull-resistor configuration
+- Maintains backward compatibility with v0.1.0 Pin class API
+- Exception-based error handling with descriptive messages
+- RAII resource management with automatic GPIO cleanup
+- Hardware-tested on Raspberry Pi with real GPIO devices
+
+---
+
 ## [0.1.0] - 2025-10-30
 
 ### Added
