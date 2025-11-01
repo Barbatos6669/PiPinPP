@@ -16,10 +16,3 @@ CMakeLists.txt linguist-vendored
 *.cpp linguist-language=C++
 *.hpp linguist-language=C++
 *.h linguist-language=C++
-
-# Keep examples visible in language statistics (they demonstrate the library's usage)
-examples/**/*.cpp linguist-detectable=true
-examples/**/*.hpp linguist-detectable=true
-
-# Tests are important to show but don't dominate the language stats
-tests/*.cpp linguist-language=C++
