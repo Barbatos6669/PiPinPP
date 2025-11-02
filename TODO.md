@@ -22,15 +22,15 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Remove `std::cout` from library code
   - Add `-Wall -Wextra -Wpedantic` and optional `PIPINPP_WARNINGS_AS_ERRORS`
 
-- [x] Repo discoverability [easy]
+- ✅ Repo discoverability [easy]
   - Set GitHub topics: raspberry-pi, gpio, cpp, arduino, libgpiod, embedded
   - Add README badges: build, release, license
-  - GitHub Pages: Deferred until v0.3.0 merge to main
+  - GitHub Pages configured (awaiting v0.3.0 merge to main)
 
-- [x] Docs and wiki updates [easy]
-  - Pin numbering guide (BCM vs physical)
-  - Permissions guide (gpio group / udev) to run without sudo
-  - TOC anchors + sync docs -> wiki
+- ✅ Docs and wiki updates [easy]
+  - Pin numbering guide (BCM vs physical) - See docs/API_REFERENCE.md
+  - Permissions guide (gpio group / udev) - See INSTALL.md
+  - TOC anchors added and docs synced to wiki structure
 
 ## Medium
 

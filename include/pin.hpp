@@ -160,9 +160,10 @@ public:
     
 private:
     gpiod_chip* chip; ///< The GPIO chip being used
-    gpiod_line* line; ///< The GPIO line being controlled
+    gpiod_line_request* request; ///< The GPIO line request (v2 API)
+    PinDirection currentDirection; ///< Current pin direction
 
-    int pinNumber; ///< The GPIO pin number being controlled 
+    unsigned int pinNumber; ///< The GPIO pin number being controlled 
     
     /**
      * @brief Validate that the pin number is valid for Raspberry Pi
