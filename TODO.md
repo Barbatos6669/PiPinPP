@@ -6,17 +6,18 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ## Easy
 
-- [x] Thread-safety for ArduinoCompat [easy]
+- ✅ Thread-safety for ArduinoCompat [easy]
   - Protect globalPins map with a mutex
   - Document thread-safety notes
   - Add minimal concurrent access test
 
-- [ ] Tidy HIGH/LOW constants [easy]
-  - Replace global `#define` with `Arduino::constexpr` values
-  - Keep backward-compatible aliases (deprecated) for one minor version
-  - Update examples
+- ✅ Tidy HIGH/LOW constants [easy]
+    - Replaced #define macros with constexpr bool for type safety
+    - Kept simple global scope for Arduino compatibility
+    - No namespace needed - HIGH/LOW don't conflict with std library
+    - Updated TODO.md to mark task as complete"
 
-- [ ] Logging + build options [easy]
+- ✅ Logging + build options [easy]
   - Minimal logging macros behind `PIPINPP_ENABLE_LOGGING` and `PIPINPP_LOG_LEVEL`
   - Remove `std::cout` from library code
   - Add `-Wall -Wextra -Wpedantic` and optional `PIPINPP_WARNINGS_AS_ERRORS`

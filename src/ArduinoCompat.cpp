@@ -21,6 +21,7 @@
  */
 
 #include "ArduinoCompat.hpp"
+#include "log.hpp"
 #include <unordered_map>
 #include <memory>
 #include <iostream>
@@ -49,12 +50,12 @@ void pinMode(int pin, int mode)
             globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::INPUT);
         }
         
-        const char* modeStr = (mode == OUTPUT) ? "OUTPUT" : 
-                             (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : "INPUT";
-        std::cout << "pinMode: Set pin " << pin << " to " << modeStr << std::endl;
+        PIPINPP_LOG_INFO("pinMode: Set pin " << pin << " to " 
+                         << ((mode == OUTPUT) ? "OUTPUT" : 
+                             (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : "INPUT"));
     }
     catch (const std::exception& e) {
-        std::cerr << "pinMode error for pin " << pin << ": " << e.what() << std::endl;
+        PIPINPP_LOG_ERROR("pinMode error for pin " << pin << ": " << e.what());
     }
 }
 
@@ -65,10 +66,10 @@ void digitalWrite(int pin, bool value)
     if (it != globalPins.end()) {
         bool success = it->second->write(value);
         if (!success) {
-            std::cerr << "digitalWrite failed for pin " << pin << std::endl;
+            PIPINPP_LOG_ERROR("digitalWrite failed for pin " << pin);
         }
     } else {
-        std::cerr << "digitalWrite: Pin " << pin << " not initialized. Call pinMode() first." << std::endl;
+        PIPINPP_LOG_ERROR("digitalWrite: Pin " << pin << " not initialized. Call pinMode() first.");
     }
 }
 
@@ -79,7 +80,7 @@ int digitalRead(int pin)
     if (it != globalPins.end()) {
         return it->second->read();
     } else {
-        std::cerr << "digitalRead: Pin " << pin << " not initialized. Call pinMode() first." << std::endl;
+        PIPINPP_LOG_ERROR("digitalRead: Pin " << pin << " not initialized. Call pinMode() first.");
         return -1;
     }
 }

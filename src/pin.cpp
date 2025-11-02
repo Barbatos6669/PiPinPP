@@ -21,9 +21,10 @@
  */
 
 #include "pin.hpp"
+#include "log.hpp"
 #include <stdexcept>
 #include <gpiod.h>
-#include <iostream> // Temporary for debugging
+#include <iostream>
 
 Pin::Pin(int pin, PinDirection direction, const std::string& chipname) 
 : pinNumber(pin) 
@@ -66,9 +67,9 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
     }
 
     // Initialize GPIO pin here
-    std::cout << "Initializing pin " << pinNumber << " as " 
-              << (direction == PinDirection::OUTPUT ? "OUTPUT" : "INPUT") 
-              << " on chip " << chipname << std::endl;
+    PIPINPP_LOG_INFO("Initializing pin " << pinNumber << " as " 
+                     << ((direction == PinDirection::OUTPUT) ? "OUTPUT" : "INPUT")
+                     << " on chip " << chipname);
 }
 
 Pin::Pin(int pin, PinMode mode, const std::string& chipname) 
@@ -119,7 +120,8 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
         throw std::runtime_error("Failed to request GPIO line: " + std::to_string(pinNumber));
     }
 
-    // Initialize GPIO pin here
+    // Log initialization
+    #ifdef PIPINPP_ENABLE_LOGGING
     const char* modeStr;
     switch (mode) {
         case PinMode::OUTPUT: modeStr = "OUTPUT"; break;
@@ -127,8 +129,9 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
         case PinMode::INPUT_PULLDOWN: modeStr = "INPUT_PULLDOWN"; break;
         default: modeStr = "INPUT"; break;
     }
-    std::cout << "Initializing pin " << pinNumber << " as " << modeStr 
-              << " on chip " << chipname << std::endl;
+    PIPINPP_LOG_INFO("Initializing pin " << pinNumber << " as " << modeStr 
+                     << " on chip " << chipname);
+    #endif
 }
 
 Pin::~Pin() 
@@ -145,7 +148,7 @@ Pin::~Pin()
         gpiod_chip_close(chip);
     }
 
-    std::cout << "Releasing resources for pin " << pinNumber << std::endl;
+    PIPINPP_LOG_DEBUG("Releasing resources for pin " << pinNumber);
 }
 
 bool Pin::write(bool value) 

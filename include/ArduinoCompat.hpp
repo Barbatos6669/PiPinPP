@@ -23,9 +23,9 @@
 #pragma once
 #include "pin.hpp"
 
-// Arduino-style constants
-#define HIGH true
-#define LOW false
+// Arduino-style constants (simple and familiar)
+constexpr bool HIGH = true;
+constexpr bool LOW = false;
 
 // Arduino pin modes
 enum ArduinoPinMode {
@@ -64,8 +64,6 @@ void digitalWrite(int pin, bool value);
  * @return int 1 for HIGH, 0 for LOW, -1 for error
  */
 int digitalRead(int pin);
-
-
 
 /**
  * @brief Delay execution for specified milliseconds (Arduino-style function)
