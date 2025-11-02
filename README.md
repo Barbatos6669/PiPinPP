@@ -7,6 +7,8 @@
   *Clean API, low-level control, and room to grow.*
 </div>
 
+**Keywords:** Raspberry Pi, GPIO, Arduino, C++, libgpiod, embedded-hardware
+
 ![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-green) ![License](https://img.shields.io/badge/license-MIT-green)
 
 📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.2.0](CHANGELOG.md)** | 📖 **[API Documentation →](docs/API_REFERENCE.md)**
