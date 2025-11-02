@@ -1,0 +1,96 @@
+# PiPinPP v0.3.0 Todo List
+
+This checklist tracks the planned work for v0.3.0. Use it locally in VS Code, or run the helper script in `scripts/` to open GitHub issues from these items.
+
+Legend: [easy] quick win · [medium] moderate · [hard] larger feature
+
+## Easy
+
+- [ ] Thread-safety for ArduinoCompat [easy]
+  - Protect globalPins map with a mutex
+  - Document thread-safety notes
+  - Add minimal concurrent access test
+
+- [ ] Tidy HIGH/LOW constants [easy]
+  - Replace global `#define` with `Arduino::constexpr` values
+  - Keep backward-compatible aliases (deprecated) for one minor version
+  - Update examples
+
+- [ ] Logging + build options [easy]
+  - Minimal logging macros behind `PIPINPP_ENABLE_LOGGING` and `PIPINPP_LOG_LEVEL`
+  - Remove `std::cout` from library code
+  - Add `-Wall -Wextra -Wpedantic` and optional `PIPINPP_WARNINGS_AS_ERRORS`
+
+- [ ] Repo discoverability [easy]
+  - Set GitHub topics: raspberry-pi, gpio, cpp, arduino, libgpiod, embedded
+  - Add README badges: build, release, license
+  - Optionally enable GitHub Pages for docs
+
+- [ ] Docs and wiki updates [easy]
+  - Pin numbering guide (BCM vs physical)
+  - Permissions guide (gpio group / udev) to run without sudo
+  - TOC anchors + sync docs -> wiki
+
+## Medium
+
+- [ ] Timing functions [medium]
+  - `millis()`, `micros()`, `delayMicroseconds()` using `std::chrono::steady_clock`
+  - Unit tests for monotonicity and bounds
+
+- [ ] Custom exceptions [medium]
+  - `PinError`, `InvalidPinError`, `GpioAccessError`
+  - Replace generic throws and improve error messages
+  - Document error model
+
+- [ ] GitHub Actions CI [medium]
+  - Build Debug/Release, run tests
+  - pkg-config smoke test
+  - Optional CodeQL; add badges
+
+- [ ] Unit tests (GoogleTest) [medium]
+  - Introduce GTest; abstract libgpiod behind a thin interface for mocking
+  - Tests for Pin, ArduinoCompat, timing utilities
+
+- [ ] New examples [medium]
+  - `interrupt_button`, `pwm_led_fade`, `timing_benchmark` (with wiring notes)
+
+- [ ] CMake packaging polish [medium]
+  - Shared library option
+  - Install `PiPinPPConfig.cmake` and export targets
+  - Verify both CMake and pkg-config consumption paths
+
+## Hard
+
+- [ ] Implement interrupts API [hard]
+  - `attachInterrupt(pin, mode, callback)` and `detachInterrupt(pin)`
+  - Support RISING/FALLING/CHANGE via libgpiod events
+  - Internal polling/epoll thread with safe shutdown
+  - Example + documentation
+
+- [ ] Add PWM (analogWrite) [hard]
+  - Software PWM backend (configurable frequency/duty) first; document jitter
+  - LED fade example; roadmap to hardware PWM backend
+
+- [ ] Namespace core API [hard]
+  - Wrap Pin, enums, helpers in `pipinpp::`
+  - Provide transitional `using` declarations to avoid breaking users
+  - Update headers and docs
+
+---
+
+## Create GitHub Issues (optional)
+
+A helper script is provided to open GitHub issues and a `v0.3.0` milestone using GitHub CLI.
+
+Requirements:
+- GitHub CLI installed and authenticated: `gh auth login`
+- Push access to the repository
+
+Run:
+```bash
+./scripts/create_issues_v0_3_0.sh
+```
+
+This will:
+- Create a `v0.3.0` milestone
+- Open one issue per todo and assign them to the milestone
