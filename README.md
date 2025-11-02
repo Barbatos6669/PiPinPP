@@ -7,9 +7,12 @@
   *Clean API, low-level control, and room to grow.*
 </div>
 
-**Keywords:** Raspberry Pi, GPIO, Arduino, C++, libgpiod, embedded-hardware
-
-![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-green) ![License](https://img.shields.io/badge/license-MIT-green)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.2.0)
+[![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
+[![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
+[![libgpiod](https://img.shields.io/badge/libgpiod-1.6%2B-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
+[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-brightgreen)](ROADMAP.md)
 
 📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.2.0](CHANGELOG.md)** | 📖 **[API Documentation →](docs/API_REFERENCE.md)**
 
