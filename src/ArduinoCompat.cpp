@@ -26,12 +26,16 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <mutex>
 
 // Global storage for Arduino-style pins
 static std::unordered_map<int, std::unique_ptr<Pin>> globalPins;
+// Mutex to protect globalPins from concurrent access
+static std::mutex globalPinsMutex;
 
 void pinMode(int pin, int mode) 
 {
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
     try {
         // Remove existing pin if it exists
         globalPins.erase(pin);
@@ -56,6 +60,7 @@ void pinMode(int pin, int mode)
 
 void digitalWrite(int pin, bool value) 
 {
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
     auto it = globalPins.find(pin);
     if (it != globalPins.end()) {
         bool success = it->second->write(value);
@@ -69,6 +74,7 @@ void digitalWrite(int pin, bool value)
 
 int digitalRead(int pin) 
 {
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
     auto it = globalPins.find(pin);
     if (it != globalPins.end()) {
         return it->second->read();

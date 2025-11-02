@@ -61,8 +61,13 @@ if(BUILD_TESTS)
     add_executable(test_pipinpp tests/test.cpp)
     target_link_libraries(test_pipinpp pipinpp)
     
-    # Add test
+    # Thread safety test executable
+    add_executable(test_thread_safety tests/test_thread_safety.cpp)
+    target_link_libraries(test_thread_safety pipinpp)
+    
+    # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
+    add_test(NAME thread_safety_test COMMAND test_thread_safety)
 endif()
 
 # Option to build examples

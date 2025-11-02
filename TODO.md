@@ -6,7 +6,7 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ## Easy
 
-- [ ] Thread-safety for ArduinoCompat [easy]
+- [x] Thread-safety for ArduinoCompat [easy]
   - Protect globalPins map with a mutex
   - Document thread-safety notes
   - Add minimal concurrent access test
