@@ -5,25 +5,63 @@ All notable changes to PiPinPP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
-- Nothing yet
+- **Thread-safety for ArduinoCompat** - Concurrent access protection
+  - Mutex protection for globalPins map
+  - Thread-safe `pinMode()`, `digitalWrite()`, `digitalRead()`
+  - Test suite for concurrent access (`test_thread_safety.cpp`)
+  - Documentation of thread-safety guarantees in headers
+
+- **Optional logging system** - Debug logging with zero overhead when disabled
+  - New `log.hpp` header with `PIPINPP_LOG_*` macros
+  - Four log levels: DEBUG, INFO, WARNING, ERROR
+  - CMake option `PIPINPP_ENABLE_LOGGING` (default: OFF)
+  - Configurable log level via `PIPINPP_LOG_LEVEL`
+  - Replaced all debug `std::cout` with logging macros
+
+- **Comprehensive documentation guides**
+  - Pin Numbering Guide (`docs/PIN_NUMBERING.md`) - BCM vs physical pins with diagrams
+  - Permissions Setup Guide (`docs/PERMISSIONS.md`) - Running without sudo
+  - Updated BUILD.md with new build options
+  - Complete GitHub Wiki sync with navigation
+
+- **Enhanced build system**
+  - Compiler warnings enabled by default: `-Wall -Wextra -Wpedantic`
+  - Optional strict mode: `PIPINPP_WARNINGS_AS_ERRORS`
+  - Better CMake options documentation
+  - Fixed all compiler warnings
+
+- **Repository discoverability improvements**
+  - Professional badges in README (License, Version, Platform, C++17, libgpiod)
+  - GitHub topics for better searchability
+  - Updated repository description
 
 ### Changed
-- Nothing yet
+- **HIGH/LOW constants** - Modernized from C macros to C++
+  - Changed from `#define HIGH 1` to `constexpr bool HIGH = true`
+  - Changed from `#define LOW 0` to `constexpr bool LOW = false`
+  - More type-safe and debugger-friendly
+  - Maintains full backward compatibility
+
+- **Logging behavior** - Library is now silent by default
+  - All debug output removed from Release builds
+  - Logging only enabled with CMake option
+  - Zero performance overhead when disabled
 
 ### Deprecated
 - Nothing yet
 
 ### Removed
-- Nothing yet
+- Debug `std::cout` statements from library code (replaced with optional logging)
 
 ### Fixed
-- Nothing yet
+- Compiler warnings from unused variables
+- Thread-safety issues in Arduino compatibility layer
 
 ### Security
-- Nothing yet
+- Added mutex protection against race conditions in multi-threaded programs
 
 ---
 
