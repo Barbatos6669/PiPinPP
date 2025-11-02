@@ -14,7 +14,7 @@
 [![libgpiod](https://img.shields.io/badge/libgpiod-1.6%2B-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-brightgreen)](ROADMAP.md)
 
-📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.2.0](CHANGELOG.md)** | 📖 **[API Documentation →](docs/API_REFERENCE.md)**
+📍 **[Development Roadmap](ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
 
 ---
 
