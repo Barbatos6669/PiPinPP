@@ -27,7 +27,7 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Add README badges: build, release, license
   - GitHub Pages: Deferred until v0.3.0 merge to main
 
-- [ ] Docs and wiki updates [easy]
+- [x] Docs and wiki updates [easy]
   - Pin numbering guide (BCM vs physical)
   - Permissions guide (gpio group / udev) to run without sudo
   - TOC anchors + sync docs -> wiki
