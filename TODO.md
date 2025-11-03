@@ -105,10 +105,95 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ---
 
-## 🚀 v0.4.0 - Communication Protocols & Hardware PWM
+## 🚀 v0.4.0 - Communication Protocols & Complete Arduino API
 
 **Target**: Q1 2026  
-**Focus**: Add communication protocol support (I2C, SPI, UART) and hardware PWM for servo control
+**Focus**: Full Arduino API compatibility + Communication protocols (I2C, SPI, UART) + Hardware PWM
+
+### Arduino API Compatibility Status
+
+#### ✅ Already Implemented (v0.3.0)
+**Digital I/O**
+- ✅ `pinMode(pin, mode)` - Set pin as INPUT, OUTPUT, INPUT_PULLUP
+- ✅ `digitalWrite(pin, value)` - Write HIGH/LOW to pin
+- ✅ `digitalRead(pin)` - Read pin state
+- ✅ `HIGH` / `LOW` - Pin state constants
+- ✅ `INPUT` / `OUTPUT` / `INPUT_PULLUP` - Pin mode constants
+
+**Timing**
+- ✅ `millis()` - Milliseconds since start
+- ✅ `micros()` - Microseconds since start
+- ✅ `delay(ms)` - Millisecond delay
+- ✅ `delayMicroseconds(us)` - Microsecond delay
+
+**Math**
+- ✅ `constrain(x, min, max)` - Constrain value to range
+- ✅ `map(x, in_min, in_max, out_min, out_max)` - Map value between ranges
+
+**Interrupts**
+- ✅ `attachInterrupt(pin, callback, mode)` - Attach interrupt handler
+- ✅ `detachInterrupt(pin)` - Detach interrupt handler
+- ✅ `RISING` / `FALLING` / `CHANGE` - Interrupt mode constants
+
+**PWM**
+- ✅ `analogWrite(pin, value)` - Software PWM output (0-255)
+
+#### 📋 Planned for v0.4.0
+
+**Extended Math** (Easy)
+- `sq(x)`, `sqrt(x)`, `pow(base, exp)`, `max(a,b)`, `min(a,b)`
+- `sin(rad)`, `cos(rad)`, `tan(rad)` with `DEG_TO_RAD`/`RAD_TO_DEG` helpers
+
+**Random Numbers** (Easy)
+- `random(max)`, `random(min, max)`, `randomSeed(seed)`
+
+**Bits and Bytes** (Easy)
+- `bit(n)`, `bitRead()`, `bitWrite()`, `bitSet()`, `bitClear()`
+- `highByte()`, `lowByte()`
+
+**Characters** (Easy)
+- All standard character classification functions (isAlpha, isDigit, etc.)
+
+**Advanced I/O** (Medium)
+- `pulseIn()`, `pulseInLong()`, `shiftIn()`, `shiftOut()`
+- `tone()`, `noTone()` for audio generation
+
+**Pin Queries** (Easy)
+- `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
+
+**Communication** (Medium/Hard)
+- `Wire` (I2C) - Complete Wire library API
+- `SPI` - Complete SPI library API
+- `Serial` - Complete Serial/Stream API with multiple UARTs
+
+**Hardware PWM** (Medium)
+- Native hardware PWM for servo control
+- Auto-detection and fallback to software PWM
+
+**Analog I/O** (Future v0.5.0+)
+- `analogRead()` - Requires external ADC (MCP3008, ADS1115)
+- `analogReadResolution()`, `analogReference()`, `analogWriteResolution()`
+
+#### ⚠️ Standard Library Conflict Avoidance
+
+Functions that conflict with std library will be handled as:
+1. **Use inline wrappers** - For math functions (abs, max, min, pow, sqrt, sin, cos, tan)
+2. **Arduino namespace** - Already used for constrain, map (no conflicts)
+3. **Character functions** - Overloaded to take char parameter like Arduino
+4. **Documentation** - Clear guidance on using std:: vs Arduino functions
+
+Example approach:
+```cpp
+// Option 1: Inline wrappers (recommended)
+inline double sq(double x) { return x * x; }
+inline double sqrt(double x) { return std::sqrt(x); }
+
+// Option 2: Using declarations (user opt-in)
+// Users can add: using std::abs; using std::max;
+
+// Option 3: Document std:: usage
+// Recommend: Use std::abs(), std::max(), std::min() directly
+```
 
 ### Easy Tasks
 
@@ -125,6 +210,35 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Thread-safe operation
   - Example demonstrating toggle for LED blinking
 
+- [ ] Extended math functions [easy]
+  - `sq(x)` - Square a number (x²)
+  - `pow(base, exponent)` - Use std::pow wrapper
+  - `sqrt(x)` - Use std::sqrt wrapper
+  - `max(a, b)` - Use std::max wrapper
+  - `min(a, b)` - Use std::min wrapper
+  - Note: Avoid conflicts with std library (use inline or namespace)
+
+- [ ] Trigonometry functions [easy]
+  - `sin(rad)`, `cos(rad)`, `tan(rad)` - Use std::sin/cos/tan wrappers
+  - Helper macros: `DEG_TO_RAD`, `RAD_TO_DEG`
+  - Documentation showing Arduino compatibility
+
+- [ ] Random number functions [easy]
+  - `long random(max)` - Random number [0, max)
+  - `long random(min, max)` - Random number [min, max)
+  - `void randomSeed(seed)` - Seed random generator
+  - Use std::random with Mersenne Twister
+
+- [ ] Bits and bytes functions [easy]
+  - `bit(n)` - Get bit value at position n (1 << n)
+  - `bitRead(x, n)` - Read bit n from value x
+  - `bitWrite(x, n, b)` - Write bit b to position n in x
+  - `bitSet(x, n)` - Set bit n in x to 1
+  - `bitClear(x, n)` - Clear bit n in x to 0
+  - `highByte(x)` - Get high byte of word
+  - `lowByte(x)` - Get low byte of word
+  - All as inline functions or macros
+
 - [ ] Analog input example [easy]
   - Example showing MCP3008 ADC via SPI (once SPI implemented)
   - Arduino-style analogRead() wrapper
@@ -137,37 +251,101 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Angle to pulse width conversion
   - Multiple servo control demonstration
 
+- [ ] Character classification functions [easy]
+  - Use std library wrappers for Arduino compatibility
+  - `isAlpha()`, `isAlphaNumeric()`, `isAscii()`
+  - `isControl()`, `isDigit()`, `isGraph()`
+  - `isHexadecimalDigit()`, `isLowerCase()`, `isUpperCase()`
+  - `isPrintable()`, `isPunct()`, `isSpace()`, `isWhitespace()`
+  - All using std::isalpha, std::isdigit, etc. with char parameter
+
 ### Medium Tasks
 
-- [ ] I2C support [medium]
+- [ ] Advanced I/O functions [medium]
+  - `pulseIn(pin, value, timeout)` - Measure pulse width
+  - `pulseInLong(pin, value, timeout)` - Long pulse measurement
+  - `shiftIn(dataPin, clockPin, bitOrder)` - Shift in byte (SPI-like)
+  - `shiftOut(dataPin, clockPin, bitOrder, value)` - Shift out byte (SPI-like)
+  - `tone(pin, frequency, duration)` - Generate audio tone (software PWM)
+  - `noTone(pin)` - Stop tone generation
+  - Unit tests for all functions
+
+- [ ] Interrupt control functions [medium]
+  - `interrupts()` - Enable global interrupts (no-op on Linux)
+  - `noInterrupts()` - Disable global interrupts (no-op on Linux)
+  - `digitalPinToInterrupt(pin)` - Convert pin to interrupt number (identity on Pi)
+  - Documentation explaining difference from Arduino
+
+- [ ] Analog input resolution [medium]
+  - `analogReadResolution(bits)` - Set ADC resolution (for future ADC support)
+  - `analogWriteResolution(bits)` - Set PWM resolution (current: 8-bit)
+  - `analogReference(type)` - Set analog reference (for future ADC support)
+  - Store settings for when ADC is implemented
+  - Document that these are placeholders for v0.5.0+
+
+- [ ] I2C/Wire support [medium]
   - I2C master implementation using Linux i2c-dev
-  - Arduino Wire library compatible API
-  - `Wire.begin()`, `Wire.beginTransmission()`, `Wire.write()`, `Wire.read()`
-  - `Wire.endTransmission()`, `Wire.requestFrom()`
+  - Arduino Wire library compatible API:
+    - `Wire.begin()` / `Wire.begin(address)` - Initialize as master/slave
+    - `Wire.beginTransmission(address)` - Start transmission
+    - `Wire.write(data)` / `Wire.write(buffer, len)` - Write data
+    - `Wire.endTransmission()` / `Wire.endTransmission(stop)` - End transmission
+    - `Wire.requestFrom(address, quantity)` - Request bytes from slave
+    - `Wire.available()` - Check available bytes
+    - `Wire.read()` - Read received byte
+    - `Wire.setClock(frequency)` - Set I2C clock speed
+    - `Wire.onReceive(handler)` - Register receive handler (slave mode)
+    - `Wire.onRequest(handler)` - Register request handler (slave mode)
   - I2C bus scanning utility
   - Support for 7-bit and 10-bit addressing
-  - Example: Read temperature from common I2C sensors (BME280, DHT12)
+  - Example: BME280 temperature/pressure/humidity sensor
   - Unit tests with I2C device simulation
 
 - [ ] SPI support [medium]
   - SPI master implementation using Linux spidev
-  - Arduino SPI library compatible API
-  - `SPI.begin()`, `SPI.transfer()`, `SPI.setBitOrder()`, `SPI.setDataMode()`
-  - `SPI.setClockDivider()`, `SPI.end()`
+  - Arduino SPI library compatible API:
+    - `SPI.begin()` - Initialize SPI interface
+    - `SPI.end()` - Disable SPI interface
+    - `SPI.beginTransaction(settings)` - Configure SPI for transaction
+    - `SPI.endTransaction()` - Release SPI bus
+    - `SPI.transfer(data)` - Transfer single byte
+    - `SPI.transfer(buffer, len)` - Transfer multiple bytes
+    - `SPI.transfer16(data)` - Transfer 16-bit word
+    - `SPI.setBitOrder(order)` - MSBFIRST or LSBFIRST
+    - `SPI.setDataMode(mode)` - SPI_MODE0, SPI_MODE1, SPI_MODE2, SPI_MODE3
+    - `SPI.setClockDivider(divider)` - Set clock speed divider
+    - `SPI.usingInterrupt(interrupt)` - Not needed on Linux
+  - SPISettings class for transaction configuration
   - Multiple chip select support
-  - Configurable SPI modes (0-3)
-  - Example: Control MCP3008 ADC or NRF24L01 radio
+  - Example: MCP3008 8-channel ADC
+  - Example: NRF24L01 wireless module
   - Unit tests for SPI transactions
 
 - [ ] UART/Serial support [medium]
   - Serial interface using Linux termios
-  - Arduino Serial compatible API
-  - `Serial.begin(baudrate)`, `Serial.print()`, `Serial.println()`
-  - `Serial.read()`, `Serial.available()`, `Serial.write()`
-  - Multiple UART support (Serial1, Serial2)
-  - Configurable baud rates, parity, stop bits
-  - Example: GPS module communication, Arduino serial bridge
-  - Unit tests with virtual serial ports
+  - Arduino Serial compatible API:
+    - `Serial.begin(baudrate)` / `Serial.begin(baudrate, config)` - Initialize
+    - `Serial.end()` - Disable serial
+    - `Serial.available()` - Bytes available to read
+    - `Serial.availableForWrite()` - Space available in write buffer
+    - `Serial.read()` - Read single byte
+    - `Serial.readBytes(buffer, length)` - Read multiple bytes
+    - `Serial.readString()` - Read string until timeout
+    - `Serial.readStringUntil(terminator)` - Read until character
+    - `Serial.parseInt()` / `Serial.parseFloat()` - Parse numbers
+    - `Serial.write(data)` / `Serial.write(buffer, len)` - Write data
+    - `Serial.print(data)` / `Serial.print(data, format)` - Print data
+    - `Serial.println(data)` - Print with newline
+    - `Serial.flush()` - Wait for transmission complete
+    - `Serial.peek()` - Peek at next byte without removing
+    - `Serial.setTimeout(timeout)` - Set read timeout
+    - `Serial.find(target)` / `Serial.findUntil(target, terminator)` - Search
+  - Multiple UART instances (Serial, Serial1, Serial2)
+  - Configurable: baud rates, data bits, parity, stop bits
+  - Stream-based interface with printf-style formatting
+  - Example: GPS NMEA parsing (Neo-6M module)
+  - Example: Bluetooth serial bridge
+  - Unit tests with virtual serial ports (pty)
 
 - [ ] Hardware PWM support [medium]
   - Native hardware PWM via PWM chip (pwm-bcm2835)
@@ -275,23 +453,39 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 ## 📊 v0.4.0 Success Criteria
 
 ### Must Have (Required for Release)
-- ✅ I2C master support with Wire API
-- ✅ SPI master support with SPI API
-- ✅ UART support with Serial API
+
+**Communication Protocols:**
+- ✅ I2C master support with complete Wire API
+- ✅ SPI master support with complete SPI API  
+- ✅ UART support with complete Serial/Stream API
 - ✅ Hardware PWM support for servo control
-- ✅ At least 2 protocol examples (I2C sensor + SPI device)
-- ✅ Unit tests for all new features
-- ✅ Documentation updates in API_REFERENCE.md
+
+**Arduino API Completion:**
+- ✅ Extended math functions (sq, sqrt, pow, max, min, trig)
+- ✅ Random number functions (random, randomSeed)
+- ✅ Bits and bytes functions (bit ops, highByte, lowByte)
+- ✅ Character classification functions
+- ✅ Pin state query functions (isOutput, isInput, getMode)
+- ✅ Digital toggle function
+- ✅ Advanced I/O functions (pulseIn, shiftIn/Out, tone)
+
+**Quality:**
+- ✅ At least 3 protocol examples (I2C sensor + SPI device + Serial GPS)
+- ✅ Unit tests for all new functions
+- ✅ Complete Arduino API compatibility documentation
+- ✅ Standard library conflict resolution documented
 
 ### Should Have (Desired)
-- Pin state query functions
-- Digital toggle function
 - Performance benchmarking results
+- Arduino function reference comparison table
+- Migration guide from Arduino with code examples
 - Namespace migration (if breaking changes acceptable)
+- Debian package (.deb)
 
 ### Nice to Have (Optional)
 - Advanced protocol features (slave mode, DMA)
-- Additional examples (GPS, radio modules)
+- Additional examples (Bluetooth, radio modules, LCD displays)
+- Arduino library compatibility testing guide
 - VS Code snippets for common patterns
 
 ---
