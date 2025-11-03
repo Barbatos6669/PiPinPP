@@ -161,4 +161,48 @@ void delayMicroseconds(unsigned int us)
 void delay(unsigned long ms) 
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+/* ------------------------------------------------------------ */
+/*                    INTERRUPT FUNCTIONS                       */
+/* ------------------------------------------------------------ */
+
+#include "interrupts.hpp"
+
+void attachInterrupt(int pin, void (*callback)(), int mode) 
+{
+    // Convert Arduino interrupt mode to InterruptMode enum
+    InterruptMode intMode;
+    switch (mode) {
+        case RISING:
+            intMode = InterruptMode::RISING;
+            break;
+        case FALLING:
+            intMode = InterruptMode::FALLING;
+            break;
+        case CHANGE:
+            intMode = InterruptMode::CHANGE;
+            break;
+        default:
+            throw std::invalid_argument("Invalid interrupt mode: " + std::to_string(mode));
+    }
+    
+    // Wrap the C-style function pointer in a std::function
+    InterruptCallback wrappedCallback = [callback]() {
+        if (callback) {
+            callback();
+        }
+    };
+    
+    // Attach interrupt using InterruptManager
+    InterruptManager::getInstance().attachInterrupt(pin, wrappedCallback, intMode);
+    
+    PIPINPP_LOG_INFO("attachInterrupt: Attached to pin " << pin 
+                     << " mode=" << mode);
+}
+
+void detachInterrupt(int pin) 
+{
+    InterruptManager::getInstance().detachInterrupt(pin);
+    PIPINPP_LOG_INFO("detachInterrupt: Detached from pin " << pin);
 }   

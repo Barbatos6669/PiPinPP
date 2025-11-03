@@ -168,3 +168,80 @@ unsigned long micros();
  * digitalWrite(17, LOW);
  */
 void delayMicroseconds(unsigned int us);
+
+/* ------------------------------------------------------------ */
+/*                    INTERRUPT FUNCTIONS                       */
+/* ------------------------------------------------------------ */
+
+// Forward declare InterruptMode enum from interrupts.hpp
+enum class InterruptMode;
+
+// Arduino interrupt mode constants (use constexpr for type safety)
+constexpr int RISING = 0;   ///< Trigger interrupt on rising edge (LOW to HIGH)
+constexpr int FALLING = 1;  ///< Trigger interrupt on falling edge (HIGH to LOW)
+constexpr int CHANGE = 2;   ///< Trigger interrupt on any edge (rising or falling)
+
+/**
+ * @brief Attach an interrupt handler to a GPIO pin (Arduino-style function)
+ * 
+ * Registers a callback function to be invoked when the specified edge condition
+ * occurs on the GPIO pin. The callback runs in a separate thread and should be
+ * fast and non-blocking.
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number (0-27 for Raspberry Pi)
+ * @param callback Function to call when interrupt triggers (no parameters, void return)
+ * @param mode Interrupt mode: RISING, FALLING, or CHANGE
+ * 
+ * @throws InvalidPinError if pin number is invalid
+ * @throws GpioAccessError if unable to configure interrupt
+ * @throws std::runtime_error if interrupt already attached to this pin
+ * 
+ * @note Callback should be fast and non-blocking
+ * @note Only one interrupt can be attached per pin
+ * @note Pin is automatically configured as INPUT with pull-down resistor
+ * 
+ * @example
+ * void buttonPressed() {
+ *     static unsigned long lastPress = 0;
+ *     unsigned long now = millis();
+ *     
+ *     // Simple debouncing
+ *     if (now - lastPress > 50) {
+ *         Serial.println("Button pressed!");
+ *         lastPress = now;
+ *     }
+ * }
+ * 
+ * void setup() {
+ *     pinMode(18, INPUT_PULLUP);
+ *     attachInterrupt(18, buttonPressed, FALLING);
+ * }
+ * 
+ * @warning Interrupt callbacks run in a separate thread, ensure thread safety
+ * @warning Do not call delay() or blocking functions inside interrupt callbacks
+ */
+void attachInterrupt(int pin, void (*callback)(), int mode);
+
+/**
+ * @brief Detach an interrupt handler from a GPIO pin (Arduino-style function)
+ * 
+ * Removes the interrupt handler previously attached with attachInterrupt().
+ * Safe to call even if no interrupt is attached.
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number to detach interrupt from
+ * 
+ * @note Safe to call even if no interrupt is attached
+ * @note Pin remains in INPUT mode after detaching
+ * 
+ * @example
+ * void loop() {
+ *     if (someCondition) {
+ *         detachInterrupt(18);  // Stop listening for interrupts
+ *     }
+ * }
+ */
+void detachInterrupt(int pin);

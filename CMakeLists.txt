@@ -61,6 +61,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 set(PIPINPP_SOURCES
     src/pin.cpp
     src/ArduinoCompat.cpp
+    src/interrupts.cpp
 )
 
 # Create the library (STATIC or SHARED based on BUILD_SHARED_LIBS)
@@ -83,7 +84,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp"
 )
 
 if(BUILD_TESTS)
