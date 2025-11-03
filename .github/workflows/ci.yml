@@ -83,6 +83,12 @@ jobs:
       - name: Build libgpiod v2 (x86_64)
         if: matrix.arch == 'x86_64'
         run: |
+          # Install additional build dependencies for libgpiod
+          sudo apt-get install -y \
+            linux-headers-generic \
+            libkmod-dev \
+            libudev-dev
+          
           # Clone libgpiod v2.2.1 (the version your Pi has)
           git clone --depth 1 --branch v2.2.1 \
             https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git \
@@ -90,8 +96,8 @@ jobs:
           
           cd /tmp/libgpiod
           
-          # Build using autotools (v2.2.1 doesn't use meson yet)
-          ./autogen.sh --enable-tools=yes --prefix=/usr
+          # Build using autotools
+          ./autogen.sh --enable-tools=yes --prefix=/usr --disable-bindings-cxx --disable-bindings-python
           make -j$(nproc)
           sudo make install
           sudo ldconfig
@@ -104,6 +110,7 @@ jobs:
         # - GitHub's Ubuntu images only have v1 in repos
         # - Building from source ensures we get v2.2.1
         # - This matches what's on your actual Raspberry Pi!
+        # - We disable C++ and Python bindings (not needed, faster build)
       
       # Step 5: Build and test PiPinPP on x86_64 (native)
       - name: Build and test (x86_64)
@@ -136,12 +143,12 @@ jobs:
             bash -c "
               set -e
               apt-get update
-              apt-get install -y build-essential cmake pkg-config git autoconf autoconf-archive automake libtool python3 python3-setuptools
+              apt-get install -y build-essential cmake pkg-config git autoconf autoconf-archive automake libtool python3 python3-setuptools linux-headers-generic libkmod-dev libudev-dev
               
               # Build libgpiod v2.2.1 from source (same as x86_64 step)
               git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /tmp/libgpiod
               cd /tmp/libgpiod
-              ./autogen.sh --enable-tools=yes --prefix=/usr
+              ./autogen.sh --enable-tools=yes --prefix=/usr --disable-bindings-cxx --disable-bindings-python
               make -j\$(nproc)
               make install
               ldconfig
@@ -163,6 +170,7 @@ jobs:
         # - -w sets working directory to /workspace
         # - arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
         # - We build libgpiod v2 from source (just like x86_64)
+        # - Disable C++/Python bindings for faster build
         # - QEMU translates ARM instructions to x86_64 on the fly
         # - This is THE SAME as running on a real Raspberry Pi!
       
