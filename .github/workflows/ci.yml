@@ -17,7 +17,7 @@ on:
 jobs:
   # Job 1: Build and test the library
   build-and-test:
-    name: Build (${{ matrix.build_type }}, ${{ matrix.os }})
+    name: Build (${{ matrix.build_type }}, ${{ matrix.os }}, ${{ matrix.arch }})
     
     # WHERE does this run?
     # GitHub provides free Ubuntu virtual machines for open source projects
@@ -34,6 +34,12 @@ jobs:
         os: [ubuntu-22.04, ubuntu-24.04]
         # Test both Debug (with symbols for debugging) and Release (optimized)
         build_type: [Debug, Release]
+        # Test both x86_64 (GitHub's servers) and ARM64 (Raspberry Pi architecture)
+        arch: [x86_64, aarch64]
+        # IMPORTANT: Don't test ARM64 on old Ubuntu (compatibility issues)
+        exclude:
+          - os: ubuntu-22.04
+            arch: aarch64
     
     # STEPS: What actually happens in this job
     steps:
@@ -43,10 +49,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # Step 2: Install dependencies
+      # Step 2: Set up QEMU for ARM emulation (only if testing ARM)
+      # QEMU lets us run ARM binaries on x86_64 machines
+      # Think of it as a "virtual Raspberry Pi" that runs on GitHub's servers
+      - name: Set up QEMU
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/arm64
+      
+      # Step 3: Install dependencies (x86_64 native)
       # This is like what you did manually with apt-get
       # We need the same tools here that developers need on their Pi
-      - name: Install dependencies
+      - name: Install dependencies (x86_64)
+        if: matrix.arch == 'x86_64'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -62,52 +78,56 @@ jobs:
         # - pkg-config: helps other projects find our library
         # - gpiod: command-line GPIO tools
       
-      # Step 3: Configure the build
-      # CMake generates the actual build files (Makefiles)
-      - name: Configure CMake
+      # Step 4: Build and test on x86_64 (native)
+      - name: Build and test (x86_64)
+        if: matrix.arch == 'x86_64'
         run: |
+          # Configure the build
           cmake -B build \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DPIPINPP_ENABLE_LOGGING=OFF \
             -DPIPINPP_WARNINGS_AS_ERRORS=ON \
             -DBUILD_TESTS=ON \
             -DBUILD_EXAMPLES=ON
-        # Breaking down the options:
-        # -B build: Put build files in 'build' directory
-        # -DCMAKE_BUILD_TYPE: Use Debug or Release from our matrix
-        # -DPIPINPP_ENABLE_LOGGING=OFF: Don't clutter CI output with logs
-        # -DPIPINPP_WARNINGS_AS_ERRORS=ON: Treat warnings as errors (strict!)
-        # -DBUILD_TESTS=ON: Build test executables
-        # -DBUILD_EXAMPLES=ON: Build example programs (ensures they compile)
+          
+          # Build everything
+          cmake --build build --config ${{ matrix.build_type }} -j$(nproc)
+          
+          # Run tests (continue even if they fail - no GPIO hardware)
+          cd build && ctest --output-on-failure --verbose || true
       
-      # Step 4: Build everything
-      # This actually compiles the library, tests, and examples
-      - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} -j$(nproc)
-        # Explanation:
-        # --build build: Build in the 'build' directory
-        # --config: Use the build type from our matrix
-        # -j$(nproc): Use all available CPU cores for faster builds
-        #   $(nproc) returns the number of CPU cores
+      # Step 5: Build and test on ARM64 (emulated via Docker)
+      # This runs in an ARM64 Ubuntu container using QEMU emulation
+      # It's slower but tests the actual Raspberry Pi architecture!
+      - name: Build and test (ARM64)
+        if: matrix.arch == 'aarch64'
+        uses: docker://arm64v8/ubuntu:24.04
+        with:
+          args: >
+            bash -c "
+            apt-get update &&
+            apt-get install -y build-essential cmake libgpiod-dev pkg-config gpiod &&
+            cd /github/workspace &&
+            cmake -B build
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+              -DPIPINPP_ENABLE_LOGGING=OFF
+              -DPIPINPP_WARNINGS_AS_ERRORS=ON
+              -DBUILD_TESTS=ON
+              -DBUILD_EXAMPLES=ON &&
+            cmake --build build --config ${{ matrix.build_type }} -j\$(nproc) &&
+            cd build && ctest --output-on-failure --verbose || true
+            "
+        # EXPLANATION:
+        # - docker://arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
+        # - QEMU translates ARM instructions to x86_64 on the fly
+        # - /github/workspace = where GitHub mounts your code
+        # - All commands run inside the ARM64 container
+        # - This is THE SAME as running on a real Raspberry Pi!
       
-      # Step 5: Run tests
-      # CTest runs all our test executables and reports results
-      - name: Run tests
-        working-directory: build
-        # We expect some tests to fail in CI because there's no GPIO hardware
-        # continue-on-error: true means "keep going even if tests fail"
-        continue-on-error: true
-        run: ctest --output-on-failure --verbose
-        # Explanation:
-        # --output-on-failure: Show test output only if it fails (helps debug)
-        # --verbose: Show detailed information about what's running
-        # Why continue-on-error? Tests that access /dev/gpiochip0 will fail
-        # on GitHub's servers (no GPIO hardware), but we still want to see
-        # that everything compiles correctly
-      
-      # Step 6: Test pkg-config integration
+      # Step 6: Test pkg-config integration (x86_64 only for now)
       # This verifies that other projects can find our library
       - name: Test pkg-config
+        if: matrix.arch == 'x86_64'
         run: |
           # First, install our library to a temporary location
           cmake --install build --prefix /tmp/pipinpp-test
@@ -129,9 +149,10 @@ jobs:
         # This test is important because many C++ projects use pkg-config
         # to find and link against libraries
       
-      # Step 7: Build a test project using pkg-config
+      # Step 7: Build a test project using pkg-config (x86_64 only)
       # This simulates how a real user would use our library
       - name: Test external project integration
+        if: matrix.arch == 'x86_64'
         run: |
           # Still need pkg-config to find our library
           export PKG_CONFIG_PATH=/tmp/pipinpp-test/lib/pkgconfig:$PKG_CONFIG_PATH
