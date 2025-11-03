@@ -85,27 +85,42 @@ set_target_properties(pipinpp PROPERTIES
 if(BUILD_TESTS)
     enable_testing()
     
-    # Test executable
+    # Fetch GoogleTest
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.14.0
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    
+    # Legacy test executable (keep for hardware-dependent testing)
     add_executable(test_pipinpp tests/test.cpp)
     target_link_libraries(test_pipinpp pipinpp)
     
-    # Thread safety test executable
-    add_executable(test_thread_safety tests/test_thread_safety.cpp)
-    target_link_libraries(test_thread_safety pipinpp)
+    # GoogleTest-based tests
+    add_executable(gtest_timing tests/gtest_timing.cpp)
+    target_link_libraries(gtest_timing pipinpp GTest::gtest_main)
     
-    # Timing functions test executable
-    add_executable(test_timing tests/test_timing.cpp)
-    target_link_libraries(test_timing pipinpp)
+    add_executable(gtest_exceptions tests/gtest_exceptions.cpp)
+    target_link_libraries(gtest_exceptions pipinpp GTest::gtest_main)
     
-    # Exception handling test executable
-    add_executable(test_exceptions tests/test_exceptions.cpp)
-    target_link_libraries(test_exceptions pipinpp)
+    add_executable(gtest_pin tests/gtest_pin.cpp)
+    target_link_libraries(gtest_pin pipinpp GTest::gtest_main)
     
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
-    add_test(NAME thread_safety_test COMMAND test_thread_safety)
-    add_test(NAME timing_test COMMAND test_timing)
-    add_test(NAME exception_test COMMAND test_exceptions)
+    add_test(NAME gtest_timing COMMAND gtest_timing)
+    add_test(NAME gtest_exceptions COMMAND gtest_exceptions)
+    add_test(NAME gtest_pin COMMAND gtest_pin)
+    
+    # Enable GoogleTest discovery (finds all TEST() macros automatically)
+    include(GoogleTest)
+    gtest_discover_tests(gtest_timing)
+    gtest_discover_tests(gtest_exceptions)
+    gtest_discover_tests(gtest_pin)
 endif()
 
 if(BUILD_EXAMPLES)
