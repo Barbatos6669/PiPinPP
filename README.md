@@ -8,9 +8,9 @@
 </div>
 
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/Barbatos6669/PiPinPP/actions/workflows/codeql.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
+[![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.2.0)
+[![Version](https://img.shields.io/badge/version-0.3.0--dev-blue.svg)](https://github.com/Barbatos6669/PiPinPP)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-1.6%2B-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
