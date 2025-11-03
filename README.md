@@ -7,6 +7,8 @@
   *Clean API, low-level control, and room to grow.*
 </div>
 
+[![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Barbatos6669/PiPinPP/actions/workflows/codeql.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.2.0)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)

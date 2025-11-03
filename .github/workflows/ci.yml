@@ -1,0 +1,198 @@
+# GitHub Actions CI Workflow for PiPinPP
+# This file tells GitHub how to automatically build and test our library
+
+name: CI
+
+# WHEN does this workflow run?
+# - on every push to any branch
+# - on every pull request
+# This catches issues before they reach main branch
+on:
+  push:
+    branches: [ "**" ]  # ** means "all branches"
+  pull_request:
+    branches: [ "**" ]
+
+# WHAT does this workflow do?
+jobs:
+  # Job 1: Build and test the library
+  build-and-test:
+    name: Build (${{ matrix.build_type }}, ${{ matrix.os }})
+    
+    # WHERE does this run?
+    # GitHub provides free Ubuntu virtual machines for open source projects
+    runs-on: ${{ matrix.os }}
+    
+    # STRATEGY: Test multiple configurations
+    # This is called a "build matrix" - it runs the job multiple times
+    # with different settings, helping us catch platform-specific issues
+    strategy:
+      # Don't cancel other jobs if one fails - we want to see all results
+      fail-fast: false
+      matrix:
+        # Test on multiple Ubuntu versions to ensure compatibility
+        os: [ubuntu-22.04, ubuntu-24.04]
+        # Test both Debug (with symbols for debugging) and Release (optimized)
+        build_type: [Debug, Release]
+    
+    # STEPS: What actually happens in this job
+    steps:
+      # Step 1: Get the code
+      # actions/checkout is a pre-made GitHub Action that clones your repo
+      # v4 is the version - always use latest stable version
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Step 2: Install dependencies
+      # This is like what you did manually with apt-get
+      # We need the same tools here that developers need on their Pi
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libgpiod-dev \
+            pkg-config \
+            gpiod
+        # Why these packages?
+        # - build-essential: g++, make, and basic build tools
+        # - cmake: our build system
+        # - libgpiod-dev: GPIO library headers and development files
+        # - pkg-config: helps other projects find our library
+        # - gpiod: command-line GPIO tools
+      
+      # Step 3: Configure the build
+      # CMake generates the actual build files (Makefiles)
+      - name: Configure CMake
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DPIPINPP_ENABLE_LOGGING=OFF \
+            -DPIPINPP_WARNINGS_AS_ERRORS=ON \
+            -DBUILD_TESTS=ON \
+            -DBUILD_EXAMPLES=ON
+        # Breaking down the options:
+        # -B build: Put build files in 'build' directory
+        # -DCMAKE_BUILD_TYPE: Use Debug or Release from our matrix
+        # -DPIPINPP_ENABLE_LOGGING=OFF: Don't clutter CI output with logs
+        # -DPIPINPP_WARNINGS_AS_ERRORS=ON: Treat warnings as errors (strict!)
+        # -DBUILD_TESTS=ON: Build test executables
+        # -DBUILD_EXAMPLES=ON: Build example programs (ensures they compile)
+      
+      # Step 4: Build everything
+      # This actually compiles the library, tests, and examples
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j$(nproc)
+        # Explanation:
+        # --build build: Build in the 'build' directory
+        # --config: Use the build type from our matrix
+        # -j$(nproc): Use all available CPU cores for faster builds
+        #   $(nproc) returns the number of CPU cores
+      
+      # Step 5: Run tests
+      # CTest runs all our test executables and reports results
+      - name: Run tests
+        working-directory: build
+        # We expect some tests to fail in CI because there's no GPIO hardware
+        # continue-on-error: true means "keep going even if tests fail"
+        continue-on-error: true
+        run: ctest --output-on-failure --verbose
+        # Explanation:
+        # --output-on-failure: Show test output only if it fails (helps debug)
+        # --verbose: Show detailed information about what's running
+        # Why continue-on-error? Tests that access /dev/gpiochip0 will fail
+        # on GitHub's servers (no GPIO hardware), but we still want to see
+        # that everything compiles correctly
+      
+      # Step 6: Test pkg-config integration
+      # This verifies that other projects can find our library
+      - name: Test pkg-config
+        run: |
+          # First, install our library to a temporary location
+          cmake --install build --prefix /tmp/pipinpp-test
+          
+          # Tell pkg-config where to find our .pc file
+          export PKG_CONFIG_PATH=/tmp/pipinpp-test/lib/pkgconfig:$PKG_CONFIG_PATH
+          
+          # Try to find our library - this should succeed
+          pkg-config --exists pipinpp && echo "✓ pkg-config can find pipinpp"
+          
+          # Verify it reports the correct version
+          pkg-config --modversion pipinpp
+          
+          # Show the compile flags (should include -I for headers)
+          echo "Compile flags: $(pkg-config --cflags pipinpp)"
+          
+          # Show the link flags (should include -L and -lpipinpp)
+          echo "Link flags: $(pkg-config --libs pipinpp)"
+        # This test is important because many C++ projects use pkg-config
+        # to find and link against libraries
+      
+      # Step 7: Build a test project using pkg-config
+      # This simulates how a real user would use our library
+      - name: Test external project integration
+        run: |
+          # Still need pkg-config to find our library
+          export PKG_CONFIG_PATH=/tmp/pipinpp-test/lib/pkgconfig:$PKG_CONFIG_PATH
+          
+          # Create a minimal test program
+          echo '#include "pin.hpp"' > /tmp/test_app.cpp
+          echo '#include <iostream>' >> /tmp/test_app.cpp
+          echo 'int main() {' >> /tmp/test_app.cpp
+          echo '    std::cout << "PiPinPP integration test" << std::endl;' >> /tmp/test_app.cpp
+          echo '    return 0;' >> /tmp/test_app.cpp
+          echo '}' >> /tmp/test_app.cpp
+          
+          # Try to compile it using pkg-config
+          # This is how a real user would compile their program
+          g++ /tmp/test_app.cpp $(pkg-config --cflags --libs pipinpp) -o /tmp/test_app
+          
+          # Run it to make sure it doesn't crash
+          /tmp/test_app
+          
+          echo "✓ External project can compile and link against PiPinPP"
+
+  # Job 2: CodeQL security analysis (optional but recommended)
+  codeql-analysis:
+    name: CodeQL Security Scan
+    runs-on: ubuntu-latest
+    
+    # PERMISSIONS: CodeQL needs permission to upload results
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgpiod-dev
+      
+      # Initialize CodeQL - this sets up the C++ scanner
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: cpp
+          # CodeQL will analyze C++ code for:
+          # - Buffer overflows
+          # - Memory leaks
+          # - Null pointer dereferences
+          # - SQL injection (if applicable)
+          # - And many other security issues
+      
+      # Build the project so CodeQL can analyze it
+      - name: Build for analysis
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build -j$(nproc)
+      
+      # Run the actual analysis
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        # Results appear in GitHub's Security tab
+        # You'll get alerts if any security issues are found

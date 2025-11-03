@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **GitHub Actions CI/CD** - Automated build and test pipeline (v0.3.3)
+  - Multi-platform build matrix (Ubuntu 22.04, 24.04)
+  - Test both Debug and Release builds
+  - Strict warning checks (`PIPINPP_WARNINGS_AS_ERRORS=ON`)
+  - Automated test execution via CTest
+  - pkg-config integration testing
+  - External project compilation smoke test
+  - CodeQL security analysis for C++ code
+  - Build status and CodeQL badges in README
+  - Comprehensive workflow comments explaining each step
+
 - **Custom exception classes** - Type-safe error handling (v0.3.2)
   - `PinError` - Base exception class for all GPIO errors
   - `InvalidPinError` - Thrown for invalid pin numbers or configurations

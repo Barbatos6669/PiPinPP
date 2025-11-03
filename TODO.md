@@ -47,10 +47,11 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Document error model
   - Completed in v0.3.2
 
-- [ ] GitHub Actions CI [medium]
+- ✅ GitHub Actions CI [medium]
   - Build Debug/Release, run tests
   - pkg-config smoke test
   - Optional CodeQL; add badges
+  - Completed in v0.3.3
 
 - [ ] Unit tests (GoogleTest) [medium]
   - Introduce GTest; abstract libgpiod behind a thin interface for mocking
