@@ -56,6 +56,7 @@
 - ✅ **Custom exceptions**: Type-safe error handling with `InvalidPinError` and `GpioAccessError`
 - ✅ **GitHub Actions CI/CD**: Automated builds, tests, and security scanning on every push
 - ✅ **GoogleTest framework**: 40 comprehensive tests with professional reporting
+- ✅ **New examples**: Timing benchmark, exception handling, and thread safety demonstrations
 - [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
 - [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
 - [ ] **Performance optimization**: Fast GPIO operations and reduced overhead

@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **New comprehensive examples** - Demonstrating v0.3.x features (v0.3.5)
+  - `timing_benchmark/` - Timing functions demonstration (208 lines)
+    - millis(), micros(), delay(), delayMicroseconds() usage
+    - GPIO write speed benchmarking (241kHz toggle rate)
+    - Timing accuracy measurements (±0ms for delays)
+    - Precision LED blink patterns with timing verification
+    - Timing resolution test showing ~1µs precision
+  - `exception_handling/` - Exception system demonstration (294 lines)
+    - InvalidPinError and GpioAccessError examples
+    - Exception hierarchy (catching as base PinError)
+    - Arduino function exception handling
+    - Graceful error recovery patterns
+    - Best practices guide with detailed examples
+  - `thread_safety/` - Multi-threaded GPIO operations (311 lines)
+    - Concurrent LED blinking with 4 threads
+    - Stress test with 6000 rapid GPIO operations
+    - Thread-safe Arduino functions demonstration
+    - Best practices for concurrent GPIO access
+  - All examples include professional formatting, comprehensive comments, and work without hardware
+
 - **GoogleTest integration** - Professional testing framework (v0.3.4)
   - Integrated GoogleTest v1.14.0 using CMake FetchContent
   - 40 comprehensive tests covering timing, exceptions, and Pin operations

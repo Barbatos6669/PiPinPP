@@ -60,8 +60,12 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Hardware tests skip gracefully in CI environments
   - Completed in v0.3.4
 
-- [ ] New examples [medium]
-  - `interrupt_button`, `pwm_led_fade`, `timing_benchmark` (with wiring notes)
+- ✅ New examples [medium]
+  - `timing_benchmark` - Timing functions and GPIO speed (208 lines)
+  - `exception_handling` - Error handling patterns (294 lines)
+  - `thread_safety` - Multi-threaded GPIO operations (311 lines)
+  - Professional formatting with comprehensive comments
+  - Completed in v0.3.5
 
 - [ ] CMake packaging polish [medium]
   - Shared library option
