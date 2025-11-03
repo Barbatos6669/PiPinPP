@@ -1,16 +1,35 @@
-# PiPin++ TODO List
+# PiPinPP Roadmap
 
-This document tracks the development roadmap for PiPin++, a modern C++ GPIO library for Raspberry Pi designed to be familiar for Arduino makers.
+This document tracks the development roadmap for PiPinPP, a modern C++ GPIO library for Raspberry Pi designed to be familiar for Arduino makers.
 
-**Current Version**: 0.2.0  
-**Last Updated**: October 31, 2025 (Updated: v0.2.0 Release Complete)
-**Progress**: v0.2.0 Complete ✅ | v0.3.0 Planning Phase
+**Current Version**: 0.3.0 (Released November 3, 2025)  
+**Next Target**: 0.4.0 (Communication Protocols & Hardware PWM)  
+**Last Updated**: November 3, 2025  
+**Progress**: v0.3.0 Complete ✅ (100%) | v0.4.0 Planning Phase
 
 ---
 
-## 🎉 v0.2.0 RELEASE COMPLETE! ✅
+## 🎉 RELEASE HISTORY
 
-**All major features implemented and tested!**
+### v0.3.0 - Released November 3, 2025 ✅
+
+**Production-ready Arduino-compatible GPIO library with advanced features!**
+
+Eight major features delivered:
+- ✅ v0.3.1 - Timing functions (millis, micros, delay, delayMicroseconds)
+- ✅ v0.3.2 - Custom exceptions (PinError hierarchy)
+- ✅ v0.3.3 - GitHub Actions CI/CD (multi-platform, CodeQL)
+- ✅ v0.3.4 - GoogleTest framework (40 automated tests)
+- ✅ v0.3.5 - Professional examples (timing, exceptions, threads)
+- ✅ v0.3.6 - Modern CMake packaging (find_package support)
+- ✅ v0.3.7 - GPIO interrupts (attachInterrupt with callbacks)
+- ✅ v0.3.8 - Software PWM (analogWrite 0-255)
+
+**Statistics**: 4,779 lines of code | 40 tests (100% passing) | 9 examples | 0 warnings
+
+### v0.2.0 - Released October 31, 2025 ✅
+
+**Arduino API compatibility complete!**
 
 ### ✅ Core API Enhancement - **COMPLETED**
 - ✅ **Arduino-style API Functions** 
@@ -54,81 +73,118 @@ This document tracks the development roadmap for PiPin++, a modern C++ GPIO libr
 
 ---
 
-## 🚀 High Priority (Next Release - v0.3.0)
+## 🚀 v0.4.0 - Communication Protocols & Hardware PWM
 
-### Advanced GPIO Features
-- [ ] **Interrupt Support**
-  - [ ] Implement edge detection (RISING, FALLING, BOTH)
-  - [ ] Add callback mechanism for GPIO interrupts
-  - [ ] Thread-safe interrupt handling
-  - [ ] Arduino-style `attachInterrupt()` function
+**Target**: Q1 2026  
+**Focus**: Add I2C, SPI, UART support + hardware PWM for servo control  
+**Status**: Planning Phase
 
-- [ ] **PWM Support**
-  - [ ] Hardware PWM implementation via libgpiod
-  - [ ] Software PWM fallback for unsupported pins
-  - [ ] `analogWrite(pin, value)` Arduino-style function
-  - [ ] PWM frequency and duty cycle control
+### Core Protocol Support
+- [ ] **I2C Master Support**
+  - [ ] Linux i2c-dev integration
+  - [ ] Arduino Wire library compatible API
+  - [ ] `Wire.begin()`, `Wire.write()`, `Wire.read()`, etc.
+  - [ ] Bus scanning utility
+  - [ ] Example: BME280 temperature/pressure sensor
+  - [ ] Unit tests with I2C device simulation
 
-- [ ] **Timing Functions**
-  - [ ] `millis()` function (milliseconds since start)
-  - [ ] `micros()` function (microseconds since start)
-  - [ ] High-precision timing utilities
+- [ ] **SPI Master Support**
+  - [ ] Linux spidev integration
+  - [ ] Arduino SPI library compatible API
+  - [ ] `SPI.begin()`, `SPI.transfer()`, `SPI.setDataMode()`, etc.
+  - [ ] Multiple chip select support
+  - [ ] Example: MCP3008 ADC or NRF24L01 radio
+  - [ ] Unit tests for SPI transactions
 
-### Code Quality & Testing
-- ✅ **Hardware Testing** ✅ **COMPLETED!**
-  - ✅ Arduino compatibility tested on actual Raspberry Pi hardware
-  - ✅ LED blink example verified working on GPIO pin 17
-  - ✅ Pull-up resistor support verified
-  - ✅ Pin validation tested with invalid pin numbers
+- [ ] **UART/Serial Support**
+  - [ ] Linux termios integration
+  - [ ] Arduino Serial compatible API
+  - [ ] `Serial.begin()`, `Serial.print()`, `Serial.read()`, etc.
+  - [ ] Multiple UART support (Serial1, Serial2)
+  - [ ] Example: GPS module communication
+  - [ ] Unit tests with virtual serial ports
 
-- [ ] **Comprehensive Testing Framework**
-  - [ ] Unit tests for Pin class methods (Google Test/Catch2)
-  - [ ] Integration tests with actual GPIO hardware
-  - [ ] Continuous integration setup (GitHub Actions)
-  - [ ] Test coverage reporting
-  - [ ] Mock GPIO testing for development environments
+- [ ] **Hardware PWM Support**
+  - [ ] Native hardware PWM via PWM chip (pwm-bcm2835)
+  - [ ] Auto-detect hardware vs software PWM
+  - [ ] Servo-compatible frequency and resolution
+  - [ ] Example: Precise servo control
+  - [ ] Fallback to software PWM for unsupported pins
 
-- [ ] **Error Handling Enhancement**
-  - [ ] Custom exception classes for different error types
-  - [ ] Detailed error messages and troubleshooting guides
-  - [ ] Graceful fallback mechanisms
-  - [ ] Debug logging system
+### API Enhancements
+- [ ] **Pin State Queries**
+  - [ ] `isOutput()`, `isInput()`, `getMode()` functions
+  - [ ] Pin capability detection
+  - [ ] State validation utilities
 
-### Build System Improvements
-- [ ] **Package Management**
-  - [ ] Debian package creation (.deb)
+- [ ] **Additional Functions**
+  - [ ] `digitalToggle(pin)` - Toggle pin state
+  - [ ] Bulk GPIO operations (future consideration)
+
+### Quality & Performance
+- [ ] **Performance Benchmarking**
+  - [ ] GPIO toggle speed measurements
+  - [ ] Interrupt latency measurements
+  - [ ] PWM frequency accuracy tests
+  - [ ] Protocol throughput measurements
+  - [ ] Memory usage profiling
+
+- [ ] **Namespace Migration** (Optional - Breaking Change)
+  - [ ] Wrap core API in `pipinpp::` namespace
+  - [ ] Keep Arduino layer in global scope
+  - [ ] Migration guide for users
+
+### Package Management
+- [ ] **Debian Package Creation**
+  - [ ] .deb package for easy installation
   - [ ] Package repository setup
-  - [ ] Installation script for easy setup
-  - [ ] pkg-config improvements
+  - [ ] apt-get installation support
 
 ---
 
-## 🔮 Medium Priority (v0.4.0)
+## 🔮 v0.5.0+ - Future Features
 
-### Protocol Support
-- [ ] **Serial Communication**
-  - [ ] UART/Serial interface (`Serial.begin()`, `Serial.print()`, etc.)
-  - [ ] Arduino-style Serial API compatibility
-  - [ ] Multiple UART support
+### Advanced Protocol Features
+- [ ] **Advanced I2C**
+  - [ ] I2C slave mode support
+  - [ ] SMBus protocol support
+  - [ ] Clock stretching support
+  - [ ] Multi-master support
 
-- [ ] **I2C Support**
-  - [ ] I2C master implementation
-  - [ ] `Wire` library Arduino-style interface
-  - [ ] Device scanning and detection
-  - [ ] Multi-device support
+- [ ] **Advanced SPI**
+  - [ ] Full-duplex simultaneous read/write
+  - [ ] SPI slave mode support
+  - [ ] DMA transfers for high-speed data
+  - [ ] Dual/Quad SPI support
 
-- [ ] **SPI Support**
-  - [ ] SPI master implementation
-  - [ ] Arduino-style SPI interface
-  - [ ] Multiple chip select support
-  - [ ] Configurable SPI modes
+- [ ] **Advanced Serial**
+  - [ ] Hardware flow control (RTS/CTS)
+  - [ ] RS-485 support
+  - [ ] Serial port enumeration
+
+### Additional Protocols
+- [ ] **One-Wire Protocol**
+  - [ ] DS18B20 temperature sensor support
+  - [ ] Arduino OneWire library compatibility
+  - [ ] Device enumeration
+
+- [ ] **CAN Bus Support**
+  - [ ] SocketCAN integration
+  - [ ] CAN message filtering
+  - [ ] Arduino-style CAN API
 
 ### Development Tools
-- [ ] **GPIO Monitoring Tools**
-  - [ ] Real-time pin state monitoring
-  - [ ] GPIO debugging utilities
-  - [ ] Pin conflict detection
-  - [ ] Performance profiling tools
+- [ ] **VS Code Extension**
+  - [ ] GPIO pin monitoring view
+  - [ ] Real-time state visualization
+  - [ ] Interactive pin configuration
+  - [ ] Code snippets and templates
+
+- [ ] **Web-Based Monitor**
+  - [ ] REST API for GPIO control
+  - [ ] WebSocket real-time updates
+  - [ ] Browser-based dashboard
+  - [ ] Mobile-responsive design
 
 ---
 
@@ -249,12 +305,23 @@ This document tracks the development roadmap for PiPin++, a modern C++ GPIO libr
 - ✅ Hardware tested and validated on Raspberry Pi
 - ✅ Pin validation and error handling implemented
 
-### v0.3.0 Success Criteria
-- [ ] Interrupt support with callback functions
-- [ ] PWM support with analogWrite() function
-- [ ] millis() and micros() timing functions
-- [ ] Unit testing framework with >80% coverage
-- [ ] Continuous integration pipeline
+### v0.3.0 Success Criteria ✅ **ACHIEVED!**
+- ✅ Interrupt support with callback functions
+- ✅ PWM support with analogWrite() function
+- ✅ millis() and micros() timing functions
+- ✅ Unit testing framework with >80% coverage (40 tests)
+- ✅ Continuous integration pipeline with CodeQL
+- ✅ 9 comprehensive examples
+- ✅ Modern CMake packaging
+
+### v0.4.0 Success Criteria
+- [ ] I2C master support with Wire API
+- [ ] SPI master support with SPI API
+- [ ] UART support with Serial API
+- [ ] Hardware PWM support
+- [ ] At least 2 protocol examples
+- [ ] Performance benchmarking results
+- [ ] Debian package (.deb)
 
 ### v1.0.0 Success Criteria
 - [ ] Full Arduino digital I/O API compatibility
