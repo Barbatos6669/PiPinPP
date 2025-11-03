@@ -18,6 +18,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Build options
+option(BUILD_SHARED_LIBS "Build shared libraries instead of static" OFF)
 option(BUILD_TESTS "Build test executables" ON)
 option(BUILD_EXAMPLES "Build example programs" ON)
 option(PIPINPP_ENABLE_LOGGING "Enable logging output for debugging" OFF)
@@ -62,11 +63,14 @@ set(PIPINPP_SOURCES
     src/ArduinoCompat.cpp
 )
 
-# Create the library
-add_library(pipinpp STATIC ${PIPINPP_SOURCES})
+# Create the library (STATIC or SHARED based on BUILD_SHARED_LIBS)
+add_library(pipinpp ${PIPINPP_SOURCES})
+
+# Create an alias for better namespacing
+add_library(PiPinPP::pipinpp ALIAS pipinpp)
 
 # Link libraries
-target_link_libraries(pipinpp ${GPIOD_LIBRARIES})
+target_link_libraries(pipinpp PUBLIC ${GPIOD_LIBRARIES})
 
 # Include directories with proper generator expressions for build/install
 target_include_directories(pipinpp PUBLIC 
@@ -149,11 +153,14 @@ endif()
 
 # Installation
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
-# Install library
+# Install library and export targets
 install(TARGETS pipinpp
+    EXPORT PiPinPPTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
@@ -163,7 +170,35 @@ install(DIRECTORY include/
     FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
 )
 
-# Create and install pkg-config file
+# Export targets for use by other CMake projects
+install(EXPORT PiPinPPTargets
+    FILE PiPinPPTargets.cmake
+    NAMESPACE PiPinPP::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PiPinPP
+)
+
+# Generate the config file that includes the exports
+configure_package_config_file(
+    ${CMAKE_SOURCE_DIR}/cmake/PiPinPPConfig.cmake.in
+    ${CMAKE_BINARY_DIR}/PiPinPPConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PiPinPP
+)
+
+# Generate the version file for the config file
+write_basic_package_version_file(
+    ${CMAKE_BINARY_DIR}/PiPinPPConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+# Install the config and version files
+install(FILES
+    ${CMAKE_BINARY_DIR}/PiPinPPConfig.cmake
+    ${CMAKE_BINARY_DIR}/PiPinPPConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/PiPinPP
+)
+
+# Create and install pkg-config file (for backwards compatibility)
 configure_file(
     ${CMAKE_SOURCE_DIR}/cmake/pipinpp.pc.in
     ${CMAKE_BINARY_DIR}/pipinpp.pc
