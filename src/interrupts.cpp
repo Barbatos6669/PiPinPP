@@ -177,7 +177,8 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     } else {
         // Wake up the monitor thread to reconfigure poll
         char wake = '1';
-        write(wakeup_pipe_[1], &wake, 1);
+        ssize_t result = write(wakeup_pipe_[1], &wake, 1);
+        (void)result; // Intentionally ignore - wakeup is best-effort
     }
 }
 
@@ -197,7 +198,8 @@ bool InterruptManager::detachInterrupt(int pin) {
     // Wake up the monitor thread to reconfigure poll
     if (running_) {
         char wake = '1';
-        write(wakeup_pipe_[1], &wake, 1);
+        ssize_t result = write(wakeup_pipe_[1], &wake, 1);
+        (void)result; // Intentionally ignore - wakeup is best-effort
     }
     
     return true;
@@ -237,7 +239,8 @@ void InterruptManager::stopMonitoring() {
     
     // Wake up the monitor thread
     char wake = '1';
-    write(wakeup_pipe_[1], &wake, 1);
+    ssize_t result = write(wakeup_pipe_[1], &wake, 1);
+    (void)result; // Intentionally ignore - wakeup is best-effort
     
     // Wait for thread to finish
     if (monitor_thread_.joinable()) {
@@ -285,7 +288,8 @@ void InterruptManager::monitorThread() {
             
             // Clear wakeup pipe
             char buf[16];
-            read(wakeup_pipe_[0], buf, sizeof(buf));
+            ssize_t bytes_read = read(wakeup_pipe_[0], buf, sizeof(buf));
+            (void)bytes_read; // Intentionally ignore - just clearing the pipe
             continue;
         }
         
@@ -307,7 +311,8 @@ void InterruptManager::monitorThread() {
         // Check wakeup pipe first
         if (poll_fds[0].revents & POLLIN) {
             char buf[16];
-            read(wakeup_pipe_[0], buf, sizeof(buf));
+            ssize_t bytes_read = read(wakeup_pipe_[0], buf, sizeof(buf));
+            (void)bytes_read; // Intentionally ignore - just clearing the pipe
             // Reconfigure poll on next iteration
             continue;
         }
