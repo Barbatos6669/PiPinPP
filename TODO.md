@@ -77,15 +77,18 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ## Hard
 
-- [ ] Implement interrupts API [hard]
+- ✅ Implement interrupts API [hard]
   - `attachInterrupt(pin, mode, callback)` and `detachInterrupt(pin)`
   - Support RISING/FALLING/CHANGE via libgpiod events
   - Internal polling/epoll thread with safe shutdown
   - Example + documentation
+  - Completed in v0.3.7
 
-- [ ] Add PWM (analogWrite) [hard]
-  - Software PWM backend (configurable frequency/duty) first; document jitter
-  - LED fade example; roadmap to hardware PWM backend
+- ✅ Add PWM (analogWrite) [hard]
+  - Software PWM backend (configurable frequency/duty); jitter documented
+  - LED fade example with multiple demonstration patterns
+  - Roadmap to hardware PWM backend (future enhancement)
+  - Completed in v0.3.8
 
 - [ ] Namespace core API [hard]
   - Wrap Pin, enums, helpers in `pipinpp::`

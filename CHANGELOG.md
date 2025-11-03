@@ -5,9 +5,34 @@ All notable changes to PiPinPP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - v0.3.0 (In Development)
+## [Unreleased] - v0.3.0 🎉 **FEATURE COMPLETE!**
 
 ### Added
+- **Software PWM support** - Arduino-compatible analog output (v0.3.8)
+  - analogWrite(pin, value) function with 0-255 duty cycle range
+  - Configurable PWM frequency (default 490Hz, matches Arduino UNO)
+  - Per-pin dedicated threads for accurate pulse generation
+  - High-resolution timing with busy-wait for precision
+  - Multiple simultaneous PWM outputs supported
+  - Edge case optimization (0 = always LOW, 255 = always HIGH)
+  - Thread-safe duty cycle updates
+  - Automatic pin configuration and resource management
+  - LED fade example with 4 demonstration patterns (231 lines)
+  - Comprehensive PWM API documentation
+  - Limitations documented: timing jitter, CPU usage, not for servos
+
+- **GPIO interrupt support** - Edge detection with callbacks (v0.3.7)
+  - attachInterrupt(pin, callback, mode) and detachInterrupt(pin) functions
+  - Interrupt modes: RISING, FALLING, CHANGE (Arduino-compatible)
+  - Thread-safe interrupt handling with background monitoring thread
+  - Efficient poll()-based event monitoring for multiple pins
+  - Uses libgpiod v2 edge event API (gpiod_edge_event_buffer)
+  - Exception-safe callback invocation with error logging
+  - Automatic resource cleanup and safe shutdown
+  - Wakeup pipe for dynamic interrupt registration/unregistration
+  - Button interrupt example with software debouncing (135 lines)
+  - Complete interrupt API documentation
+
 - **Modern CMake packaging** - Professional library consumption support (v0.3.6)
   - BUILD_SHARED_LIBS option for building shared (.so) or static (.a) libraries
   - PiPinPP::pipinpp namespace alias for modern CMake target naming
