@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **Custom exception classes** - Type-safe error handling (v0.3.2)
+  - `PinError` - Base exception class for all GPIO errors
+  - `InvalidPinError` - Thrown for invalid pin numbers or configurations
+  - `GpioAccessError` - Thrown for hardware access failures (permissions, device not found, etc.)
+  - All exceptions inherit from `std::runtime_error` through `PinError`
+  - Contextual error messages with pin numbers and device names
+  - Updated all library functions to throw appropriate custom exceptions
+  - Comprehensive test suite (`test_exceptions.cpp`) with 6 test scenarios
+  - Complete exception handling guide in API reference with best practices
+  - Fixed thread safety test to respect valid pin range (0-27)
+
 - **Arduino-style timing functions** - Complete timing API (v0.3.1)
   - `millis()` - Returns milliseconds since program start using monotonic clock
   - `micros()` - Returns microseconds since program start for precision timing

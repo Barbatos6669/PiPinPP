@@ -51,6 +51,7 @@
 ### Next Milestones (v0.3.0) - In Progress
 
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, and `delayMicroseconds()` for precise timing
+- ✅ **Custom exceptions**: Type-safe error handling with `InvalidPinError` and `GpioAccessError`
 - [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
 - [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
 - [ ] **Testing framework**: Comprehensive unit tests and continuous integration

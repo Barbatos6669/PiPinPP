@@ -22,6 +22,7 @@
 
 #include "pin.hpp"
 #include "log.hpp"
+#include "exceptions.hpp"
 #include <stdexcept>
 #include <gpiod.h>
 #include <iostream>
@@ -31,13 +32,22 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
 {
     validatePinNumber(pin);
     
-    // Open GPIO chip (v2 API)
-    chip = gpiod_chip_open(("/dev/" + chipname).c_str()); 
+    // Open GPIO chip
+    chip = gpiod_chip_open(("/dev/" + chipname).c_str());
+    if (!chip) {
+        throw GpioAccessError("/dev/" + chipname, "Failed to open GPIO chip. Check permissions and device existence.");
+    }
 
-    // Error handling for chip opening
-    if (!chip) 
-    {
-        throw std::runtime_error("Failed to open GPIO chip: " + chipname);
+    // Validate pin number against hardware (v2 API)
+    gpiod_chip_info* info = gpiod_chip_get_info(chip);
+    if (info) {
+        size_t num_lines = gpiod_chip_info_get_num_lines(info);
+        if (static_cast<size_t>(pinNumber) >= num_lines) {
+            gpiod_chip_info_free(info);
+            gpiod_chip_close(chip);
+            throw InvalidPinError(pinNumber, "Pin number exceeds available GPIO lines (" + std::to_string(num_lines) + ")");
+        }
+        gpiod_chip_info_free(info);
     }
 
     // Configure line settings (v2 API)
@@ -45,7 +55,7 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
     if (!settings)
     {
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create line settings");
+        throw GpioAccessError("GPIO", "Failed to create line settings");
     }
 
     // Set direction
@@ -65,7 +75,7 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
     {
         gpiod_line_settings_free(settings);
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create line config");
+        throw GpioAccessError("GPIO", "Failed to create line config");
     }
 
     gpiod_line_config_add_line_settings(line_cfg, &pinNumber, 1, settings);
@@ -77,7 +87,7 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
         gpiod_line_config_free(line_cfg);
         gpiod_line_settings_free(settings);
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create request config");
+        throw GpioAccessError("GPIO", "Failed to create request config");
     }
     gpiod_request_config_set_consumer(req_cfg, "PiPinPP");
 
@@ -93,7 +103,8 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
     if (!request) 
     {
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to request GPIO line: " + std::to_string(pinNumber));
+        throw GpioAccessError("GPIO pin " + std::to_string(pinNumber), 
+                            "Failed to request GPIO line. Pin may be in use or unavailable.");
     }
 
     // Initialize GPIO pin here
@@ -115,7 +126,7 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     // Error handling for chip opening
     if (!chip) 
     {
-        throw std::runtime_error("Failed to open GPIO chip: " + chipname);
+        throw GpioAccessError("/dev/" + chipname, "Failed to open GPIO chip. Check permissions and device existence.");
     }
 
     // Configure line settings (v2 API)
@@ -123,7 +134,7 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     if (!settings)
     {
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create line settings");
+        throw GpioAccessError("GPIO", "Failed to create line settings");
     }
 
     // Set direction and bias based on mode
@@ -154,7 +165,7 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     {
         gpiod_line_settings_free(settings);
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create line config");
+        throw GpioAccessError("GPIO", "Failed to create line config");
     }
 
     gpiod_line_config_add_line_settings(line_cfg, &pinNumber, 1, settings);
@@ -166,7 +177,7 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
         gpiod_line_config_free(line_cfg);
         gpiod_line_settings_free(settings);
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to create request config");
+        throw GpioAccessError("GPIO", "Failed to create request config");
     }
     gpiod_request_config_set_consumer(req_cfg, "PiPinPP");
 
@@ -182,7 +193,8 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     if (!request) 
     {
         gpiod_chip_close(chip);
-        throw std::runtime_error("Failed to request GPIO line: " + std::to_string(pinNumber));
+        throw GpioAccessError("GPIO pin " + std::to_string(pinNumber), 
+                            "Failed to request GPIO line. Pin may be in use or unavailable.");
     }
 
     // Log initialization
@@ -249,8 +261,7 @@ void Pin::validatePinNumber(int pin)
     // Raspberry Pi GPIO pins: 0-27 are generally valid
     // Some pins have special functions, but we'll allow them for flexibility
     if (pin < 0 || pin > 27) {
-        throw std::invalid_argument("Invalid GPIO pin number: " + std::to_string(pin) + 
-                                   ". Valid range is 0-27 for Raspberry Pi.");
+        throw InvalidPinError(pin, "Valid range is 0-27 for Raspberry Pi");
     }
     
     // Warn about commonly reserved pins (but don't block them)

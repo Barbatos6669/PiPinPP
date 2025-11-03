@@ -35,11 +35,11 @@ int main()
     std::atomic<int> errors(0);
 
     // Create multiple threads that set pin modes concurrently
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 8; ++i) {
         threads.emplace_back([i, &errors]() {
             try {
                 // Each thread works on a different pin to avoid conflicts
-                int pin = 20 + i;
+                int pin = 20 + i;  // Pins 20-27 (8 threads, valid range 0-27)
                 pinMode(pin, OUTPUT);
                 pinMode(pin, INPUT);  // Change mode
                 pinMode(pin, INPUT_PULLUP);  // Change again

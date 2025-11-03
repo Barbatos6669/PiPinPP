@@ -21,6 +21,7 @@
  */
 
 #include "ArduinoCompat.hpp"
+#include "exceptions.hpp"
 #include "log.hpp"
 #include <unordered_map>
 #include <memory>
@@ -37,39 +38,35 @@ static std::mutex globalPinsMutex;
 void pinMode(int pin, int mode) 
 {
     std::lock_guard<std::mutex> lock(globalPinsMutex);
-    try {
-        // Remove existing pin if it exists
-        globalPins.erase(pin);
-        
-        // Create new pin with specified mode
-        if (mode == OUTPUT) {
-            globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
-        } else if (mode == INPUT_PULLUP) {
-            globalPins[pin] = std::make_unique<Pin>(pin, PinMode::INPUT_PULLUP);
-        } else {
-            globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::INPUT);
-        }
-        
-        PIPINPP_LOG_INFO("pinMode: Set pin " << pin << " to " 
-                         << ((mode == OUTPUT) ? "OUTPUT" : 
-                             (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : "INPUT"));
+    // Remove existing pin if it exists
+    globalPins.erase(pin);
+    
+    // Create new pin with specified mode
+    // Exceptions will propagate naturally (InvalidPinError, GpioAccessError)
+    if (mode == OUTPUT) {
+        globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
+    } else if (mode == INPUT_PULLUP) {
+        globalPins[pin] = std::make_unique<Pin>(pin, PinMode::INPUT_PULLUP);
+    } else {
+        globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::INPUT);
     }
-    catch (const std::exception& e) {
-        PIPINPP_LOG_ERROR("pinMode error for pin " << pin << ": " << e.what());
-    }
+    
+    PIPINPP_LOG_INFO("pinMode: Set pin " << pin << " to " 
+                     << ((mode == OUTPUT) ? "OUTPUT" : 
+                         (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : "INPUT"));
 }
 
 void digitalWrite(int pin, bool value) 
 {
     std::lock_guard<std::mutex> lock(globalPinsMutex);
     auto it = globalPins.find(pin);
-    if (it != globalPins.end()) {
-        bool success = it->second->write(value);
-        if (!success) {
-            PIPINPP_LOG_ERROR("digitalWrite failed for pin " << pin);
-        }
-    } else {
-        PIPINPP_LOG_ERROR("digitalWrite: Pin " << pin << " not initialized. Call pinMode() first.");
+    if (it == globalPins.end()) {
+        throw InvalidPinError(pin, "Pin not initialized. Call pinMode() first.");
+    }
+    
+    bool success = it->second->write(value);
+    if (!success) {
+        throw GpioAccessError("pin " + std::to_string(pin), "Failed to write to GPIO pin");
     }
 }
 
@@ -77,12 +74,11 @@ int digitalRead(int pin)
 {
     std::lock_guard<std::mutex> lock(globalPinsMutex);
     auto it = globalPins.find(pin);
-    if (it != globalPins.end()) {
-        return it->second->read();
-    } else {
-        PIPINPP_LOG_ERROR("digitalRead: Pin " << pin << " not initialized. Call pinMode() first.");
-        return -1;
+    if (it == globalPins.end()) {
+        throw InvalidPinError(pin, "Pin not initialized. Call pinMode() first.");
     }
+    
+    return it->second->read();
 }
 
 // Removed duplicate delay(unsigned long ms) implementation
@@ -165,4 +161,4 @@ void delayMicroseconds(unsigned int us)
 void delay(unsigned long ms) 
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-}
+}   

@@ -94,10 +94,15 @@ if(BUILD_TESTS)
     add_executable(test_timing tests/test_timing.cpp)
     target_link_libraries(test_timing pipinpp)
     
+    # Exception handling test executable
+    add_executable(test_exceptions tests/test_exceptions.cpp)
+    target_link_libraries(test_exceptions pipinpp)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME thread_safety_test COMMAND test_thread_safety)
     add_test(NAME timing_test COMMAND test_timing)
+    add_test(NAME exception_test COMMAND test_exceptions)
 endif()
 
 if(BUILD_EXAMPLES)

@@ -41,10 +41,11 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - All functions tested and verified accurate to ±1µs
   - Completed in v0.3.1
 
-- [ ] Custom exceptions [medium]
+- ✅ Custom exceptions [medium]
   - `PinError`, `InvalidPinError`, `GpioAccessError`
   - Replace generic throws and improve error messages
   - Document error model
+  - Completed in v0.3.2
 
 - [ ] GitHub Actions CI [medium]
   - Build Debug/Release, run tests
