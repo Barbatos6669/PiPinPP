@@ -79,6 +79,69 @@
 
 ---
 
+## Installation
+
+### Quick Install (Recommended)
+
+The easiest way to install PiPinPP on your Raspberry Pi:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh | sudo bash
+```
+
+Or download and inspect the script first:
+
+```bash
+wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh
+sudo bash install.sh
+```
+
+This will:
+- Install all dependencies (including libgpiod v2)
+- Build and install PiPinPP to `/usr/local`
+- Configure GPIO permissions
+- Add your user to the `gpio` group
+
+### Manual Installation
+
+**1. Install dependencies:**
+```bash
+sudo apt-get update
+sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
+```
+
+**2. Build and install:**
+```bash
+git clone https://github.com/Barbatos6669/PiPinPP.git
+cd PiPinPP
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+sudo make install
+sudo ldconfig
+```
+
+**3. Configure permissions (optional but recommended):**
+```bash
+sudo usermod -a -G gpio $USER
+# Log out and back in for this to take effect
+```
+
+### Using in Your Projects
+
+**With pkg-config:**
+```bash
+g++ main.cpp $(pkg-config --cflags --libs pipinpp) -o main
+```
+
+**With CMake:**
+```cmake
+find_package(PiPinPP REQUIRED)
+target_link_libraries(your_app PiPinPP::pipinpp)
+```
+
+---
+
 ## Contributing
 
 **We're just getting started and welcome your ideas, feedback, and contributions!**
