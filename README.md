@@ -10,11 +10,11 @@
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.0--dev-blue.svg)](https://github.com/Barbatos6669/PiPinPP)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.0)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
-[![libgpiod](https://img.shields.io/badge/libgpiod-1.6%2B-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
-[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-brightgreen)](ROADMAP.md)
+[![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
+[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.3.0-brightgreen)](ROADMAP.md)
 
 📍 **[Development Roadmap](ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
 
@@ -37,11 +37,11 @@
 
 ---
 
-## Roadmap
+## Features
 
-**v0.2.0 COMPLETE!** ✅ All major Arduino compatibility features implemented!
+**v0.3.0 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with advanced features!
 
-### ✅ Completed Features (v0.2.0)
+### ✅ All v0.3.0 Features
 
 - ✅ **Digital input/output**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
 - ✅ **Pin abstraction**: Simple, object-oriented pin management with RAII
@@ -50,18 +50,25 @@
 - ✅ **Complete examples**: LED control, button input, migration guide
 - ✅ **Comprehensive documentation**: Full API reference and hardware setup guides
 
-### ✅ v0.3.0 COMPLETE! 🎉
+### Core GPIO (v0.1.0-v0.2.0)
+- ✅ **Digital I/O**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
+- ✅ **Pin abstraction**: Object-oriented pin management with RAII
+- ✅ **Pull resistors**: Built-in `INPUT_PULLUP` and `INPUT_PULLDOWN` support
+- ✅ **Arduino API**: Easy transition from Arduino sketches
 
-- ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, and `delayMicroseconds()` for precise timing
-- ✅ **Custom exceptions**: Type-safe error handling with `InvalidPinError` and `GpioAccessError`
-- ✅ **GitHub Actions CI/CD**: Automated builds, tests, and security scanning on every push
-- ✅ **GoogleTest framework**: 40 comprehensive tests with professional reporting
-- ✅ **New examples**: 5 comprehensive examples (timing, exceptions, threads, interrupts, PWM)
-- ✅ **Modern CMake packaging**: find_package() support, namespace alias, and version checking
-- ✅ **Interrupt support**: Edge detection with callback functions (`attachInterrupt`, `detachInterrupt`)
-- ✅ **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
+### Advanced Features (v0.3.0)
+- ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
+- ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
+- ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
+- ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
 
-**All planned v0.3.0 features complete and ready for release!**
+### Quality & Testing (v0.3.0)
+- ✅ **GoogleTest framework**: 40 comprehensive automated tests
+- ✅ **GitHub Actions CI/CD**: Multi-platform builds, automated testing, CodeQL security analysis
+- ✅ **Modern CMake**: find_package() support, shared/static library options, pkg-config compatibility
+- ✅ **9 Examples**: Comprehensive demonstrations from basic to advanced usage
+
+**v0.3.0 is production-ready with 100% feature completion!**
 
 ### Longer-Term Goals (v0.4.0+)
 

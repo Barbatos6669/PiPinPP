@@ -1,9 +1,9 @@
 # PiPinPP API Reference
 
-**Version**: 0.2.0  
-**Date**: October 31, 2025
+**Version**: 0.3.0  
+**Date**: November 3, 2025
 
-Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with Arduino compatibility.
+Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino compatibility, interrupts, PWM, and professional tooling.
 
 ---
 
@@ -13,6 +13,8 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 2. [Core Pin Class](#core-pin-class)
 3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
    - [Digital I/O Functions](#digital-io-functions)
+   - [Interrupt Functions](#interrupt-functions)
+   - [PWM Functions](#pwm-functions)
    - [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
 4. [Examples](#examples)
@@ -212,6 +214,130 @@ int buttonState = digitalRead(18);
 if (buttonState == LOW) {
     // Button pressed (with pull-up)
 }
+```
+
+### Interrupt Functions
+
+#### `void attachInterrupt(int pin, InterruptCallback callback, InterruptMode mode)`
+Attach an interrupt handler to a GPIO pin for edge detection.
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27)
+- `callback`: Function to call when interrupt triggers (signature: `void callback()`)
+- `mode`: Interrupt trigger mode:
+  - `InterruptMode::RISING` - Trigger on LOW to HIGH transition
+  - `InterruptMode::FALLING` - Trigger on HIGH to LOW transition
+  - `InterruptMode::CHANGE` - Trigger on any state change (both edges)
+
+**Notes:**
+- Uses libgpiod v2 edge event API for hardware edge detection
+- Callbacks are invoked in a background monitoring thread
+- Multiple interrupts can be attached to different pins simultaneously
+- Pin is automatically configured for input with edge detection
+- Thread-safe: callbacks are protected by mutex
+
+**Example:**
+```cpp
+#include "interrupts.hpp"
+#include <atomic>
+
+std::atomic<int> buttonPresses{0};
+
+void buttonPressed() {
+    buttonPresses++;
+    std::cout << "Button pressed! Count: " << buttonPresses << std::endl;
+}
+
+int main() {
+    // Attach interrupt to GPIO 18, trigger on falling edge (button press)
+    attachInterrupt(18, buttonPressed, InterruptMode::FALLING);
+    
+    // Program continues, interrupts handled in background
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    
+    return 0;
+}
+```
+
+#### `void detachInterrupt(int pin)`
+Remove interrupt handler from a GPIO pin.
+
+**Parameters:**
+- `pin`: GPIO pin number to detach
+
+**Notes:**
+- Stops monitoring the specified pin for edge events
+- Safe to call even if no interrupt is attached
+- Automatically called for all pins on program exit
+
+**Example:**
+```cpp
+attachInterrupt(18, buttonCallback, InterruptMode::FALLING);
+// ... later ...
+detachInterrupt(18);  // Stop monitoring pin 18
+```
+
+### PWM Functions
+
+#### `void analogWrite(int pin, int value)`
+Generate PWM output on a GPIO pin (Arduino-compatible).
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27)
+- `value`: Duty cycle (0-255)
+  - `0` = Always LOW (0% duty cycle, LED off)
+  - `127` = 50% duty cycle (half brightness)
+  - `255` = Always HIGH (100% duty cycle, LED fully on)
+
+**Notes:**
+- Software PWM implementation using dedicated per-pin threads
+- Default frequency: 490Hz (matches Arduino UNO)
+- Pin is automatically configured as OUTPUT
+- Multiple pins can have independent PWM outputs
+- Timing has jitter (not suitable for precise applications like servos)
+- CPU usage increases with number of active PWM pins
+- Edge cases optimized: 0 and 255 avoid PWM overhead
+
+**Example:**
+```cpp
+#include "pwm.hpp"
+
+int main() {
+    // Fade LED from off to full brightness
+    for (int brightness = 0; brightness <= 255; brightness++) {
+        analogWrite(17, brightness);
+        delay(10);  // Smooth transition
+    }
+    
+    // Fade back to off
+    for (int brightness = 255; brightness >= 0; brightness--) {
+        analogWrite(17, brightness);
+        delay(10);
+    }
+    
+    return 0;
+}
+```
+
+#### `void stopPWM(int pin)`
+Stop PWM output on a pin and clean up resources.
+
+**Parameters:**
+- `pin`: GPIO pin number
+
+**Notes:**
+- Stops the PWM thread for the specified pin
+- Pin remains in its last state (HIGH or LOW)
+- Automatically called on program exit for all active PWM pins
+- Safe to call multiple times
+
+**Example:**
+```cpp
+analogWrite(17, 128);  // 50% brightness
+delay(5000);           // Run for 5 seconds
+stopPWM(17);           // Stop PWM, free resources
 ```
 
 ### Timing Functions
@@ -587,6 +713,158 @@ int main() {
     unsigned long pulseWidth = micros() - pulseStart;
     
     std::cout << "Pulse width: " << pulseWidth << " µs" << std::endl;
+    
+    return 0;
+}
+```
+
+### Button Interrupt with Debouncing
+```cpp
+#include "interrupts.hpp"
+#include "ArduinoCompat.hpp"
+#include <atomic>
+#include <csignal>
+
+std::atomic<bool> running{true};
+std::atomic<int> pressCount{0};
+unsigned long lastPress = 0;
+const unsigned long DEBOUNCE_MS = 200;
+
+void buttonInterrupt() {
+    unsigned long now = millis();
+    
+    // Software debouncing
+    if (now - lastPress > DEBOUNCE_MS) {
+        pressCount++;
+        lastPress = now;
+        std::cout << "Button pressed! Total: " << pressCount << std::endl;
+    }
+}
+
+void signalHandler(int signal) {
+    running = false;
+}
+
+int main() {
+    signal(SIGINT, signalHandler);
+    
+    // GPIO 18 with pull-up resistor, button to ground
+    pinMode(18, INPUT_PULLUP);
+    
+    // Attach interrupt on falling edge (button press)
+    attachInterrupt(18, buttonInterrupt, InterruptMode::FALLING);
+    
+    std::cout << "Press button on GPIO 18 (Ctrl+C to exit)" << std::endl;
+    
+    while (running) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    
+    detachInterrupt(18);
+    std::cout << "Total button presses: " << pressCount << std::endl;
+    
+    return 0;
+}
+```
+
+### LED Breathing Effect with PWM
+```cpp
+#include "pwm.hpp"
+#include "ArduinoCompat.hpp"
+#include <cmath>
+
+int main() {
+    const int LED_PIN = 17;
+    
+    std::cout << "LED Breathing Effect Demo" << std::endl;
+    
+    // Breathing pattern: smooth sine wave
+    for (int cycle = 0; cycle < 5; cycle++) {
+        for (int i = 0; i < 360; i++) {
+            // Calculate brightness using sine wave (0-255)
+            double radians = i * M_PI / 180.0;
+            int brightness = (int)((sin(radians) + 1.0) * 127.5);
+            
+            analogWrite(LED_PIN, brightness);
+            delayMicroseconds(5000);  // 5ms per step = ~1.8s per cycle
+        }
+    }
+    
+    // Fade out
+    for (int brightness = 255; brightness >= 0; brightness--) {
+        analogWrite(LED_PIN, brightness);
+        delay(5);
+    }
+    
+    stopPWM(LED_PIN);
+    std::cout << "Demo complete!" << std::endl;
+    
+    return 0;
+}
+```
+
+### Multiple PWM Outputs (RGB LED)
+```cpp
+#include "pwm.hpp"
+#include "ArduinoCompat.hpp"
+
+void setColor(int red, int green, int blue) {
+    analogWrite(17, red);
+    analogWrite(27, green);
+    analogWrite(22, blue);
+}
+
+int main() {
+    std::cout << "RGB LED Color Demo" << std::endl;
+    
+    // Red
+    setColor(255, 0, 0);
+    delay(1000);
+    
+    // Green
+    setColor(0, 255, 0);
+    delay(1000);
+    
+    // Blue
+    setColor(0, 0, 255);
+    delay(1000);
+    
+    // Yellow (red + green)
+    setColor(255, 255, 0);
+    delay(1000);
+    
+    // Magenta (red + blue)
+    setColor(255, 0, 255);
+    delay(1000);
+    
+    // Cyan (green + blue)
+    setColor(0, 255, 255);
+    delay(1000);
+    
+    // White (all colors)
+    setColor(255, 255, 255);
+    delay(1000);
+    
+    // Smooth rainbow cycle
+    for (int hue = 0; hue < 360; hue += 2) {
+        // HSV to RGB conversion for smooth color transitions
+        float h = hue / 60.0f;
+        float x = (1 - fabs(fmod(h, 2) - 1));
+        
+        int r, g, b;
+        if (h < 1) { r = 255; g = x * 255; b = 0; }
+        else if (h < 2) { r = x * 255; g = 255; b = 0; }
+        else if (h < 3) { r = 0; g = 255; b = x * 255; }
+        else if (h < 4) { r = 0; g = x * 255; b = 255; }
+        else if (h < 5) { r = x * 255; g = 0; b = 255; }
+        else { r = 255; g = 0; b = x * 255; }
+        
+        setColor(r, g, b);
+        delay(20);
+    }
+    
+    // Off
+    setColor(0, 0, 0);
     
     return 0;
 }

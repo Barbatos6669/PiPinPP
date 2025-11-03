@@ -5,7 +5,11 @@ All notable changes to PiPinPP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - v0.3.0 🎉 **FEATURE COMPLETE!**
+## [0.3.0] - 2025-11-03 🎉
+
+**Complete Arduino-compatible GPIO library with advanced features!**
+
+This major release brings PiPinPP to production-ready status with 8 major feature additions including interrupt support, PWM, comprehensive testing framework, and professional tooling.
 
 ### Added
 - **Software PWM support** - Arduino-compatible analog output (v0.3.8)
