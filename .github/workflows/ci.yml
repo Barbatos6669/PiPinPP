@@ -101,27 +101,29 @@ jobs:
       # It's slower but tests the actual Raspberry Pi architecture!
       - name: Build and test (ARM64)
         if: matrix.arch == 'aarch64'
-        uses: docker://arm64v8/ubuntu:24.04
-        with:
-          args: >
+        run: |
+          docker run --rm --platform linux/arm64 \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            arm64v8/ubuntu:24.04 \
             bash -c "
-            apt-get update &&
-            apt-get install -y build-essential cmake libgpiod-dev pkg-config gpiod &&
-            cd /github/workspace &&
-            cmake -B build
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-              -DPIPINPP_ENABLE_LOGGING=OFF
-              -DPIPINPP_WARNINGS_AS_ERRORS=ON
-              -DBUILD_TESTS=ON
-              -DBUILD_EXAMPLES=ON &&
-            cmake --build build --config ${{ matrix.build_type }} -j\$(nproc) &&
-            cd build && ctest --output-on-failure --verbose || true
+              apt-get update && 
+              apt-get install -y build-essential cmake libgpiod-dev pkg-config gpiod && 
+              cmake -B build \
+                -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                -DPIPINPP_ENABLE_LOGGING=OFF \
+                -DPIPINPP_WARNINGS_AS_ERRORS=ON \
+                -DBUILD_TESTS=ON \
+                -DBUILD_EXAMPLES=ON && 
+              cmake --build build --config ${{ matrix.build_type }} -j\$(nproc) && 
+              cd build && ctest --output-on-failure --verbose || true
             "
         # EXPLANATION:
-        # - docker://arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
+        # - docker run --platform linux/arm64 = Force ARM64 architecture
+        # - -v mounts your code into the container at /workspace
+        # - -w sets working directory to /workspace
+        # - arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
         # - QEMU translates ARM instructions to x86_64 on the fly
-        # - /github/workspace = where GitHub mounts your code
-        # - All commands run inside the ARM64 container
         # - This is THE SAME as running on a real Raspberry Pi!
       
       # Step 6: Test pkg-config integration (x86_64 only for now)
