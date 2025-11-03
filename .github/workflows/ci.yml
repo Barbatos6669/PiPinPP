@@ -58,27 +58,54 @@ jobs:
         with:
           platforms: linux/arm64
       
-      # Step 3: Install dependencies (x86_64 native)
-      # This is like what you did manually with apt-get
-      # We need the same tools here that developers need on their Pi
-      - name: Install dependencies (x86_64)
+      # Step 3: Install base dependencies (x86_64 native)
+      - name: Install base dependencies (x86_64)
         if: matrix.arch == 'x86_64'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
             cmake \
-            libgpiod-dev \
             pkg-config \
-            gpiod
-        # Why these packages?
-        # - build-essential: g++, make, and basic build tools
-        # - cmake: our build system
-        # - libgpiod-dev: GPIO library headers and development files
-        # - pkg-config: helps other projects find our library
-        # - gpiod: command-line GPIO tools
+            git \
+            autoconf \
+            autoconf-archive \
+            automake \
+            libtool \
+            python3 \
+            python3-setuptools
+        # Note: We DON'T install libgpiod-dev from apt because it's v1.x
+        # We'll build v2.x from source in the next step
       
-      # Step 4: Build and test on x86_64 (native)
+      # Step 4: Build and install libgpiod v2 from source (x86_64)
+      # Ubuntu repos only have v1.x, but our code uses v2 API
+      # This step downloads, builds, and installs libgpiod 2.2.1
+      - name: Build libgpiod v2 (x86_64)
+        if: matrix.arch == 'x86_64'
+        run: |
+          # Clone libgpiod v2.2.1 (the version your Pi has)
+          git clone --depth 1 --branch v2.2.1 \
+            https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git \
+            /tmp/libgpiod
+          
+          cd /tmp/libgpiod
+          
+          # Build using autotools (v2.2.1 doesn't use meson yet)
+          ./autogen.sh --enable-tools=yes --prefix=/usr
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+          
+          # Verify installation
+          pkg-config --modversion libgpiod
+          echo "✓ libgpiod v2 installed successfully"
+        # Why this matters:
+        # - Your code was written for libgpiod v2 API
+        # - GitHub's Ubuntu images only have v1 in repos
+        # - Building from source ensures we get v2.2.1
+        # - This matches what's on your actual Raspberry Pi!
+      
+      # Step 5: Build and test PiPinPP on x86_64 (native)
       - name: Build and test (x86_64)
         if: matrix.arch == 'x86_64'
         run: |
@@ -96,7 +123,7 @@ jobs:
           # Run tests (continue even if they fail - no GPIO hardware)
           cd build && ctest --output-on-failure --verbose || true
       
-      # Step 5: Build and test on ARM64 (emulated via Docker)
+      # Step 6: Build and test on ARM64 (emulated via Docker)
       # This runs in an ARM64 Ubuntu container using QEMU emulation
       # It's slower but tests the actual Raspberry Pi architecture!
       - name: Build and test (ARM64)
@@ -107,15 +134,27 @@ jobs:
             -w /workspace \
             arm64v8/ubuntu:24.04 \
             bash -c "
-              apt-get update && 
-              apt-get install -y build-essential cmake libgpiod-dev pkg-config gpiod && 
+              set -e
+              apt-get update
+              apt-get install -y build-essential cmake pkg-config git autoconf autoconf-archive automake libtool python3 python3-setuptools
+              
+              # Build libgpiod v2.2.1 from source (same as x86_64 step)
+              git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /tmp/libgpiod
+              cd /tmp/libgpiod
+              ./autogen.sh --enable-tools=yes --prefix=/usr
+              make -j\$(nproc)
+              make install
+              ldconfig
+              
+              # Now build PiPinPP
+              cd /workspace
               cmake -B build \
                 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
                 -DPIPINPP_ENABLE_LOGGING=OFF \
                 -DPIPINPP_WARNINGS_AS_ERRORS=ON \
                 -DBUILD_TESTS=ON \
-                -DBUILD_EXAMPLES=ON && 
-              cmake --build build --config ${{ matrix.build_type }} -j\$(nproc) && 
+                -DBUILD_EXAMPLES=ON
+              cmake --build build --config ${{ matrix.build_type }} -j\$(nproc)
               cd build && ctest --output-on-failure --verbose || true
             "
         # EXPLANATION:
@@ -123,10 +162,11 @@ jobs:
         # - -v mounts your code into the container at /workspace
         # - -w sets working directory to /workspace
         # - arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
+        # - We build libgpiod v2 from source (just like x86_64)
         # - QEMU translates ARM instructions to x86_64 on the fly
         # - This is THE SAME as running on a real Raspberry Pi!
       
-      # Step 6: Test pkg-config integration (x86_64 only for now)
+      # Step 7: Test pkg-config integration (x86_64 only for now)
       # This verifies that other projects can find our library
       - name: Test pkg-config
         if: matrix.arch == 'x86_64'
@@ -151,7 +191,7 @@ jobs:
         # This test is important because many C++ projects use pkg-config
         # to find and link against libraries
       
-      # Step 7: Build a test project using pkg-config (x86_64 only)
+      # Step 8: Build a test project using pkg-config (x86_64 only)
       # This simulates how a real user would use our library
       - name: Test external project integration
         if: matrix.arch == 'x86_64'
