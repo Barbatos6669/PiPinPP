@@ -226,10 +226,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Install dependencies
+      - name: Install base dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake libgpiod-dev
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            autoconf \
+            autoconf-archive \
+            automake \
+            libtool \
+            linux-headers-generic \
+            libkmod-dev \
+            libudev-dev
+      
+      - name: Build libgpiod v2 from source
+        run: |
+          cd /tmp
+          git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git
+          cd libgpiod
+          ./autogen.sh --enable-tools=yes --disable-bindings-cxx --disable-bindings-python --prefix=/usr/local
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
       
       # Initialize CodeQL - this sets up the C++ scanner
       - name: Initialize CodeQL
