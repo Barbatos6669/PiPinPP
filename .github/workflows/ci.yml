@@ -162,14 +162,19 @@ jobs:
           
           echo "✓ External project can compile and link against PiPinPP"
 
-  # Job 2: Hardware testing on actual Raspberry Pi
+  # Job 2: Hardware testing on actual Raspberry Pi (OPTIONAL)
+  # This job will be skipped if no self-hosted runner is available
+  # To enable: Follow docs/SELF_HOSTED_RUNNER.md to set up your Pi
   hardware-test:
-    name: Hardware Test (Raspberry Pi)
+    name: Hardware Test (Raspberry Pi) [Optional]
     runs-on: self-hosted
     
     # Only run hardware tests on main branch or when manually triggered
     # This prevents every PR from running on your Pi
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    if: false  # Disabled by default - change to 'github.ref == refs/heads/main' when runner is ready
+    
+    # UNCOMMENT THIS LINE AFTER SETTING UP PI RUNNER:
+    # if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     
     steps:
       - name: Checkout code
