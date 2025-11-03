@@ -67,8 +67,11 @@ add_library(pipinpp STATIC ${PIPINPP_SOURCES})
 
 # Link libraries
 target_link_libraries(pipinpp ${GPIOD_LIBRARIES})
+
+# Include directories with proper generator expressions for build/install
 target_include_directories(pipinpp PUBLIC 
-    ${CMAKE_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
     ${GPIOD_INCLUDE_DIRS}
 )
 
@@ -76,7 +79,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp"
 )
 
 if(BUILD_TESTS)

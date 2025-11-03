@@ -127,8 +127,10 @@ jobs:
           # Build everything
           cmake --build build --config ${{ matrix.build_type }} -j$(nproc)
           
-          # Run tests (continue even if they fail - no GPIO hardware)
-          cd build && ctest --output-on-failure --verbose || true
+          # Run tests (excluding hardware-dependent tests)
+          # basic_test and thread_safety_test require /dev/gpiochip0 which doesn't exist in CI
+          # We still run timing_test and exception_test which don't need hardware
+          cd build && ctest --output-on-failure --verbose -E "basic_test|thread_safety_test" || true
       
       # Step 6: Build and test on ARM64 (emulated via Docker)
       # This runs in an ARM64 Ubuntu container using QEMU emulation
@@ -162,7 +164,7 @@ jobs:
                 -DBUILD_TESTS=ON \
                 -DBUILD_EXAMPLES=ON
               cmake --build build --config ${{ matrix.build_type }} -j\$(nproc)
-              cd build && ctest --output-on-failure --verbose || true
+              cd build && ctest --output-on-failure --verbose -E 'basic_test|thread_safety_test' || true
             "
         # EXPLANATION:
         # - docker run --platform linux/arm64 = Force ARM64 architecture
