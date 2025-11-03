@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **Arduino-style timing functions** - Complete timing API (v0.3.1)
+  - `millis()` - Returns milliseconds since program start using monotonic clock
+  - `micros()` - Returns microseconds since program start for precision timing
+  - `delay(ms)` - Sleep for specified milliseconds (CPU-efficient)
+  - `delayMicroseconds(us)` - High-precision microsecond delays (busy-wait)
+  - All functions use `std::chrono::steady_clock` for monotonic, reliable timing
+  - Comprehensive test suite (`test_timing.cpp`) with accuracy validation
+  - Verified accurate to ±1µs for microsecond operations
+  - Complete documentation in API reference with examples
+
 - **Thread-safety for ArduinoCompat** - Concurrent access protection
   - Mutex protection for globalPins map
   - Thread-safe `pinMode()`, `digitalWrite()`, `digitalRead()`

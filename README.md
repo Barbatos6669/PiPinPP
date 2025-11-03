@@ -48,11 +48,11 @@
 - ✅ **Complete examples**: LED control, button input, migration guide
 - ✅ **Comprehensive documentation**: Full API reference and hardware setup guides
 
-### Next Milestones (v0.3.0)
+### Next Milestones (v0.3.0) - In Progress
 
+- ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, and `delayMicroseconds()` for precise timing
 - [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
 - [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
-- [ ] **Timing functions**: `millis()` and `micros()` for precise timing
 - [ ] **Testing framework**: Comprehensive unit tests and continuous integration
 - [ ] **Performance optimization**: Fast GPIO operations and reduced overhead
 

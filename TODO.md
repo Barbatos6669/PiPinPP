@@ -34,9 +34,12 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ## Medium
 
-- [ ] Timing functions [medium]
-  - `millis()`, `micros()`, `delayMicroseconds()` using `std::chrono::steady_clock`
-  - Unit tests for monotonicity and bounds
+- ✅ Timing functions [medium]
+  - Implemented `millis()`, `micros()`, `delay()`, and `delayMicroseconds()`
+  - Using `std::chrono::steady_clock` for monotonic timing
+  - Comprehensive unit tests for accuracy, monotonicity and bounds
+  - All functions tested and verified accurate to ±1µs
+  - Completed in v0.3.1
 
 - [ ] Custom exceptions [medium]
   - `PinError`, `InvalidPinError`, `GpioAccessError`

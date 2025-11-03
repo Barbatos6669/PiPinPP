@@ -12,6 +12,9 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 1. [Quick Start](#quick-start)
 2. [Core Pin Class](#core-pin-class)
 3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
+   - [Digital I/O Functions](#digital-io-functions)
+   - [Timing Functions](#timing-functions)
+   - [Math Functions](#math-functions)
 4. [Examples](#examples)
 5. [Error Handling](#error-handling)
 6. [Hardware Notes](#hardware-notes)
@@ -213,16 +216,76 @@ if (buttonState == LOW) {
 
 ### Timing Functions
 
+#### `unsigned long millis()`
+Returns milliseconds since program start.
+
+**Returns:**
+- Milliseconds elapsed since program started
+
+**Notes:**
+- Uses monotonic clock (won't jump if system time changes)
+- Resets to 0 at program start
+- Overflows after ~49 days
+
+**Example:**
+```cpp
+unsigned long startTime = millis();
+// ... do something ...
+unsigned long elapsed = millis() - startTime;
+std::cout << "Operation took " << elapsed << " ms" << std::endl;
+```
+
+#### `unsigned long micros()`
+Returns microseconds since program start.
+
+**Returns:**
+- Microseconds elapsed since program started
+
+**Notes:**
+- Uses monotonic clock for precision timing
+- Resets to 0 at program start
+- Overflows after ~71 minutes
+
+**Example:**
+```cpp
+unsigned long start = micros();
+// ... time-critical code ...
+unsigned long duration = micros() - start;
+std::cout << "Execution time: " << duration << " µs" << std::endl;
+```
+
 #### `void delay(unsigned long ms)`
-Delay execution (Arduino-style).
+Delay execution in milliseconds (Arduino-style).
 
 **Parameters:**
 - `ms`: Delay time in milliseconds
+
+**Notes:**
+- Yields CPU during delay (efficient)
+- Not suitable for microsecond precision
 
 **Example:**
 ```cpp
 digitalWrite(17, HIGH);
 delay(1000);              // Wait 1 second
+digitalWrite(17, LOW);
+```
+
+#### `void delayMicroseconds(unsigned int us)`
+Delay execution in microseconds with high precision.
+
+**Parameters:**
+- `us`: Delay time in microseconds
+
+**Notes:**
+- Uses busy-waiting for precision (consumes CPU)
+- Accurate to within 1-2 microseconds
+- Use `delay()` for millisecond delays (more efficient)
+
+**Example:**
+```cpp
+digitalWrite(17, HIGH);
+delayMicroseconds(100);   // Wait 100 microseconds
 digitalWrite(17, LOW);
 ```
 
@@ -333,6 +396,44 @@ int main() {
         
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    return 0;
+}
+```
+
+### Timing Functions Usage
+```cpp
+#include "ArduinoCompat.hpp"
+#include <iostream>
+
+int main() {
+    pinMode(17, OUTPUT);
+    
+    std::cout << "Starting timing demo..." << std::endl;
+    unsigned long startTime = millis();
+    
+    for (int i = 0; i < 5; i++) {
+        // Blink LED with precise timing
+        digitalWrite(17, HIGH);
+        delay(500);              // 500ms on
+        digitalWrite(17, LOW);
+        delay(500);              // 500ms off
+        
+        std::cout << "Blink " << (i + 1) 
+                  << " at " << millis() << " ms" << std::endl;
+    }
+    
+    unsigned long totalTime = millis() - startTime;
+    std::cout << "Total time: " << totalTime << " ms" << std::endl;
+    
+    // Microsecond precision for fast signals
+    unsigned long pulseStart = micros();
+    digitalWrite(17, HIGH);
+    delayMicroseconds(100);     // 100µs pulse
+    digitalWrite(17, LOW);
+    unsigned long pulseWidth = micros() - pulseStart;
+    
+    std::cout << "Pulse width: " << pulseWidth << " µs" << std::endl;
+    
     return 0;
 }
 ```

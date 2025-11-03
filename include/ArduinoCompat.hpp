@@ -74,7 +74,7 @@ void delay(unsigned long ms);
 
 /* ------------------------------------------------------------ */
 /*                        MATH FUNCTIONS                       */
-/* ------------------------------------------------------------ */
+/* ------------------------------------------------------------*/
 
 // Arduino-specific math functions (functions not available in standard library)
 /**
@@ -116,3 +116,55 @@ float constrain(float x, float min, float max);
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 
 // Note: For abs() function, use std::abs() from <cmath> or <cstdlib> instead
+
+/* ------------------------------------------------------------ */
+/*                        TIMING FUNCTIONS                       */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Returns milliseconds since program start (Arduino-style function)
+ * 
+ * Uses monotonic clock that won't jump if system time changes.
+ * Resets to 0 at program start. Overflows after ~49 days.
+ * 
+ * @return unsigned long Milliseconds elapsed since program started
+ * 
+ * @example
+ * unsigned long startTime = millis();
+ * // ... do work ...
+ * unsigned long elapsed = millis() - startTime;
+ */
+unsigned long millis();
+
+/**
+ * @brief Returns microseconds since program start (Arduino-style function)
+ * 
+ * High-precision timing using monotonic clock.
+ * Resets to 0 at program start. Overflows after ~71 minutes.
+ * 
+ * @return unsigned long Microseconds elapsed since program started
+ * 
+ * @example
+ * unsigned long start = micros();
+ * // ... time-critical code ...
+ * unsigned long duration = micros() - start;
+ */
+unsigned long micros();
+
+/**
+ * @brief Delay execution in microseconds with high precision (Arduino-style function)
+ * 
+ * Uses busy-waiting for microsecond accuracy (consumes CPU).
+ * Use delay() for millisecond delays (more efficient).
+ * 
+ * @param us Delay time in microseconds
+ * 
+ * @note Accurate to ±1-2 microseconds
+ * @warning Uses busy-wait loop - consumes CPU during delay
+ * 
+ * @example
+ * digitalWrite(17, HIGH);
+ * delayMicroseconds(100);  // 100µs pulse
+ * digitalWrite(17, LOW);
+ */
+void delayMicroseconds(unsigned int us);

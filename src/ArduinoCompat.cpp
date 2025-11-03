@@ -85,10 +85,7 @@ int digitalRead(int pin)
     }
 }
 
-void delay(unsigned long ms) 
-{
-    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-}
+// Removed duplicate delay(unsigned long ms) implementation
 
 /* ------------------------------------------------------------ */
 /*                        MATH FUNCTIONS                       */
@@ -134,4 +131,38 @@ long map(long x, long in_min, long in_max, long out_min, long out_max)
         return out_min;  // Return minimum output if input range is zero
     }
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+/* ------------------------------------------------------------ */
+/*                        TIMING FUNCTIONS                      */
+/* ------------------------------------------------------------ */
+
+unsigned long millis() 
+{
+    static const auto start = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+    return static_cast<unsigned long>(elapsed);
+}
+
+unsigned long micros() 
+{
+    static const auto start = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+    return static_cast<unsigned long>(elapsed);
+}
+
+void delayMicroseconds(unsigned int us) 
+{
+    auto start = std::chrono::steady_clock::now();
+    auto duration = std::chrono::microseconds(us);
+    while (std::chrono::steady_clock::now() - start < duration) {
+        // Busy-wait for microsecond precision
+    }
+}
+
+void delay(unsigned long ms) 
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
