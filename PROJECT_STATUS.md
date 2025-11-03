@@ -8,9 +8,9 @@ Generated: November 3, 2025
 **Target Version**: v0.3.0 (Almost Complete - 80%)  
 **Main Goal**: Arduino-compatible GPIO library for Raspberry Pi with professional tooling
 
-## 🚀 v0.3.0 DEVELOPMENT PROGRESS - 85% COMPLETE! 🎉
+## 🚀 v0.3.0 DEVELOPMENT PROGRESS - 90% COMPLETE! 🎉
 
-**Five major features completed! Only interrupt and PWM support remaining.**
+**Six major features completed! Only interrupt and PWM support remaining.**
 
 ## ✅ v0.3.x Completed Features
 
@@ -72,6 +72,17 @@ Generated: November 3, 2025
 - ✅ All examples compile without warnings
 - ✅ Professional formatting with comprehensive documentation
 - ✅ Work gracefully without hardware
+
+### 📦 v0.3.6 - Modern CMake Packaging ✅ **COMPLETE**
+- ✅ BUILD_SHARED_LIBS option for building shared (.so) or static (.a) libraries
+- ✅ PiPinPP::pipinpp namespace alias for modern CMake target naming
+- ✅ PiPinPPConfig.cmake generation for find_package() support
+- ✅ CMake target export with PiPinPPTargets.cmake
+- ✅ Version compatibility checking with PiPinPPConfigVersion.cmake
+- ✅ PUBLIC link propagation for automatic dependency management
+- ✅ Maintains pkg-config compatibility alongside CMake config
+- ✅ Verified with test consumer project successfully building and running
+- ✅ Enables modern CMake usage: `find_package(PiPinPP)` + `target_link_libraries(app PiPinPP::pipinpp)`
 
 ## 🚀 Previous Accomplishments (v0.2.0)
 

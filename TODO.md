@@ -67,10 +67,13 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Professional formatting with comprehensive comments
   - Completed in v0.3.5
 
-- [ ] CMake packaging polish [medium]
-  - Shared library option
-  - Install `PiPinPPConfig.cmake` and export targets
-  - Verify both CMake and pkg-config consumption paths
+- ✅ CMake packaging polish [medium]
+  - BUILD_SHARED_LIBS option for shared/static library selection
+  - PiPinPP::pipinpp namespace alias for modern CMake
+  - PiPinPPConfig.cmake and PiPinPPTargets.cmake generation
+  - Version compatibility checking with PiPinPPConfigVersion.cmake
+  - Verified both CMake find_package() and pkg-config work
+  - Completed in v0.3.6
 
 ## Hard
 

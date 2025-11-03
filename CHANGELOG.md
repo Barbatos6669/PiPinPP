@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **Modern CMake packaging** - Professional library consumption support (v0.3.6)
+  - BUILD_SHARED_LIBS option for building shared (.so) or static (.a) libraries
+  - PiPinPP::pipinpp namespace alias for modern CMake target naming
+  - PiPinPPConfig.cmake generation for find_package() support
+  - CMake target export with PiPinPPTargets.cmake
+  - Version compatibility checking with PiPinPPConfigVersion.cmake
+  - PUBLIC link propagation for automatic dependency management
+  - Maintains pkg-config compatibility alongside CMake config
+  - Downstream projects can now use: `find_package(PiPinPP REQUIRED)` + `target_link_libraries(app PiPinPP::pipinpp)`
+  - Verified with test consumer project
+
 - **New comprehensive examples** - Demonstrating v0.3.x features (v0.3.5)
   - `timing_benchmark/` - Timing functions demonstration (208 lines)
     - millis(), micros(), delay(), delayMicroseconds() usage
