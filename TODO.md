@@ -90,10 +90,11 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Roadmap to hardware PWM backend (future enhancement)
   - Completed in v0.3.8
 
-- [ ] Namespace core API [hard]
+- [ ] Namespace core API [hard] - **DEFERRED TO v0.4.0**
   - Wrap Pin, enums, helpers in `pipinpp::`
   - Provide transitional `using` declarations to avoid breaking users
   - Update headers and docs
+  - **Rationale**: Breaking change best done in separate release; current global scope matches Arduino API; low priority with no conflicts reported
 
 ---
 
