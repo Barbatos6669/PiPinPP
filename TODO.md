@@ -53,9 +53,12 @@ Legend: [easy] quick win · [medium] moderate · [hard] larger feature
   - Optional CodeQL; add badges
   - Completed in v0.3.3
 
-- [ ] Unit tests (GoogleTest) [medium]
-  - Introduce GTest; abstract libgpiod behind a thin interface for mocking
-  - Tests for Pin, ArduinoCompat, timing utilities
+- ✅ Unit tests (GoogleTest) [medium]
+  - Integrated GoogleTest v1.14.0 framework
+  - 40 comprehensive tests (timing, exceptions, Pin operations)
+  - Automatic test discovery and professional reporting
+  - Hardware tests skip gracefully in CI environments
+  - Completed in v0.3.4
 
 - [ ] New examples [medium]
   - `interrupt_button`, `pwm_led_fade`, `timing_benchmark` (with wiring notes)

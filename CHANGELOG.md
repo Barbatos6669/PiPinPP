@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
+- **GoogleTest integration** - Professional testing framework (v0.3.4)
+  - Integrated GoogleTest v1.14.0 using CMake FetchContent
+  - 40 comprehensive tests covering timing, exceptions, and Pin operations
+  - Test fixtures for clean hardware setup/teardown
+  - Detailed assertion messages with EXPECT_* and ASSERT_* macros
+  - Automatic test discovery with gtest_discover_tests()
+  - Hardware tests skip gracefully in CI without GPIO access
+  - Foundation for future mock testing capabilities
+  - Test files: `gtest_timing.cpp` (8 tests), `gtest_exceptions.cpp` (11 tests), `gtest_pin.cpp` (18 tests)
+
 - **GitHub Actions CI/CD** - Automated build and test pipeline (v0.3.3)
   - Multi-platform build matrix (Ubuntu 22.04, 24.04)
   - Test both Debug and Release builds

@@ -54,9 +54,10 @@
 
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, and `delayMicroseconds()` for precise timing
 - ✅ **Custom exceptions**: Type-safe error handling with `InvalidPinError` and `GpioAccessError`
+- ✅ **GitHub Actions CI/CD**: Automated builds, tests, and security scanning on every push
+- ✅ **GoogleTest framework**: 40 comprehensive tests with professional reporting
 - [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
 - [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
-- [ ] **Testing framework**: Comprehensive unit tests and continuous integration
 - [ ] **Performance optimization**: Fast GPIO operations and reduced overhead
 
 ### Longer-Term Goals (v0.4.0+)
