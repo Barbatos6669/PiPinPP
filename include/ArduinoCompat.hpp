@@ -245,3 +245,61 @@ void attachInterrupt(int pin, void (*callback)(), int mode);
  * }
  */
 void detachInterrupt(int pin);
+
+/* ------------------------------------------------------------ */
+/*                        PWM FUNCTIONS                         */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Write an analog value (PWM wave) to a pin (Arduino-style function)
+ * 
+ * Generates a PWM (Pulse Width Modulation) signal on the specified pin.
+ * Can be used to control LED brightness, motor speed, or simulate analog output.
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number (0-27 for Raspberry Pi)
+ * @param value Duty cycle value (0-255)
+ *              - 0   = always LOW (0% duty cycle, LED off)
+ *              - 127 = 50% duty cycle (LED half brightness)
+ *              - 255 = always HIGH (100% duty cycle, LED full brightness)
+ * 
+ * @throws InvalidPinError if pin number is invalid
+ * @throws GpioAccessError if unable to configure pin
+ * 
+ * @note Pin is automatically configured as OUTPUT
+ * @note PWM frequency is 490Hz by default (matches Arduino UNO)
+ * @note This is software PWM and has timing jitter
+ * @note Not suitable for servo control (use hardware PWM for servos)
+ * @note Each PWM pin uses a dedicated thread
+ * 
+ * @warning Software PWM is CPU-intensive. Avoid using too many PWM outputs.
+ * @warning PWM accuracy decreases under high system load
+ * 
+ * @example
+ * // Fade an LED from off to full brightness
+ * void setup() {
+ *     pinMode(17, OUTPUT);
+ * }
+ * 
+ * void loop() {
+ *     // Fade in
+ *     for (int brightness = 0; brightness <= 255; brightness++) {
+ *         analogWrite(17, brightness);
+ *         delay(10);
+ *     }
+ *     
+ *     // Fade out
+ *     for (int brightness = 255; brightness >= 0; brightness--) {
+ *         analogWrite(17, brightness);
+ *         delay(10);
+ *     }
+ * }
+ * 
+ * @example
+ * // Control motor speed
+ * analogWrite(18, 0);    // Motor off
+ * analogWrite(18, 128);  // Motor half speed
+ * analogWrite(18, 255);  // Motor full speed
+ */
+void analogWrite(int pin, int value);

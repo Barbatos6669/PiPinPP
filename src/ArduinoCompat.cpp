@@ -205,4 +205,22 @@ void detachInterrupt(int pin)
 {
     InterruptManager::getInstance().detachInterrupt(pin);
     PIPINPP_LOG_INFO("detachInterrupt: Detached from pin " << pin);
+}
+
+/* ------------------------------------------------------------ */
+/*                        PWM FUNCTIONS                         */
+/* ------------------------------------------------------------ */
+
+#include "pwm.hpp"
+
+void analogWrite(int pin, int value) 
+{
+    // Clamp value to valid range
+    if (value < 0) value = 0;
+    if (value > 255) value = 255;
+    
+    // Start or update PWM
+    PWMManager::getInstance().startPWM(pin, value);
+    
+    PIPINPP_LOG_INFO("analogWrite: Pin " << pin << " set to " << value);
 }   
