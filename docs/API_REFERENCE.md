@@ -12,6 +12,9 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 1. [Quick Start](#quick-start)
 2. [Core Pin Class](#core-pin-class)
 3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
+   - [Digital I/O Functions](#digital-io-functions)
+   - [Timing Functions](#timing-functions)
+   - [Math Functions](#math-functions)
 4. [Examples](#examples)
 5. [Error Handling](#error-handling)
 6. [Hardware Notes](#hardware-notes)
@@ -213,16 +216,76 @@ if (buttonState == LOW) {
 
 ### Timing Functions
 
+#### `unsigned long millis()`
+Returns milliseconds since program start.
+
+**Returns:**
+- Milliseconds elapsed since program started
+
+**Notes:**
+- Uses monotonic clock (won't jump if system time changes)
+- Resets to 0 at program start
+- Overflows after ~49 days
+
+**Example:**
+```cpp
+unsigned long startTime = millis();
+// ... do something ...
+unsigned long elapsed = millis() - startTime;
+std::cout << "Operation took " << elapsed << " ms" << std::endl;
+```
+
+#### `unsigned long micros()`
+Returns microseconds since program start.
+
+**Returns:**
+- Microseconds elapsed since program started
+
+**Notes:**
+- Uses monotonic clock for precision timing
+- Resets to 0 at program start
+- Overflows after ~71 minutes
+
+**Example:**
+```cpp
+unsigned long start = micros();
+// ... time-critical code ...
+unsigned long duration = micros() - start;
+std::cout << "Execution time: " << duration << " µs" << std::endl;
+```
+
 #### `void delay(unsigned long ms)`
-Delay execution (Arduino-style).
+Delay execution in milliseconds (Arduino-style).
 
 **Parameters:**
 - `ms`: Delay time in milliseconds
+
+**Notes:**
+- Yields CPU during delay (efficient)
+- Not suitable for microsecond precision
 
 **Example:**
 ```cpp
 digitalWrite(17, HIGH);
 delay(1000);              // Wait 1 second
+digitalWrite(17, LOW);
+```
+
+#### `void delayMicroseconds(unsigned int us)`
+Delay execution in microseconds with high precision.
+
+**Parameters:**
+- `us`: Delay time in microseconds
+
+**Notes:**
+- Uses busy-waiting for precision (consumes CPU)
+- Accurate to within 1-2 microseconds
+- Use `delay()` for millisecond delays (more efficient)
+
+**Example:**
+```cpp
+digitalWrite(17, HIGH);
+delayMicroseconds(100);   // Wait 100 microseconds
 digitalWrite(17, LOW);
 ```
 
@@ -260,6 +323,160 @@ Map value from one range to another.
 // Map 0-1023 sensor reading to 0-255 PWM value
 int pwm_val = map(sensor_val, 0, 1023, 0, 255);
 ```
+
+---
+
+## Exception Handling
+
+PiPinPP provides a hierarchy of custom exceptions for better error handling and debugging. All exceptions inherit from `std::runtime_error` through the `PinError` base class.
+
+### Exception Hierarchy
+
+```
+std::runtime_error
+    └── PinError (base exception for all GPIO errors)
+        ├── InvalidPinError (invalid pin numbers or configurations)
+        └── GpioAccessError (hardware access failures)
+```
+
+### Exception Classes
+
+#### `PinError`
+Base class for all PiPinPP exceptions. Catch this to handle any library error generically.
+
+**Constructor:**
+```cpp
+explicit PinError(const std::string& message)
+```
+
+**Example:**
+```cpp
+try {
+    Pin led(17, PinDirection::OUTPUT);
+} catch (const PinError& e) {
+    std::cerr << "GPIO error: " << e.what() << std::endl;
+}
+```
+
+#### `InvalidPinError`
+Thrown when an invalid pin number or configuration is used.
+
+**Constructors:**
+```cpp
+explicit InvalidPinError(const std::string& message)
+InvalidPinError(int pinNumber, const std::string& reason)
+```
+
+**When thrown:**
+- Pin number exceeds valid range (e.g., pin 999 on Raspberry Pi with 58 lines)
+- Pin not initialized before digitalWrite/digitalRead
+- Invalid pin configuration
+
+**Examples:**
+```cpp
+// Example 1: Invalid pin number
+try {
+    Pin invalid(999, PinDirection::OUTPUT);
+} catch (const InvalidPinError& e) {
+    // e.what() might be: "Invalid pin 999: Pin number exceeds available GPIO lines (58)"
+    std::cerr << e.what() << std::endl;
+}
+
+// Example 2: Arduino function without pinMode
+try {
+    digitalWrite(17, HIGH);  // No pinMode() called first
+} catch (const InvalidPinError& e) {
+    // e.what() might be: "Invalid pin 17: Pin not initialized. Call pinMode() first."
+    std::cerr << e.what() << std::endl;
+}
+```
+
+#### `GpioAccessError`
+Thrown when hardware access fails (chip not found, permission denied, etc.).
+
+**Constructors:**
+```cpp
+explicit GpioAccessError(const std::string& message)
+GpioAccessError(const std::string& device, const std::string& reason)
+```
+
+**When thrown:**
+- Cannot open GPIO chip device
+- Cannot create GPIO line settings/config
+- Cannot request GPIO lines
+- Write/read operations fail
+
+**Examples:**
+```cpp
+// Example 1: Invalid device path
+try {
+    Pin led(17, PinDirection::OUTPUT, "/dev/nonexistent");
+} catch (const GpioAccessError& e) {
+    // e.what() might be: "GPIO access error on /dev/nonexistent: Failed to open chip"
+    std::cerr << e.what() << std::endl;
+}
+
+// Example 2: Permission denied
+try {
+    Pin led(17, PinDirection::OUTPUT);
+} catch (const GpioAccessError& e) {
+    // If user not in 'gpio' group
+    std::cerr << "Check permissions: " << e.what() << std::endl;
+}
+```
+
+### Exception Handling Best Practices
+
+#### 1. Catch Specific Exceptions
+```cpp
+try {
+    pinMode(17, OUTPUT);
+    digitalWrite(17, HIGH);
+} catch (const InvalidPinError& e) {
+    // Handle configuration errors
+    std::cerr << "Pin configuration error: " << e.what() << std::endl;
+} catch (const GpioAccessError& e) {
+    // Handle hardware access errors
+    std::cerr << "Hardware access error: " << e.what() << std::endl;
+}
+```
+
+#### 2. Catch Base Exception for Generic Handling
+```cpp
+try {
+    Pin led(17, PinDirection::OUTPUT);
+    led.write(true);
+} catch (const PinError& e) {
+    // Handle any PiPinPP error
+    std::cerr << "GPIO operation failed: " << e.what() << std::endl;
+    return 1;
+}
+```
+
+#### 3. Initialization Pattern
+```cpp
+std::unique_ptr<Pin> led;
+try {
+    led = std::make_unique<Pin>(17, PinDirection::OUTPUT);
+} catch (const InvalidPinError& e) {
+    std::cerr << "Invalid pin configuration: " << e.what() << std::endl;
+    return 1;
+} catch (const GpioAccessError& e) {
+    std::cerr << "Cannot access GPIO hardware: " << e.what() << std::endl;
+    std::cerr << "Check that you're in the 'gpio' group" << std::endl;
+    return 1;
+}
+```
+
+### Common Error Causes and Solutions
+
+| Exception | Common Cause | Solution |
+|-----------|--------------|----------|
+| `InvalidPinError` | Pin number too high | Check your board's GPIO pin range (0-27 for most RPi models) |
+| `InvalidPinError` | Arduino function without pinMode | Always call `pinMode()` before `digitalWrite()`/`digitalRead()` |
+| `GpioAccessError` | Permission denied | Add user to 'gpio' group: `sudo usermod -a -G gpio $USER` |
+| `GpioAccessError` | Device not found | Verify `/dev/gpiochip0` exists, check kernel module loaded |
+| `GpioAccessError` | Line already in use | Another process is using the GPIO pin |
 
 ---
 
@@ -333,6 +550,44 @@ int main() {
         
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    return 0;
+}
+```
+
+### Timing Functions Usage
+```cpp
+#include "ArduinoCompat.hpp"
+#include <iostream>
+
+int main() {
+    pinMode(17, OUTPUT);
+    
+    std::cout << "Starting timing demo..." << std::endl;
+    unsigned long startTime = millis();
+    
+    for (int i = 0; i < 5; i++) {
+        // Blink LED with precise timing
+        digitalWrite(17, HIGH);
+        delay(500);              // 500ms on
+        digitalWrite(17, LOW);
+        delay(500);              // 500ms off
+        
+        std::cout << "Blink " << (i + 1) 
+                  << " at " << millis() << " ms" << std::endl;
+    }
+    
+    unsigned long totalTime = millis() - startTime;
+    std::cout << "Total time: " << totalTime << " ms" << std::endl;
+    
+    // Microsecond precision for fast signals
+    unsigned long pulseStart = micros();
+    digitalWrite(17, HIGH);
+    delayMicroseconds(100);     // 100µs pulse
+    digitalWrite(17, LOW);
+    unsigned long pulseWidth = micros() - pulseStart;
+    
+    std::cout << "Pulse width: " << pulseWidth << " µs" << std::endl;
+    
     return 0;
 }
 ```

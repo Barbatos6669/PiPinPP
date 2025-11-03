@@ -5,25 +5,95 @@ All notable changes to PiPinPP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - v0.3.0 (In Development)
 
 ### Added
-- Nothing yet
+- **GitHub Actions CI/CD** - Automated build and test pipeline (v0.3.3)
+  - Multi-platform build matrix (Ubuntu 22.04, 24.04)
+  - Test both Debug and Release builds
+  - Strict warning checks (`PIPINPP_WARNINGS_AS_ERRORS=ON`)
+  - Automated test execution via CTest
+  - pkg-config integration testing
+  - External project compilation smoke test
+  - CodeQL security analysis for C++ code
+  - Build status and CodeQL badges in README
+  - Comprehensive workflow comments explaining each step
+
+- **Custom exception classes** - Type-safe error handling (v0.3.2)
+  - `PinError` - Base exception class for all GPIO errors
+  - `InvalidPinError` - Thrown for invalid pin numbers or configurations
+  - `GpioAccessError` - Thrown for hardware access failures (permissions, device not found, etc.)
+  - All exceptions inherit from `std::runtime_error` through `PinError`
+  - Contextual error messages with pin numbers and device names
+  - Updated all library functions to throw appropriate custom exceptions
+  - Comprehensive test suite (`test_exceptions.cpp`) with 6 test scenarios
+  - Complete exception handling guide in API reference with best practices
+  - Fixed thread safety test to respect valid pin range (0-27)
+
+- **Arduino-style timing functions** - Complete timing API (v0.3.1)
+  - `millis()` - Returns milliseconds since program start using monotonic clock
+  - `micros()` - Returns microseconds since program start for precision timing
+  - `delay(ms)` - Sleep for specified milliseconds (CPU-efficient)
+  - `delayMicroseconds(us)` - High-precision microsecond delays (busy-wait)
+  - All functions use `std::chrono::steady_clock` for monotonic, reliable timing
+  - Comprehensive test suite (`test_timing.cpp`) with accuracy validation
+  - Verified accurate to ±1µs for microsecond operations
+  - Complete documentation in API reference with examples
+
+- **Thread-safety for ArduinoCompat** - Concurrent access protection
+  - Mutex protection for globalPins map
+  - Thread-safe `pinMode()`, `digitalWrite()`, `digitalRead()`
+  - Test suite for concurrent access (`test_thread_safety.cpp`)
+  - Documentation of thread-safety guarantees in headers
+
+- **Optional logging system** - Debug logging with zero overhead when disabled
+  - New `log.hpp` header with `PIPINPP_LOG_*` macros
+  - Four log levels: DEBUG, INFO, WARNING, ERROR
+  - CMake option `PIPINPP_ENABLE_LOGGING` (default: OFF)
+  - Configurable log level via `PIPINPP_LOG_LEVEL`
+  - Replaced all debug `std::cout` with logging macros
+
+- **Comprehensive documentation guides**
+  - Pin Numbering Guide (`docs/PIN_NUMBERING.md`) - BCM vs physical pins with diagrams
+  - Permissions Setup Guide (`docs/PERMISSIONS.md`) - Running without sudo
+  - Updated BUILD.md with new build options
+  - Complete GitHub Wiki sync with navigation
+
+- **Enhanced build system**
+  - Compiler warnings enabled by default: `-Wall -Wextra -Wpedantic`
+  - Optional strict mode: `PIPINPP_WARNINGS_AS_ERRORS`
+  - Better CMake options documentation
+  - Fixed all compiler warnings
+
+- **Repository discoverability improvements**
+  - Professional badges in README (License, Version, Platform, C++17, libgpiod)
+  - GitHub topics for better searchability
+  - Updated repository description
 
 ### Changed
-- Nothing yet
+- **HIGH/LOW constants** - Modernized from C macros to C++
+  - Changed from `#define HIGH 1` to `constexpr bool HIGH = true`
+  - Changed from `#define LOW 0` to `constexpr bool LOW = false`
+  - More type-safe and debugger-friendly
+  - Maintains full backward compatibility
+
+- **Logging behavior** - Library is now silent by default
+  - All debug output removed from Release builds
+  - Logging only enabled with CMake option
+  - Zero performance overhead when disabled
 
 ### Deprecated
 - Nothing yet
 
 ### Removed
-- Nothing yet
+- Debug `std::cout` statements from library code (replaced with optional logging)
 
 ### Fixed
-- Nothing yet
+- Compiler warnings from unused variables
+- Thread-safety issues in Arduino compatibility layer
 
 ### Security
-- Nothing yet
+- Added mutex protection against race conditions in multi-threaded programs
 
 ---
 

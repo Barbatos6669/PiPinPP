@@ -7,9 +7,16 @@
   *Clean API, low-level control, and room to grow.*
 </div>
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Roadmap Progress](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-green) ![License](https://img.shields.io/badge/license-MIT-green)
+[![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Barbatos6669/PiPinPP/actions/workflows/codeql.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.2.0)
+[![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
+[![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
+[![libgpiod](https://img.shields.io/badge/libgpiod-1.6%2B-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
+[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.2.0-brightgreen)](ROADMAP.md)
 
-📍 **[View our development roadmap →](ROADMAP.md)** | 🚀 **[Current version: 0.2.0](CHANGELOG.md)** | 📖 **[API Documentation →](docs/API_REFERENCE.md)**
+📍 **[Development Roadmap](ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
 
 ---
 
@@ -43,11 +50,12 @@
 - ✅ **Complete examples**: LED control, button input, migration guide
 - ✅ **Comprehensive documentation**: Full API reference and hardware setup guides
 
-### Next Milestones (v0.3.0)
+### Next Milestones (v0.3.0) - In Progress
 
+- ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, and `delayMicroseconds()` for precise timing
+- ✅ **Custom exceptions**: Type-safe error handling with `InvalidPinError` and `GpioAccessError`
 - [ ] **Interrupt support**: Edge detection with callback functions (`attachInterrupt`)
 - [ ] **PWM support**: Arduino-style `analogWrite()` for motor control and LED dimming
-- [ ] **Timing functions**: `millis()` and `micros()` for precise timing
 - [ ] **Testing framework**: Comprehensive unit tests and continuous integration
 - [ ] **Performance optimization**: Fast GPIO operations and reduced overhead
 

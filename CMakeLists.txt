@@ -17,8 +17,36 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Build options
+option(BUILD_TESTS "Build test executables" ON)
+option(BUILD_EXAMPLES "Build example programs" ON)
+option(PIPINPP_ENABLE_LOGGING "Enable logging output for debugging" OFF)
+option(PIPINPP_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
+# Logging configuration
+if(PIPINPP_ENABLE_LOGGING)
+    add_compile_definitions(PIPINPP_ENABLE_LOGGING)
+    if(DEFINED PIPINPP_LOG_LEVEL)
+        add_compile_definitions(PIPINPP_LOG_LEVEL=${PIPINPP_LOG_LEVEL})
+    endif()
+    message(STATUS "Logging enabled (level: ${PIPINPP_LOG_LEVEL})")
+endif()
+
+# Compiler warnings (applied to all targets)
+add_compile_options(
+    -Wall          # Enable most warnings
+    -Wextra        # Enable extra warnings
+    -Wpedantic     # Warn about non-standard C++
+)
+
+# Optionally treat warnings as errors
+if(PIPINPP_WARNINGS_AS_ERRORS)
+    add_compile_options(-Werror)
+    message(STATUS "Warnings treated as errors")
+endif()
+
 # Compiler-specific options
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # Find required packages
@@ -39,8 +67,11 @@ add_library(pipinpp STATIC ${PIPINPP_SOURCES})
 
 # Link libraries
 target_link_libraries(pipinpp ${GPIOD_LIBRARIES})
+
+# Include directories with proper generator expressions for build/install
 target_include_directories(pipinpp PUBLIC 
-    ${CMAKE_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
     ${GPIOD_INCLUDE_DIRS}
 )
 
@@ -48,11 +79,8 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp"
 )
-
-# Option to build tests
-option(BUILD_TESTS "Build tests" ON)
 
 if(BUILD_TESTS)
     enable_testing()
@@ -61,12 +89,24 @@ if(BUILD_TESTS)
     add_executable(test_pipinpp tests/test.cpp)
     target_link_libraries(test_pipinpp pipinpp)
     
-    # Add test
+    # Thread safety test executable
+    add_executable(test_thread_safety tests/test_thread_safety.cpp)
+    target_link_libraries(test_thread_safety pipinpp)
+    
+    # Timing functions test executable
+    add_executable(test_timing tests/test_timing.cpp)
+    target_link_libraries(test_timing pipinpp)
+    
+    # Exception handling test executable
+    add_executable(test_exceptions tests/test_exceptions.cpp)
+    target_link_libraries(test_exceptions pipinpp)
+    
+    # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
+    add_test(NAME thread_safety_test COMMAND test_thread_safety)
+    add_test(NAME timing_test COMMAND test_timing)
+    add_test(NAME exception_test COMMAND test_exceptions)
 endif()
-
-# Option to build examples
-option(BUILD_EXAMPLES "Build examples" ON)
 
 if(BUILD_EXAMPLES)
     # Check if example directories contain CMakeLists.txt or source files
@@ -128,5 +168,7 @@ message(STATUS "  C++ standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  Build tests: ${BUILD_TESTS}")
 message(STATUS "  Build examples: ${BUILD_EXAMPLES}")
+message(STATUS "  Logging enabled: ${PIPINPP_ENABLE_LOGGING}")
+message(STATUS "  Warnings as errors: ${PIPINPP_WARNINGS_AS_ERRORS}")
 message(STATUS "  libgpiod found: ${GPIOD_FOUND}")
 message(STATUS "")
