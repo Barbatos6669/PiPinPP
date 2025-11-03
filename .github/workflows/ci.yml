@@ -15,9 +15,9 @@ on:
 
 # WHAT does this workflow do?
 jobs:
-  # Job 1: Build and test the library
-  build-and-test:
-    name: Build (${{ matrix.build_type }}, ${{ matrix.os }}, ${{ matrix.arch }})
+  # Job 1: Cloud builds - Fast compilation validation
+  cloud-build:
+    name: Cloud Build (${{ matrix.build_type }}, ${{ matrix.os }})
     
     # WHERE does this run?
     # GitHub provides free Ubuntu virtual machines for open source projects
@@ -34,12 +34,6 @@ jobs:
         os: [ubuntu-22.04, ubuntu-24.04]
         # Test both Debug (with symbols for debugging) and Release (optimized)
         build_type: [Debug, Release]
-        # Test both x86_64 (GitHub's servers) and ARM64 (Raspberry Pi architecture)
-        arch: [x86_64, aarch64]
-        # IMPORTANT: Don't test ARM64 on old Ubuntu (compatibility issues)
-        exclude:
-          - os: ubuntu-22.04
-            arch: aarch64
     
     # STEPS: What actually happens in this job
     steps:
@@ -49,18 +43,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # Step 2: Set up QEMU for ARM emulation (only if testing ARM)
-      # QEMU lets us run ARM binaries on x86_64 machines
-      # Think of it as a "virtual Raspberry Pi" that runs on GitHub's servers
-      - name: Set up QEMU
-        if: matrix.arch == 'aarch64'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: linux/arm64
-      
-      # Step 3: Install base dependencies (x86_64 native)
-      - name: Install base dependencies (x86_64)
-        if: matrix.arch == 'x86_64'
+      # Step 2: Install base dependencies
+      - name: Install base dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -77,11 +61,10 @@ jobs:
         # Note: We DON'T install libgpiod-dev from apt because it's v1.x
         # We'll build v2.x from source in the next step
       
-      # Step 4: Build and install libgpiod v2 from source (x86_64)
+      # Step 3: Build and install libgpiod v2 from source
       # Ubuntu repos only have v1.x, but our code uses v2 API
       # This step downloads, builds, and installs libgpiod 2.2.1
-      - name: Build libgpiod v2 (x86_64)
-        if: matrix.arch == 'x86_64'
+      - name: Build libgpiod v2
         run: |
           # Install additional build dependencies for libgpiod
           sudo apt-get install -y \
@@ -112,9 +95,8 @@ jobs:
         # - This matches what's on your actual Raspberry Pi!
         # - We disable C++ and Python bindings (not needed, faster build)
       
-      # Step 5: Build and test PiPinPP on x86_64 (native)
-      - name: Build and test (x86_64)
-        if: matrix.arch == 'x86_64'
+      # Step 4: Build and test PiPinPP
+      - name: Build and test
         run: |
           # Configure the build
           cmake -B build \
@@ -132,54 +114,9 @@ jobs:
           # We still run timing_test and exception_test which don't need hardware
           cd build && ctest --output-on-failure --verbose -E "basic_test|thread_safety_test" || true
       
-      # Step 6: Build and test on ARM64 (emulated via Docker)
-      # This runs in an ARM64 Ubuntu container using QEMU emulation
-      # It's slower but tests the actual Raspberry Pi architecture!
-      - name: Build and test (ARM64)
-        if: matrix.arch == 'aarch64'
-        run: |
-          docker run --rm --platform linux/arm64 \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            arm64v8/ubuntu:24.04 \
-            bash -c "
-              set -e
-              apt-get update
-              apt-get install -y build-essential cmake pkg-config git autoconf autoconf-archive automake libtool python3 python3-setuptools linux-headers-generic libkmod-dev libudev-dev
-              
-              # Build libgpiod v2.2.1 from source (same as x86_64 step)
-              git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /tmp/libgpiod
-              cd /tmp/libgpiod
-              ./autogen.sh --enable-tools=yes --prefix=/usr --disable-bindings-cxx --disable-bindings-python
-              make -j\$(nproc)
-              make install
-              ldconfig
-              
-              # Now build PiPinPP
-              cd /workspace
-              cmake -B build \
-                -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                -DPIPINPP_ENABLE_LOGGING=OFF \
-                -DPIPINPP_WARNINGS_AS_ERRORS=ON \
-                -DBUILD_TESTS=ON \
-                -DBUILD_EXAMPLES=ON
-              cmake --build build --config ${{ matrix.build_type }} -j\$(nproc)
-              cd build && ctest --output-on-failure --verbose -E 'basic_test|thread_safety_test' || true
-            "
-        # EXPLANATION:
-        # - docker run --platform linux/arm64 = Force ARM64 architecture
-        # - -v mounts your code into the container at /workspace
-        # - -w sets working directory to /workspace
-        # - arm64v8/ubuntu:24.04 = Official ARM64 Ubuntu image
-        # - We build libgpiod v2 from source (just like x86_64)
-        # - Disable C++/Python bindings for faster build
-        # - QEMU translates ARM instructions to x86_64 on the fly
-        # - This is THE SAME as running on a real Raspberry Pi!
-      
-      # Step 7: Test pkg-config integration (x86_64 only for now)
+      # Step 5: Test pkg-config integration
       # This verifies that other projects can find our library
       - name: Test pkg-config
-        if: matrix.arch == 'x86_64'
         run: |
           # First, install our library to a temporary location
           cmake --install build --prefix /tmp/pipinpp-test
@@ -201,10 +138,9 @@ jobs:
         # This test is important because many C++ projects use pkg-config
         # to find and link against libraries
       
-      # Step 8: Build a test project using pkg-config (x86_64 only)
+      # Step 6: Build a test project using pkg-config
       # This simulates how a real user would use our library
       - name: Test external project integration
-        if: matrix.arch == 'x86_64'
         run: |
           # Still need pkg-config to find our library
           export PKG_CONFIG_PATH=/tmp/pipinpp-test/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -226,7 +162,48 @@ jobs:
           
           echo "✓ External project can compile and link against PiPinPP"
 
-  # Job 2: CodeQL security analysis (optional but recommended)
+  # Job 2: Hardware testing on actual Raspberry Pi
+  hardware-test:
+    name: Hardware Test (Raspberry Pi)
+    runs-on: self-hosted
+    
+    # Only run hardware tests on main branch or when manually triggered
+    # This prevents every PR from running on your Pi
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build PiPinPP
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPIPINPP_ENABLE_LOGGING=OFF \
+            -DPIPINPP_WARNINGS_AS_ERRORS=ON \
+            -DBUILD_TESTS=ON \
+            -DBUILD_EXAMPLES=ON
+          cmake --build build -j$(nproc)
+      
+      - name: Run ALL tests (including hardware tests)
+        run: |
+          cd build
+          # Run ALL tests - your Pi has real GPIO hardware!
+          ctest --output-on-failure --verbose
+        # This runs:
+        # ✓ basic_test - accesses /dev/gpiochip0 (real GPIO)
+        # ✓ thread_safety_test - concurrent GPIO operations
+        # ✓ timing_test - precise timing measurements
+        # ✓ exception_test - error handling
+      
+      - name: Test examples compile
+        run: |
+          echo "✓ Examples built successfully"
+          ls -lh build/examples/
+        # We don't run examples (they'd toggle GPIO pins)
+        # But we verify they compile on real hardware
+
+  # Job 3: CodeQL security analysis (optional but recommended)
   codeql-analysis:
     name: CodeQL Security Scan
     runs-on: ubuntu-latest
