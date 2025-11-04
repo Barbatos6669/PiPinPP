@@ -8,17 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2025-11-04
 
 ### Added
-- **Extended math functions** - Arduino-compatible mathematical operations (v0.3.2)
+- **Extended math function** - Arduino-compatible square function (v0.3.2)
   - `sq(x)` - Square a number (template function for any numeric type)
-  - `sqrt(x)` - Square root function (std::sqrt wrapper)
-  - `pow(base, exponent)` - Power function (std::pow wrapper)
-  - `max(a, b)` - Maximum of two values (template for any comparable type)
-  - `min(a, b)` - Minimum of two values (template for any comparable type)
-  - Header-only inline implementations for optimal performance
-  - Template functions provide type flexibility (int, long, float, double)
+  - Header-only inline implementation for optimal performance
+  - Template provides type flexibility (int, long, float, double)
+  - More efficient than `std::pow(x, 2)`
   - Full Arduino API compatibility
   - Comprehensive Doxygen documentation with usage examples
+  - Note: For sqrt(), pow(), max(), min() use standard library (std::sqrt, std::pow, std::max, std::min)
   - Updated API_REFERENCE.md with Extended Math Functions section
+  - Math functions example demonstrating sq() with std library functions
 
 ## [0.3.1] - 2025-11-04
 

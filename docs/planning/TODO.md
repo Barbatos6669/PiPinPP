@@ -214,14 +214,13 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Only works on OUTPUT pins (throws PinError for INPUT)
 
 - ✅ Extended math functions [easy] - **COMPLETE (v0.3.2)**
-  - `sq(x)` - Square a number (x²) - template function
-  - `pow(base, exponent)` - std::pow wrapper for Arduino compatibility
-  - `sqrt(x)` - std::sqrt wrapper for Arduino compatibility
-  - `max(a, b)` - template function for any comparable type
-  - `min(a, b)` - template function for any comparable type
-  - Header-only inline implementations for optimal performance
+  - `sq(x)` - Square a number (x²) - template function for Arduino compatibility
+  - Note: sqrt(), pow(), max(), min() NOT provided to avoid std:: conflicts
+  - Users should use std::sqrt(), std::pow(), std::max(), std::min() directly
+  - Header-only inline implementation for optimal performance
   - Full Doxygen documentation with usage examples
-  - Updated API_REFERENCE.md with Extended Math Functions section
+  - Updated API_REFERENCE.md explaining why only sq() is provided
+  - Math functions example demonstrating sq() with std library functions
 
 - [ ] Trigonometry functions [easy]
   - `sin(rad)`, `cos(rad)`, `tan(rad)` - Use std::sin/cos/tan wrappers

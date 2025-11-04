@@ -393,79 +393,8 @@ inline T sq(T x) {
     return x * x;
 }
 
-/**
- * @brief Calculate the square root of a number (Arduino-compatible function)
- * 
- * Wrapper for std::sqrt(). Returns the square root of x.
- * 
- * @param x Value to take square root of (must be non-negative)
- * @return double Square root of x (√x)
- * 
- * @note Returns NaN if x is negative
- * 
- * @example
- * double a = sqrt(16.0);   // Returns 4.0
- * double b = sqrt(2.0);    // Returns 1.414213...
- * double c = sqrt(0.25);   // Returns 0.5
- */
-inline double sqrt(double x) {
-    return std::sqrt(x);
-}
-
-/**
- * @brief Calculate base raised to the power of exponent (Arduino-compatible function)
- * 
- * Wrapper for std::pow(). Returns base^exponent.
- * 
- * @param base Base value
- * @param exponent Power to raise base to
- * @return double Result of base^exponent
- * 
- * @example
- * double a = pow(2.0, 3.0);    // Returns 8.0 (2³)
- * double b = pow(10.0, -2.0);  // Returns 0.01 (10⁻²)
- * double c = pow(4.0, 0.5);    // Returns 2.0 (√4)
- */
-inline double pow(double base, double exponent) {
-    return std::pow(base, exponent);
-}
-
-/**
- * @brief Return the maximum of two values (Arduino-compatible function)
- * 
- * Returns the larger of two values. Works with any comparable type.
- * 
- * @tparam T Comparable type (int, long, float, double, etc.)
- * @param a First value
- * @param b Second value
- * @return T The larger of a and b
- * 
- * @example
- * int a = max(10, 20);      // Returns 20
- * float b = max(3.5f, 2.1f); // Returns 3.5
- * long c = max(-5L, -10L);  // Returns -5
- */
-template<typename T>
-inline T max(T a, T b) {
-    return (a > b) ? a : b;
-}
-
-/**
- * @brief Return the minimum of two values (Arduino-compatible function)
- * 
- * Returns the smaller of two values. Works with any comparable type.
- * 
- * @tparam T Comparable type (int, long, float, double, etc.)
- * @param a First value
- * @param b Second value
- * @return T The smaller of a and b
- * 
- * @example
- * int a = min(10, 20);      // Returns 10
- * float b = min(3.5f, 2.1f); // Returns 2.1
- * long c = min(-5L, -10L);  // Returns -10
- */
-template<typename T>
-inline T min(T a, T b) {
-    return (a < b) ? a : b;
-}
+// Note: For sqrt(), pow(), max(), min() use the standard library functions:
+// - #include <cmath>      for std::sqrt() and std::pow()
+// - #include <algorithm>  for std::max() and std::min()
+// These are already available in C++ and creating wrappers causes ambiguity
+// when users write "using namespace std;" in their code.

@@ -551,7 +551,7 @@ int pwm_val = map(sensor_val, 0, 1023, 0, 255);
 ```
 
 #### `T sq(T x)` (template)
-Calculate the square of a number.
+Calculate the square of a number (Arduino-specific function).
 
 **Template Parameters:**
 - `T`: Any numeric type (int, long, float, double, etc.)
@@ -563,8 +563,9 @@ Calculate the square of a number.
 - Square of x (x²)
 
 **Notes:**
-- More efficient than `pow(x, 2)`
+- More efficient than `std::pow(x, 2)`
 - Works with any numeric type
+- This is the only math function provided by PiPinPP
 
 **Example:**
 ```cpp
@@ -573,85 +574,36 @@ float b = sq(3.5f);   // Returns 12.25
 double c = sq(-4.0);  // Returns 16.0
 ```
 
-#### `double sqrt(double x)`
-Calculate the square root of a number.
+**For other math functions, use the standard library:**
 
-**Parameters:**
-- `x`: Value to take square root of (must be non-negative)
+- **Square root**: Use `std::sqrt()` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::sqrt(16.0);  // Returns 4.0
+  ```
 
-**Returns:**
-- Square root of x (√x)
+- **Power**: Use `std::pow()` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::pow(2.0, 3.0);  // Returns 8.0
+  ```
 
-**Notes:**
-- Returns NaN if x is negative
-- Wrapper for `std::sqrt()`
+- **Maximum**: Use `std::max()` from `<algorithm>`
+  ```cpp
+  #include <algorithm>
+  int result = std::max(10, 20);  // Returns 20
+  ```
 
-**Example:**
-```cpp
-double a = sqrt(16.0);   // Returns 4.0
-double b = sqrt(2.0);    // Returns 1.414213...
-double c = sqrt(0.25);   // Returns 0.5
-```
+- **Minimum**: Use `std::min()` from `<algorithm>`
+  ```cpp
+  #include <algorithm>
+  int result = std::min(10, 20);  // Returns 10
+  ```
 
-#### `double pow(double base, double exponent)`
-Calculate base raised to the power of exponent.
-
-**Parameters:**
-- `base`: Base value
-- `exponent`: Power to raise base to
-
-**Returns:**
-- Result of base^exponent
-
-**Notes:**
-- Wrapper for `std::pow()`
-
-**Example:**
-```cpp
-double a = pow(2.0, 3.0);    // Returns 8.0 (2³)
-double b = pow(10.0, -2.0);  // Returns 0.01 (10⁻²)
-double c = pow(4.0, 0.5);    // Returns 2.0 (√4)
-```
-
-#### `T max(T a, T b)` (template)
-Return the maximum of two values.
-
-**Template Parameters:**
-- `T`: Any comparable type (int, long, float, double, etc.)
-
-**Parameters:**
-- `a`: First value
-- `b`: Second value
-
-**Returns:**
-- The larger of a and b
-
-**Example:**
-```cpp
-int a = max(10, 20);      // Returns 20
-float b = max(3.5f, 2.1f); // Returns 3.5
-long c = max(-5L, -10L);  // Returns -5
-```
-
-#### `T min(T a, T b)` (template)
-Return the minimum of two values.
-
-**Template Parameters:**
-- `T`: Any comparable type (int, long, float, double, etc.)
-
-**Parameters:**
-- `a`: First value
-- `b`: Second value
-
-**Returns:**
-- The smaller of a and b
-
-**Example:**
-```cpp
-int a = min(10, 20);      // Returns 10
-float b = min(3.5f, 2.1f); // Returns 2.1
-long c = min(-5L, -10L);  // Returns -10
-```
+**Why not provide wrappers?**  
+Creating our own `sqrt()`, `pow()`, `max()`, `min()` functions causes naming conflicts 
+when users write `using namespace std;` in their code. The standard library functions 
+are already widely available and well-optimized.
 
 ---
 
