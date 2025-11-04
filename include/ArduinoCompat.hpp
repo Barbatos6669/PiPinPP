@@ -31,7 +31,8 @@ constexpr bool LOW = false;
 enum ArduinoPinMode {
     INPUT = 0,
     OUTPUT = 1,
-    INPUT_PULLUP = 2
+    INPUT_PULLUP = 2,
+    INPUT_PULLDOWN = 3  // Added for Raspberry Pi compatibility
 };
 
 // Arduino-style global functions for familiar API
@@ -303,3 +304,66 @@ void detachInterrupt(int pin);
  * analogWrite(18, 255);  // Motor full speed
  */
 void analogWrite(int pin, int value);
+
+/* ------------------------------------------------------------ */
+/*                    PIN STATE QUERY FUNCTIONS                 */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Check if a pin is configured as OUTPUT
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number
+ * @return true if pin is OUTPUT
+ * @return false if pin is not OUTPUT
+ * 
+ * @throws PinError if pin is not initialized (pinMode not called)
+ */
+bool isOutput(int pin);
+
+/**
+ * @brief Check if a pin is configured as INPUT
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number
+ * @return true if pin is INPUT, INPUT_PULLUP, or INPUT_PULLDOWN
+ * @return false if pin is not INPUT
+ * 
+ * @throws PinError if pin is not initialized (pinMode not called)
+ */
+bool isInput(int pin);
+
+/**
+ * @brief Get the current mode of a pin
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number
+ * @return ArduinoPinMode Current mode of the pin (INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULLDOWN)
+ * 
+ * @throws PinError if pin is not initialized (pinMode not called)
+ */
+ArduinoPinMode getMode(int pin);
+
+/**
+ * @brief Toggle the state of an OUTPUT pin (HIGH↔LOW)
+ * 
+ * Efficiently toggles pin state without reading current value.
+ * Much faster than digitalRead() + digitalWrite().
+ * 
+ * Thread-safe: Multiple threads can call this function concurrently.
+ * 
+ * @param pin GPIO pin number
+ * @throws PinError if pin not initialized or not OUTPUT
+ * 
+ * @note Example:
+ * @code
+ * pinMode(17, OUTPUT);
+ * digitalWrite(17, HIGH);
+ * digitalToggle(17);  // Now LOW
+ * digitalToggle(17);  // Now HIGH
+ * @endcode
+ */
+void digitalToggle(int pin);

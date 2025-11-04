@@ -197,18 +197,21 @@ inline double sqrt(double x) { return std::sqrt(x); }
 
 ### Easy Tasks
 
-- [ ] Pin state query functions [easy]
+- ✅ Pin state query functions [easy] - **COMPLETE (v0.3.1 - First update after v0.3.0 release)**
   - `bool isOutput(int pin)` - Check if pin is configured as output
-  - `bool isInput(int pin)` - Check if pin is configured as input
-  - `PinMode getMode(int pin)` - Get current pin mode
-  - Add to ArduinoCompat layer with proper error handling
-  - Unit tests for all query functions
+  - `bool isInput(int pin)` - Check if pin is configured as input (any INPUT variant)
+  - `ArduinoPinMode getMode(int pin)` - Get current pin mode
+  - Added to ArduinoCompat layer with proper error handling
+  - Thread-safe with mutex locks
+  - Throws PinError if pin not initialized
+  - Full support for INPUT_PULLDOWN mode
 
-- [ ] Digital toggle function [easy]
+- ✅ Digital toggle function [easy] - **COMPLETE (v0.3.1 - First update after v0.3.0 release)**
   - `void digitalToggle(int pin)` - Toggle pin state (HIGH↔LOW)
-  - Efficient implementation without read-modify-write
-  - Thread-safe operation
-  - Example demonstrating toggle for LED blinking
+  - Efficient implementation tracks lastValue internally (no read needed)
+  - Thread-safe operation with mutex
+  - Validates write() success and throws GpioAccessError on failure
+  - Only works on OUTPUT pins (throws PinError for INPUT)
 
 - [ ] Extended math functions [easy]
   - `sq(x)` - Square a number (x²)

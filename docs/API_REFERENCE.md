@@ -13,6 +13,7 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 2. [Core Pin Class](#core-pin-class)
 3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
    - [Digital I/O Functions](#digital-io-functions)
+   - [Pin State Query Functions](#pin-state-query-functions)
    - [Interrupt Functions](#interrupt-functions)
    - [PWM Functions](#pwm-functions)
    - [Timing Functions](#timing-functions)
@@ -413,6 +414,105 @@ Delay execution in microseconds with high precision.
 digitalWrite(17, HIGH);
 delayMicroseconds(100);   // Wait 100 microseconds
 digitalWrite(17, LOW);
+```
+
+### Pin State Query Functions
+
+#### `bool isOutput(int pin)`
+Check if a pin is configured as OUTPUT.
+
+**Parameters:**
+- `pin`: GPIO pin number
+
+**Returns:**
+- `true` if pin is OUTPUT
+- `false` if pin is INPUT, INPUT_PULLUP, or INPUT_PULLDOWN
+
+**Throws:**
+- `PinError`: If pin not initialized (pinMode not called)
+
+**Example:**
+```cpp
+pinMode(17, OUTPUT);
+if (isOutput(17)) {
+    digitalToggle(17);  // Safe to toggle
+}
+```
+
+#### `bool isInput(int pin)`
+Check if a pin is configured as any INPUT variant.
+
+**Parameters:**
+- `pin`: GPIO pin number
+
+**Returns:**
+- `true` if pin is INPUT, INPUT_PULLUP, or INPUT_PULLDOWN
+- `false` if pin is OUTPUT
+
+**Throws:**
+- `PinError`: If pin not initialized (pinMode not called)
+
+**Example:**
+```cpp
+pinMode(18, INPUT_PULLUP);
+if (isInput(18)) {
+    int state = digitalRead(18);
+}
+```
+
+#### `ArduinoPinMode getMode(int pin)`
+Get the current mode of a pin.
+
+**Parameters:**
+- `pin`: GPIO pin number
+
+**Returns:**
+- `ArduinoPinMode` enum value:
+  - `INPUT` (0)
+  - `OUTPUT` (1)
+  - `INPUT_PULLUP` (2)
+  - `INPUT_PULLDOWN` (3)
+
+**Throws:**
+- `PinError`: If pin not initialized (pinMode not called)
+
+**Example:**
+```cpp
+pinMode(17, OUTPUT);
+ArduinoPinMode mode = getMode(17);
+if (mode == OUTPUT) {
+    digitalWrite(17, HIGH);
+}
+```
+
+#### `void digitalToggle(int pin)`
+Toggle an OUTPUT pin between HIGH and LOW states.
+
+**Parameters:**
+- `pin`: GPIO pin number
+
+**Throws:**
+- `PinError`: If pin not initialized or not in OUTPUT mode
+- `GpioAccessError`: If write to GPIO fails
+
+**Notes:**
+- Much more efficient than `digitalRead()` + `digitalWrite()`
+- Internally tracks last written value, no hardware read needed
+- Thread-safe with mutex protection
+- Only works on OUTPUT pins
+
+**Example:**
+```cpp
+pinMode(17, OUTPUT);
+digitalWrite(17, LOW);   // Start LOW
+digitalToggle(17);       // Now HIGH
+digitalToggle(17);       // Now LOW
+
+// LED blink using toggle
+while (true) {
+    digitalToggle(17);
+    delay(500);
+}
 ```
 
 ### Math Functions
