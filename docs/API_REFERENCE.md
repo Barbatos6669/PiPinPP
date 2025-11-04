@@ -550,6 +550,61 @@ Map value from one range to another.
 int pwm_val = map(sensor_val, 0, 1023, 0, 255);
 ```
 
+#### `T sq(T x)` (template)
+Calculate the square of a number (Arduino-specific function).
+
+**Template Parameters:**
+- `T`: Any numeric type (int, long, float, double, etc.)
+
+**Parameters:**
+- `x`: Value to square
+
+**Returns:**
+- Square of x (x²)
+
+**Notes:**
+- More efficient than `std::pow(x, 2)`
+- Works with any numeric type
+- This is the only math function provided by PiPinPP
+
+**Example:**
+```cpp
+int a = sq(5);        // Returns 25
+float b = sq(3.5f);   // Returns 12.25
+double c = sq(-4.0);  // Returns 16.0
+```
+
+**For other math functions, use the standard library:**
+
+- **Square root**: Use `std::sqrt()` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::sqrt(16.0);  // Returns 4.0
+  ```
+
+- **Power**: Use `std::pow()` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::pow(2.0, 3.0);  // Returns 8.0
+  ```
+
+- **Maximum**: Use `std::max()` from `<algorithm>`
+  ```cpp
+  #include <algorithm>
+  int result = std::max(10, 20);  // Returns 20
+  ```
+
+- **Minimum**: Use `std::min()` from `<algorithm>`
+  ```cpp
+  #include <algorithm>
+  int result = std::min(10, 20);  // Returns 10
+  ```
+
+**Why not provide wrappers?**  
+Creating our own `sqrt()`, `pow()`, `max()`, `min()` functions causes naming conflicts 
+when users write `using namespace std;` in their code. The standard library functions 
+are already widely available and well-optimized.
+
 ---
 
 ## Exception Handling

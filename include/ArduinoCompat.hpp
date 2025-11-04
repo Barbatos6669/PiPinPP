@@ -22,6 +22,7 @@
 
 #pragma once
 #include "pin.hpp"
+#include <cmath>
 
 // Arduino-style constants (simple and familiar)
 constexpr bool HIGH = true;
@@ -367,3 +368,33 @@ ArduinoPinMode getMode(int pin);
  * @endcode
  */
 void digitalToggle(int pin);
+
+/* ------------------------------------------------------------ */
+/*                  EXTENDED MATH FUNCTIONS                     */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Calculate the square of a number (Arduino-compatible function)
+ * 
+ * Returns x * x. More efficient than using pow(x, 2).
+ * Works with any numeric type (int, long, float, double).
+ * 
+ * @tparam T Numeric type (int, long, float, double, etc.)
+ * @param x Value to square
+ * @return T Square of x (x²)
+ * 
+ * @example
+ * int a = sq(5);        // Returns 25
+ * float b = sq(3.5f);   // Returns 12.25
+ * double c = sq(-4.0);  // Returns 16.0
+ */
+template<typename T>
+inline T sq(T x) {
+    return x * x;
+}
+
+// Note: For sqrt(), pow(), max(), min() use the standard library functions:
+// - #include <cmath>      for std::sqrt() and std::pow()
+// - #include <algorithm>  for std::max() and std::min()
+// These are already available in C++ and creating wrappers causes ambiguity
+// when users write "using namespace std;" in their code.

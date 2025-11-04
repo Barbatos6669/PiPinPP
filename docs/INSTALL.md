@@ -29,7 +29,7 @@ sudo apt install -y doxygen graphviz
 
 ## Quick Installation
 
-### Method 1: Clone and Build
+### Method 1: Install Latest Release (v0.3.2)
 
 1. **Clone the repository:**
    ```bash
@@ -37,27 +37,53 @@ sudo apt install -y doxygen graphviz
    cd PiPinPP
    ```
 
-2. **Build the library:**
+2. **Checkout the latest version (optional):**
    ```bash
-   # Create build directory
-   mkdir build && cd build
+   # For latest release
+   git checkout v0.3.2
    
-   # Configure with CMake (when available)
-   # cmake ..
-   
-   # For now, manual compilation:
-   cd ..
-   g++ -std=c++11 -I./include -c src/pin.cpp -o build/pin.o
-   ar rcs build/libPiPinPP.a build/pin.o
+   # Or for development branch
+   # git checkout main
    ```
 
-3. **Build and run tests:**
+3. **Build and install:**
    ```bash
-   cd tests
-   g++ -std=c++11 -I../include -L../build test.cpp -lPiPinPP -lgpiod -o test
+   # Use the build script (recommended)
+   ./build.sh
    
-   # Run test (requires GPIO access)
-   sudo ./test
+   # Install system-wide (requires sudo)
+   cd build
+   sudo make install
+   ```
+
+4. **Verify installation:**
+   ```bash
+   # Check with pkg-config
+   pkg-config --modversion pipinpp
+   # Should output: 0.3.2
+   
+   # Check installed files
+   ls /usr/local/include/pipinpp/
+   ls /usr/local/lib/libpipinpp.*
+   ```
+
+### Method 2: Build Without Installing
+
+If you just want to build and test without system-wide installation:
+
+1. **Clone and build:**
+   ```bash
+   git clone https://github.com/Barbatos6669/PiPinPP.git
+   cd PiPinPP
+   ./build.sh
+   ```
+
+2. **Run tests:**
+   ```bash
+   cd build
+   ctest --output-on-failure
+   # Or run specific examples
+   ./examples/example_basic_led
    ```
 
 ## Manual Compilation

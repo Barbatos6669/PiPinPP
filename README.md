@@ -10,13 +10,17 @@
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.0)
+[![Version](https://img.shields.io/badge/version-0.3.2-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.2)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
-[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.3.0-brightgreen)](ROADMAP.md)
+[![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-📍 **[Development Roadmap](ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.3.2](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+
+---
+
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh | sudo bash`
 
 ---
 
@@ -39,9 +43,9 @@
 
 ## Features
 
-**v0.3.0 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with advanced features!
+**v0.3.2 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with advanced features!
 
-### ✅ All v0.3.0 Features
+### ✅ Current Features (v0.3.2)
 
 - ✅ **Digital input/output**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
 - ✅ **Pin abstraction**: Simple, object-oriented pin management with RAII
@@ -56,20 +60,22 @@
 - ✅ **Pull resistors**: Built-in `INPUT_PULLUP` and `INPUT_PULLDOWN` support
 - ✅ **Arduino API**: Easy transition from Arduino sketches
 
-### Advanced Features (v0.3.0)
+### Advanced Features (v0.3.0-v0.3.2)
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
+- ✅ **Math functions**: Arduino-compatible `sq()` function (v0.3.2)
 
-### Quality & Testing (v0.3.0)
+### Quality & Testing (v0.3.0+)
 - ✅ **GoogleTest framework**: 40 comprehensive automated tests
 - ✅ **GitHub Actions CI/CD**: Multi-platform builds, automated testing, CodeQL security analysis
 - ✅ **Modern CMake**: find_package() support, shared/static library options, pkg-config compatibility
-- ✅ **9 Examples**: Comprehensive demonstrations from basic to advanced usage
+- ✅ **10 Examples**: Comprehensive demonstrations from basic to advanced usage
+- ✅ **Clean project structure**: Organized documentation, no root clutter (v0.3.2)
 
-**v0.3.0 is production-ready with 100% feature completion!**
+**v0.3.2 is production-ready with excellent Arduino compatibility!**
 
 ### Longer-Term Goals (v0.4.0+)
 
@@ -82,26 +88,29 @@
 
 ## Installation
 
-### Quick Install (Recommended)
+### 🚀 One-Line Install (Easiest!)
 
-The easiest way to install PiPinPP on your Raspberry Pi:
+Install PiPinPP v0.3.2 with a single command - just like pip!
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh | sudo bash
 ```
 
-Or download and inspect the script first:
+**What this does:**
+- ✅ Installs all dependencies (build tools, libgpiod v2)
+- ✅ Downloads and builds PiPinPP v0.3.2
+- ✅ Installs to `/usr/local` (system-wide)
+- ✅ Configures GPIO permissions (adds you to `gpio` group)
+- ✅ Sets up udev rules for non-sudo access
+- ✅ Verifies installation
+
+**Trust but verify?** Download and inspect the script first:
 
 ```bash
-wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh
+wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh
+less install.sh  # Review the script
 sudo bash install.sh
 ```
-
-This will:
-- Install all dependencies (including libgpiod v2)
-- Build and install PiPinPP to `/usr/local`
-- Configure GPIO permissions
-- Add your user to the `gpio` group
 
 ### Manual Installation
 
@@ -115,14 +124,19 @@ sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
 ```bash
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
-sudo make install
-sudo ldconfig
+git checkout v0.3.2  # Install latest stable release
+./build.sh           # Build with all tests
+cd build
+sudo make install    # Install to /usr/local
+sudo ldconfig        # Update library cache
 ```
 
-**3. Configure permissions (optional but recommended):**
+**3. Verify installation:**
+```bash
+pkg-config --modversion pipinpp  # Should show: 0.3.2
+```
+
+**4. Configure permissions (optional but recommended):**
 ```bash
 sudo usermod -a -G gpio $USER
 # Log out and back in for this to take effect
@@ -147,7 +161,7 @@ target_link_libraries(your_app PiPinPP::pipinpp)
 
 **We're just getting started and welcome your ideas, feedback, and contributions!**
 
-📋 **Check our [ROADMAP.md](ROADMAP.md) to see what we're working on next**
+📋 **Check our [ROADMAP.md](docs/planning/ROADMAP.md) to see what we're working on next**
 
 ## 💬 Community & Support
 
@@ -168,7 +182,7 @@ For formal bug reports and feature requests, please use GitHub Issues.
 - Pull requests and documentation help are always welcome!
 - Look for `good first issue` labels for beginner-friendly tasks.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for detailed contribution guidelines.
 
 ---
 
