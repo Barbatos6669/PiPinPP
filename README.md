@@ -20,6 +20,10 @@
 
 ---
 
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh | sudo bash`
+
+---
+
 ## Project Vision
 
 **PiPin++** aims to make Raspberry Pi GPIO control easy and familiar for makers, especially those coming from Arduino. Our goal is a modern, lightweight, and extensible C++ library that feels instantly comfortable for Arduino users—removing the hassle of adapting to Pi-specific APIs.
@@ -84,29 +88,29 @@
 
 ## Installation
 
-### Quick Install (Recommended)
+### 🚀 One-Line Install (Easiest!)
 
-The easiest way to install PiPinPP on your Raspberry Pi:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh | sudo bash
-```
-
-Or follow the [detailed installation guide](docs/INSTALL.md).
-```
-
-Or download and inspect the script first:
+Install PiPinPP v0.3.2 with a single command - just like pip!
 
 ```bash
-wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh | sudo bash
+```
+
+**What this does:**
+- ✅ Installs all dependencies (build tools, libgpiod v2)
+- ✅ Downloads and builds PiPinPP v0.3.2
+- ✅ Installs to `/usr/local` (system-wide)
+- ✅ Configures GPIO permissions (adds you to `gpio` group)
+- ✅ Sets up udev rules for non-sudo access
+- ✅ Verifies installation
+
+**Trust but verify?** Download and inspect the script first:
+
+```bash
+wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.2/install.sh
+less install.sh  # Review the script
 sudo bash install.sh
 ```
-
-This will:
-- Install all dependencies (including libgpiod v2)
-- Build and install PiPinPP to `/usr/local`
-- Configure GPIO permissions
-- Add your user to the `gpio` group
 
 ### Manual Installation
 
