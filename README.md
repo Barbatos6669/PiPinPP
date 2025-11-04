@@ -14,9 +14,9 @@
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
-[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.3.0-brightgreen)](ROADMAP.md)
+[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.3.0-brightgreen)](docs/planning/ROADMAP.md)
 
-📍 **[Development Roadmap](ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
 
 ---
 
@@ -90,6 +90,9 @@ The easiest way to install PiPinPP on your Raspberry Pi:
 curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/main/install.sh | sudo bash
 ```
 
+Or follow the [detailed installation guide](docs/INSTALL.md).
+```
+
 Or download and inspect the script first:
 
 ```bash
@@ -147,7 +150,7 @@ target_link_libraries(your_app PiPinPP::pipinpp)
 
 **We're just getting started and welcome your ideas, feedback, and contributions!**
 
-📋 **Check our [ROADMAP.md](ROADMAP.md) to see what we're working on next**
+📋 **Check our [ROADMAP.md](docs/planning/ROADMAP.md) to see what we're working on next**
 
 ## 💬 Community & Support
 
@@ -168,7 +171,7 @@ For formal bug reports and feature requests, please use GitHub Issues.
 - Pull requests and documentation help are always welcome!
 - Look for `good first issue` labels for beginner-friendly tasks.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for detailed contribution guidelines.
 
 ---
 
