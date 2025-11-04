@@ -10,13 +10,13 @@
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.0)
+[![Version](https://img.shields.io/badge/version-0.3.2-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.2)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
-[![Roadmap](https://img.shields.io/badge/roadmap-100%25%20v0.3.0-brightgreen)](docs/planning/ROADMAP.md)
+[![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.2.0](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.3.2](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
 
 ---
 
@@ -39,9 +39,9 @@
 
 ## Features
 
-**v0.3.0 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with advanced features!
+**v0.3.2 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with advanced features!
 
-### ✅ All v0.3.0 Features
+### ✅ Current Features (v0.3.2)
 
 - ✅ **Digital input/output**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
 - ✅ **Pin abstraction**: Simple, object-oriented pin management with RAII
@@ -56,20 +56,22 @@
 - ✅ **Pull resistors**: Built-in `INPUT_PULLUP` and `INPUT_PULLDOWN` support
 - ✅ **Arduino API**: Easy transition from Arduino sketches
 
-### Advanced Features (v0.3.0)
+### Advanced Features (v0.3.0-v0.3.2)
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
+- ✅ **Math functions**: Arduino-compatible `sq()` function (v0.3.2)
 
-### Quality & Testing (v0.3.0)
+### Quality & Testing (v0.3.0+)
 - ✅ **GoogleTest framework**: 40 comprehensive automated tests
 - ✅ **GitHub Actions CI/CD**: Multi-platform builds, automated testing, CodeQL security analysis
 - ✅ **Modern CMake**: find_package() support, shared/static library options, pkg-config compatibility
-- ✅ **9 Examples**: Comprehensive demonstrations from basic to advanced usage
+- ✅ **10 Examples**: Comprehensive demonstrations from basic to advanced usage
+- ✅ **Clean project structure**: Organized documentation, no root clutter (v0.3.2)
 
-**v0.3.0 is production-ready with 100% feature completion!**
+**v0.3.2 is production-ready with excellent Arduino compatibility!**
 
 ### Longer-Term Goals (v0.4.0+)
 
