@@ -120,14 +120,19 @@ sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
 ```bash
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
-sudo make install
-sudo ldconfig
+git checkout v0.3.2  # Install latest stable release
+./build.sh           # Build with all tests
+cd build
+sudo make install    # Install to /usr/local
+sudo ldconfig        # Update library cache
 ```
 
-**3. Configure permissions (optional but recommended):**
+**3. Verify installation:**
+```bash
+pkg-config --modversion pipinpp  # Should show: 0.3.2
+```
+
+**4. Configure permissions (optional but recommended):**
 ```bash
 sudo usermod -a -G gpio $USER
 # Log out and back in for this to take effect
