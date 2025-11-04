@@ -2,10 +2,10 @@
 
 This document tracks the development roadmap for PiPinPP, a modern C++ GPIO library for Raspberry Pi designed to be familiar for Arduino makers.
 
-**Current Version**: 0.3.0 (Released November 3, 2025)  
+**Current Version**: 0.3.2 (Released November 4, 2025)  
 **Next Target**: 0.4.0 (Communication Protocols & Hardware PWM)  
-**Last Updated**: November 3, 2025  
-**Progress**: v0.3.0 Complete ✅ (100%) | v0.4.0 Planning Phase
+**Last Updated**: November 4, 2025  
+**Progress**: v0.3.2 Complete ✅ (100%) | v0.4.0 Planning Phase
 
 ---
 

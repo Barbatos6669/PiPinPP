@@ -2,14 +2,20 @@
 
 This checklist tracks the planned work for PiPinPP development.
 
-**Current Version**: v0.3.0 (Released November 3, 2025)  
+**Current Version**: v0.3.2 (Released November 4, 2025)  
 **Next Target**: v0.4.0 (Communication Protocols & Hardware PWM)
 
 Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ---
 
-## 🎉 v0.3.0 - COMPLETE! (Released November 3, 2025)
+## 🎉 v0.3.2 - CURRENT! (Released November 4, 2025)
+
+See CHANGELOG.md for full v0.3.2 release notes.
+
+---
+
+## 🎉 v0.3.0-v0.3.1 - COMPLETE! (Released November 3, 2025)
 
 ## Easy
 
@@ -546,4 +552,4 @@ inline double sqrt(double x) { return std::sqrt(x); }
 
 ---
 
-*Last Updated: November 3, 2025 - v0.3.0 Released, Planning v0.4.0*
+*Last Updated: November 4, 2025 - v0.3.2 Released, Planning v0.4.0*

@@ -1,7 +1,7 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.0  
-**Date**: November 3, 2025
+**Version**: 0.3.2  
+**Date**: November 4, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino compatibility, interrupts, PWM, and professional tooling.
 
