@@ -60,6 +60,7 @@
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
+- ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
 
 ### Quality & Testing (v0.3.0)

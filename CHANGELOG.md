@@ -1,9 +1,23 @@
 # Changelog
 
-All notable changes to PiPinPP will be documented in this file.
+All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.3.1] - 2025-11-04
+
+### Added
+- **Pin state query functions** - Check and query pin configuration (v0.3.1)
+  - `bool isOutput(int pin)` - Check if pin is configured as OUTPUT
+  - `bool isInput(int pin)` - Check if pin is any INPUT variant (INPUT, INPUT_PULLUP, INPUT_PULLDOWN)
+  - `ArduinoPinMode getMode(int pin)` - Get exact pin mode
+  - `void digitalToggle(int pin)` - Efficiently toggle OUTPUT pin state
+  - Thread-safe with mutex protection
+  - Proper error handling with PinError exceptions
+  - Internal state tracking for efficient toggle without hardware reads
+  - Full support for INPUT_PULLDOWN mode
+  - Updated API documentation with examples
 
 ## [0.3.0] - 2025-11-03 🎉
 

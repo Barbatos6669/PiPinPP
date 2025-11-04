@@ -30,8 +30,15 @@
 #include <thread>
 #include <mutex>
 
+// Structure to store pin information
+struct PinInfo {
+    std::unique_ptr<Pin> pin;
+    ArduinoPinMode mode;
+    bool lastValue;
+};
+
 // Global storage for Arduino-style pins
-static std::unordered_map<int, std::unique_ptr<Pin>> globalPins;
+static std::unordered_map<int, PinInfo> globalPins;
 // Mutex to protect globalPins from concurrent access
 static std::mutex globalPinsMutex;
 
@@ -43,17 +50,31 @@ void pinMode(int pin, int mode)
     
     // Create new pin with specified mode
     // Exceptions will propagate naturally (InvalidPinError, GpioAccessError)
+    PinInfo pinInfo;
     if (mode == OUTPUT) {
-        globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
+        pinInfo.pin = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
+        pinInfo.mode = ArduinoPinMode::OUTPUT;
+        pinInfo.lastValue = false;
     } else if (mode == INPUT_PULLUP) {
-        globalPins[pin] = std::make_unique<Pin>(pin, PinMode::INPUT_PULLUP);
+        pinInfo.pin = std::make_unique<Pin>(pin, PinMode::INPUT_PULLUP);
+        pinInfo.mode = ArduinoPinMode::INPUT_PULLUP;
+        pinInfo.lastValue = false;
+    } else if (mode == INPUT_PULLDOWN) {
+        pinInfo.pin = std::make_unique<Pin>(pin, PinMode::INPUT_PULLDOWN);
+        pinInfo.mode = ArduinoPinMode::INPUT_PULLDOWN;
+        pinInfo.lastValue = false;
     } else {
-        globalPins[pin] = std::make_unique<Pin>(pin, PinDirection::INPUT);
+        pinInfo.pin = std::make_unique<Pin>(pin, PinDirection::INPUT);
+        pinInfo.mode = ArduinoPinMode::INPUT;
+        pinInfo.lastValue = false;
     }
+    
+    globalPins[pin] = std::move(pinInfo);
     
     PIPINPP_LOG_INFO("pinMode: Set pin " << pin << " to " 
                      << ((mode == OUTPUT) ? "OUTPUT" : 
-                         (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : "INPUT"));
+                         (mode == INPUT_PULLUP) ? "INPUT_PULLUP" : 
+                         (mode == INPUT_PULLDOWN) ? "INPUT_PULLDOWN" : "INPUT"));
 }
 
 void digitalWrite(int pin, bool value) 
@@ -64,8 +85,10 @@ void digitalWrite(int pin, bool value)
         throw InvalidPinError(pin, "Pin not initialized. Call pinMode() first.");
     }
     
-    bool success = it->second->write(value);
-    if (!success) {
+    bool success = it->second.pin->write(value);
+    if (success) {
+        it->second.lastValue = value;  // Track the last written value
+    } else {
         throw GpioAccessError("pin " + std::to_string(pin), "Failed to write to GPIO pin");
     }
 }
@@ -78,7 +101,7 @@ int digitalRead(int pin)
         throw InvalidPinError(pin, "Pin not initialized. Call pinMode() first.");
     }
     
-    return it->second->read();
+    return it->second.pin->read();
 }
 
 // Removed duplicate delay(unsigned long ms) implementation
@@ -224,3 +247,63 @@ void analogWrite(int pin, int value)
     
     PIPINPP_LOG_INFO("analogWrite: Pin " << pin << " set to " << value);
 }   
+
+// ============================================================================
+// PIN STATE QUERY FUNCTIONS (v0.3.1) Edited: 2025-11-04
+// ============================================================================
+
+bool isOutput(int pin) 
+{
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
+    auto it = globalPins.find(pin);
+    if (it == globalPins.end()) {
+        throw PinError("Pin " + std::to_string(pin) + " not initialized. Call pinMode() first.");
+    }
+    return it->second.mode == ArduinoPinMode::OUTPUT;
+}
+
+bool isInput(int pin) 
+{
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
+    auto it = globalPins.find(pin);
+    if (it == globalPins.end()) {
+        throw PinError("Pin " + std::to_string(pin) + " not initialized. Call pinMode() first.");
+    }
+    ArduinoPinMode mode = it->second.mode;
+    return mode == ArduinoPinMode::INPUT || 
+           mode == ArduinoPinMode::INPUT_PULLUP || 
+           mode == ArduinoPinMode::INPUT_PULLDOWN;
+}
+
+ArduinoPinMode getMode(int pin) 
+{
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
+    auto it = globalPins.find(pin);
+    if (it == globalPins.end()) {
+        throw PinError("Pin " + std::to_string(pin) + " not initialized. Call pinMode() first.");
+    }
+    return it->second.mode;
+}
+
+void digitalToggle(int pin) 
+{
+    std::lock_guard<std::mutex> lock(globalPinsMutex);
+    auto it = globalPins.find(pin);
+    if (it == globalPins.end()) {
+        throw PinError("Pin " + std::to_string(pin) + " not initialized. Call pinMode() first.");
+    }
+    
+    if (it->second.mode != ArduinoPinMode::OUTPUT) {
+        throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT to toggle. "
+                      "Current mode: " + std::to_string(static_cast<int>(it->second.mode)));
+    }
+    
+    // Toggle efficiently - no need to read current value
+    bool newValue = !it->second.lastValue;
+    bool success = it->second.pin->write(newValue);
+    if (success) {
+        it->second.lastValue = newValue;  // Only update if write succeeded
+    } else {
+        throw GpioAccessError("pin " + std::to_string(pin), "Failed to toggle GPIO pin");
+    }
+}
