@@ -213,13 +213,15 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Validates write() success and throws GpioAccessError on failure
   - Only works on OUTPUT pins (throws PinError for INPUT)
 
-- [ ] Extended math functions [easy]
-  - `sq(x)` - Square a number (x²)
-  - `pow(base, exponent)` - Use std::pow wrapper
-  - `sqrt(x)` - Use std::sqrt wrapper
-  - `max(a, b)` - Use std::max wrapper
-  - `min(a, b)` - Use std::min wrapper
-  - Note: Avoid conflicts with std library (use inline or namespace)
+- ✅ Extended math functions [easy] - **COMPLETE (v0.3.2)**
+  - `sq(x)` - Square a number (x²) - template function
+  - `pow(base, exponent)` - std::pow wrapper for Arduino compatibility
+  - `sqrt(x)` - std::sqrt wrapper for Arduino compatibility
+  - `max(a, b)` - template function for any comparable type
+  - `min(a, b)` - template function for any comparable type
+  - Header-only inline implementations for optimal performance
+  - Full Doxygen documentation with usage examples
+  - Updated API_REFERENCE.md with Extended Math Functions section
 
 - [ ] Trigonometry functions [easy]
   - `sin(rad)`, `cos(rad)`, `tan(rad)` - Use std::sin/cos/tan wrappers

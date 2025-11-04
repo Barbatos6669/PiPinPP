@@ -22,6 +22,7 @@
 
 #pragma once
 #include "pin.hpp"
+#include <cmath>
 
 // Arduino-style constants (simple and familiar)
 constexpr bool HIGH = true;
@@ -367,3 +368,104 @@ ArduinoPinMode getMode(int pin);
  * @endcode
  */
 void digitalToggle(int pin);
+
+/* ------------------------------------------------------------ */
+/*                  EXTENDED MATH FUNCTIONS                     */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Calculate the square of a number (Arduino-compatible function)
+ * 
+ * Returns x * x. More efficient than using pow(x, 2).
+ * Works with any numeric type (int, long, float, double).
+ * 
+ * @tparam T Numeric type (int, long, float, double, etc.)
+ * @param x Value to square
+ * @return T Square of x (x²)
+ * 
+ * @example
+ * int a = sq(5);        // Returns 25
+ * float b = sq(3.5f);   // Returns 12.25
+ * double c = sq(-4.0);  // Returns 16.0
+ */
+template<typename T>
+inline T sq(T x) {
+    return x * x;
+}
+
+/**
+ * @brief Calculate the square root of a number (Arduino-compatible function)
+ * 
+ * Wrapper for std::sqrt(). Returns the square root of x.
+ * 
+ * @param x Value to take square root of (must be non-negative)
+ * @return double Square root of x (√x)
+ * 
+ * @note Returns NaN if x is negative
+ * 
+ * @example
+ * double a = sqrt(16.0);   // Returns 4.0
+ * double b = sqrt(2.0);    // Returns 1.414213...
+ * double c = sqrt(0.25);   // Returns 0.5
+ */
+inline double sqrt(double x) {
+    return std::sqrt(x);
+}
+
+/**
+ * @brief Calculate base raised to the power of exponent (Arduino-compatible function)
+ * 
+ * Wrapper for std::pow(). Returns base^exponent.
+ * 
+ * @param base Base value
+ * @param exponent Power to raise base to
+ * @return double Result of base^exponent
+ * 
+ * @example
+ * double a = pow(2.0, 3.0);    // Returns 8.0 (2³)
+ * double b = pow(10.0, -2.0);  // Returns 0.01 (10⁻²)
+ * double c = pow(4.0, 0.5);    // Returns 2.0 (√4)
+ */
+inline double pow(double base, double exponent) {
+    return std::pow(base, exponent);
+}
+
+/**
+ * @brief Return the maximum of two values (Arduino-compatible function)
+ * 
+ * Returns the larger of two values. Works with any comparable type.
+ * 
+ * @tparam T Comparable type (int, long, float, double, etc.)
+ * @param a First value
+ * @param b Second value
+ * @return T The larger of a and b
+ * 
+ * @example
+ * int a = max(10, 20);      // Returns 20
+ * float b = max(3.5f, 2.1f); // Returns 3.5
+ * long c = max(-5L, -10L);  // Returns -5
+ */
+template<typename T>
+inline T max(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+/**
+ * @brief Return the minimum of two values (Arduino-compatible function)
+ * 
+ * Returns the smaller of two values. Works with any comparable type.
+ * 
+ * @tparam T Comparable type (int, long, float, double, etc.)
+ * @param a First value
+ * @param b Second value
+ * @return T The smaller of a and b
+ * 
+ * @example
+ * int a = min(10, 20);      // Returns 10
+ * float b = min(3.5f, 2.1f); // Returns 2.1
+ * long c = min(-5L, -10L);  // Returns -10
+ */
+template<typename T>
+inline T min(T a, T b) {
+    return (a < b) ? a : b;
+}

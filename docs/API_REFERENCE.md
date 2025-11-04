@@ -550,6 +550,109 @@ Map value from one range to another.
 int pwm_val = map(sensor_val, 0, 1023, 0, 255);
 ```
 
+#### `T sq(T x)` (template)
+Calculate the square of a number.
+
+**Template Parameters:**
+- `T`: Any numeric type (int, long, float, double, etc.)
+
+**Parameters:**
+- `x`: Value to square
+
+**Returns:**
+- Square of x (x²)
+
+**Notes:**
+- More efficient than `pow(x, 2)`
+- Works with any numeric type
+
+**Example:**
+```cpp
+int a = sq(5);        // Returns 25
+float b = sq(3.5f);   // Returns 12.25
+double c = sq(-4.0);  // Returns 16.0
+```
+
+#### `double sqrt(double x)`
+Calculate the square root of a number.
+
+**Parameters:**
+- `x`: Value to take square root of (must be non-negative)
+
+**Returns:**
+- Square root of x (√x)
+
+**Notes:**
+- Returns NaN if x is negative
+- Wrapper for `std::sqrt()`
+
+**Example:**
+```cpp
+double a = sqrt(16.0);   // Returns 4.0
+double b = sqrt(2.0);    // Returns 1.414213...
+double c = sqrt(0.25);   // Returns 0.5
+```
+
+#### `double pow(double base, double exponent)`
+Calculate base raised to the power of exponent.
+
+**Parameters:**
+- `base`: Base value
+- `exponent`: Power to raise base to
+
+**Returns:**
+- Result of base^exponent
+
+**Notes:**
+- Wrapper for `std::pow()`
+
+**Example:**
+```cpp
+double a = pow(2.0, 3.0);    // Returns 8.0 (2³)
+double b = pow(10.0, -2.0);  // Returns 0.01 (10⁻²)
+double c = pow(4.0, 0.5);    // Returns 2.0 (√4)
+```
+
+#### `T max(T a, T b)` (template)
+Return the maximum of two values.
+
+**Template Parameters:**
+- `T`: Any comparable type (int, long, float, double, etc.)
+
+**Parameters:**
+- `a`: First value
+- `b`: Second value
+
+**Returns:**
+- The larger of a and b
+
+**Example:**
+```cpp
+int a = max(10, 20);      // Returns 20
+float b = max(3.5f, 2.1f); // Returns 3.5
+long c = max(-5L, -10L);  // Returns -5
+```
+
+#### `T min(T a, T b)` (template)
+Return the minimum of two values.
+
+**Template Parameters:**
+- `T`: Any comparable type (int, long, float, double, etc.)
+
+**Parameters:**
+- `a`: First value
+- `b`: Second value
+
+**Returns:**
+- The smaller of a and b
+
+**Example:**
+```cpp
+int a = min(10, 20);      // Returns 10
+float b = min(3.5f, 2.1f); // Returns 2.1
+long c = min(-5L, -10L);  // Returns -10
+```
+
 ---
 
 ## Exception Handling
