@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **Terminology Update** - Changed "Arduino-compatible" to "Arduino-inspired" throughout project
+  - Updated project description, documentation, code comments, and examples
+  - Clarifies this is a Raspberry Pi library with an API familiar to Arduino users
+  - Avoids confusion about Arduino hardware compatibility or official endorsement
+  - No functional changes - documentation and branding clarity only
+
 ## [0.3.4] - 2025-11-05
 
 ### Added
