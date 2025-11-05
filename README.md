@@ -16,7 +16,7 @@
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.3.4](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+� **[Getting Started](docs/GETTING_STARTED.md)** | � **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
 
 ---
 
@@ -67,6 +67,21 @@ sudo ./blink
 ```
 
 That's it! If you know Arduino, you already know PiPin++. 🚀
+
+---
+
+## 📚 New to GPIO? Start Here!
+
+**Complete beginner?** We've got you covered:
+
+1. 🚀 **[Getting Started Guide](docs/GETTING_STARTED.md)** - Your first LED in 10 minutes
+2. 📚 **[Tutorials](docs/tutorials/)** - Step-by-step projects (Traffic Light, Buttons, PWM)
+3. 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Fix common issues
+4. 📖 **[API Reference](docs/API_REFERENCE.md)** - Complete function documentation
+
+**Coming from Arduino?** Check out:
+- [Arduino Migration Example](examples/arduino_migration/) - Side-by-side comparison
+- [Arduino Style Example](examples/arduino_style/) - Familiar `setup()` and `loop()`
 
 ---
 
