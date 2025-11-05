@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2025-11-05
+
+### Added
+- **Random number functions** - Arduino-compatible random number generation
+  - `randomSeed(seed)` - Initialize random number generator with seed value
+  - `random(max)` - Generate random number in range [0, max)
+  - `random(min, max)` - Generate random number in range [min, max)
+  - Uses C++ `<random>` library with Mersenne Twister engine (std::mt19937)
+  - Thread-safe implementation with mutex protection
+  - Perfect for LED patterns, delays, animations, and games
+
+- **Bit manipulation functions** - Arduino-compatible bit operations
+  - `bit(n)` - Compute value of bit at position n (1 << n)
+  - `bitRead(x, n)` - Read value of bit n from value x
+  - `bitWrite(x, n, b)` - Write bit b to position n in value x
+  - `bitSet(x, n)` - Set bit n to 1
+  - `bitClear(x, n)` - Clear bit n to 0
+  - All inline functions (zero runtime overhead)
+  - Perfect for status flags, hardware registers, and protocol implementation
+
+- **Byte extraction functions** - Arduino-compatible byte manipulation
+  - `highByte(x)` - Extract high-order byte from 16-bit word (bits 8-15)
+  - `lowByte(x)` - Extract low-order byte from 16-bit word (bits 0-7)
+  - Inline functions for efficient byte-level operations
+  - Useful for sensor data transmission and protocol handling
+
+- **Comprehensive utility_functions example** (461 lines)
+  - Random number generation demonstrations
+  - Bit manipulation examples with visual binary representations
+  - Byte extraction examples with practical sensor data scenarios
+  - Status flags management example
+  - Random LED patterns generation
+  - Complete with tables, diagrams, and practical applications
+
+### Documentation
+- Character classification functions documented in ArduinoCompat.hpp
+  - Explains use of std::isalpha(), std::isdigit(), std::isspace(), etc.
+  - Avoids std:: library conflicts by not providing wrappers
+  - Lists all available <cctype> functions
+- All new functions fully documented with Doxygen comments
+- Updated TODO.md marking tasks complete
+
 ## [0.3.3] - 2025-11-05
 
 ### Added
