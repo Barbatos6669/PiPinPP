@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.3.6] - 2025-11-05
+
+### Added
+- **Advanced I/O Functions** - Implemented 5 new functions for sensor and peripheral interfacing
+  - `pulseIn(pin, state, timeout)` - Measure pulse widths for ultrasonic sensors (HC-SR04), IR receivers
+  - `pulseInLong(pin, state, timeout)` - Extended range pulse measurement (inline wrapper on Pi)
+  - `shiftOut(dataPin, clockPin, bitOrder, value)` - Control shift registers (74HC595) for output expansion
+  - `shiftIn(dataPin, clockPin, bitOrder)` - Read from shift registers (74HC165) for input expansion
+  - `tone(pin, frequency, duration)` - Generate audio tones (31Hz-65kHz) for buzzers and speakers
+  - `noTone(pin)` - Stop tone generation
+  - `LSBFIRST` and `MSBFIRST` constants for bit order control
+- **Advanced I/O Example** - Comprehensive demonstration (600+ lines)
+  - `examples/advanced_io/main.cpp` - Complete usage examples
+  - Ultrasonic distance sensor simulation with HC-SR04
+  - LED control with 74HC595 shift registers
+  - Button reading with 74HC165 shift registers
+  - Musical note generation and tone examples
+  - Real-world application ideas
+
+### Changed
+- **TODO.md Updates** - Marked completed tasks from v0.3.1-v0.3.4
+  - Extended Math functions (sq, DEG_TO_RAD, RAD_TO_DEG)
+  - Random number generation (random, randomSeed)
+  - Bits and Bytes manipulation (bit operations, highByte, lowByte)
+  - Character functions (documented to use std::)
+  - Pin query functions (isOutput, isInput, getMode, digitalToggle)
+
 ## [0.3.5] - 2025-11-05
 
 ### Changed

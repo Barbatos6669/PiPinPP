@@ -635,3 +635,178 @@ inline unsigned char lowByte(unsigned int x) {
 // - std::isprint(ch)   - Check if printable
 // - std::iscntrl(ch)   - Check if control character
 // - std::isgraph(ch)   - Check if graphical character
+
+/* ------------------------------------------------------------ */
+/*                    ADVANCED I/O FUNCTIONS                    */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Measure the length of a pulse on a pin (Arduino-inspired)
+ * 
+ * Reads a pulse (either HIGH or LOW) on a pin. Times how long the pin
+ * remains in that state. Useful for reading sensors like ultrasonic
+ * distance sensors, infrared receivers, or any pulse-based communication.
+ * 
+ * @param pin GPIO pin number to read
+ * @param state Pulse state to measure (HIGH or LOW)
+ * @param timeout Maximum time to wait in microseconds (default: 1000000 = 1 second)
+ * @return unsigned long Pulse length in microseconds, or 0 if timeout
+ * 
+ * @note Pin is automatically configured as INPUT if not already set
+ * @note This is a blocking function - will wait up to timeout microseconds
+ * @note Accuracy depends on system load (typical accuracy ±10µs)
+ * 
+ * @example
+ * // Read ultrasonic sensor (HC-SR04)
+ * pinMode(TRIG_PIN, OUTPUT);
+ * pinMode(ECHO_PIN, INPUT);
+ * 
+ * // Send trigger pulse
+ * digitalWrite(TRIG_PIN, LOW);
+ * delayMicroseconds(2);
+ * digitalWrite(TRIG_PIN, HIGH);
+ * delayMicroseconds(10);
+ * digitalWrite(TRIG_PIN, LOW);
+ * 
+ * // Measure echo pulse
+ * unsigned long duration = pulseIn(ECHO_PIN, HIGH);
+ * float distance_cm = duration * 0.034 / 2;  // Speed of sound
+ */
+unsigned long pulseIn(int pin, bool state, unsigned long timeout = 1000000);
+
+/**
+ * @brief Measure the length of a pulse on a pin with extended range (Arduino-inspired)
+ * 
+ * Similar to pulseIn() but returns unsigned long for measuring longer pulses.
+ * Use this for pulses longer than ~71 minutes.
+ * 
+ * @param pin GPIO pin number to read
+ * @param state Pulse state to measure (HIGH or LOW)
+ * @param timeout Maximum time to wait in microseconds (default: 1000000 = 1 second)
+ * @return unsigned long Pulse length in microseconds, or 0 if timeout
+ * 
+ * @note Identical to pulseIn() on Raspberry Pi (both return unsigned long)
+ * @note Provided for Arduino code compatibility
+ */
+inline unsigned long pulseInLong(int pin, bool state, unsigned long timeout = 1000000) {
+    return pulseIn(pin, state, timeout);
+}
+
+/**
+ * @brief Shift out a byte of data one bit at a time (Arduino-inspired)
+ * 
+ * Shifts out a byte of data using bit-banging. Commonly used with shift
+ * registers (74HC595) to expand the number of outputs.
+ * 
+ * @param dataPin GPIO pin for serial data
+ * @param clockPin GPIO pin for clock signal
+ * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
+ * @param value Byte value to shift out (0-255)
+ * 
+ * @note Pins are automatically configured as OUTPUT
+ * @note Clock idles LOW, pulses HIGH to shift each bit
+ * @note No separate latch pin - use digitalWrite() to control latch separately
+ * 
+ * @example
+ * // Control 8 LEDs with 74HC595 shift register
+ * const int DATA_PIN = 17;
+ * const int CLOCK_PIN = 27;
+ * const int LATCH_PIN = 22;
+ * 
+ * pinMode(LATCH_PIN, OUTPUT);
+ * digitalWrite(LATCH_PIN, LOW);  // Begin transmission
+ * shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, 0b10101010);  // Pattern
+ * digitalWrite(LATCH_PIN, HIGH);  // Latch data to outputs
+ */
+void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value);
+
+/**
+ * @brief Shift in a byte of data one bit at a time (Arduino-inspired)
+ * 
+ * Shifts in a byte of data using bit-banging. Commonly used with shift
+ * registers (74HC165) to expand the number of inputs.
+ * 
+ * @param dataPin GPIO pin for serial data input
+ * @param clockPin GPIO pin for clock signal output
+ * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
+ * @return unsigned char Byte value read (0-255)
+ * 
+ * @note dataPin configured as INPUT, clockPin as OUTPUT
+ * @note Clock idles LOW, pulses HIGH to shift each bit
+ * 
+ * @example
+ * // Read 8 buttons with 74HC165 shift register
+ * const int DATA_PIN = 17;
+ * const int CLOCK_PIN = 27;
+ * const int LOAD_PIN = 22;
+ * 
+ * pinMode(LOAD_PIN, OUTPUT);
+ * digitalWrite(LOAD_PIN, LOW);   // Load parallel data
+ * delayMicroseconds(5);
+ * digitalWrite(LOAD_PIN, HIGH);   // Ready to shift
+ * 
+ * unsigned char buttons = shiftIn(DATA_PIN, CLOCK_PIN, MSBFIRST);
+ * if (buttons & 0x01) { // Check button 0
+ *     // Button pressed
+ * }
+ */
+unsigned char shiftIn(int dataPin, int clockPin, int bitOrder);
+
+// Bit order constants for shiftIn/shiftOut
+constexpr int LSBFIRST = 0;  ///< Least Significant Bit First
+constexpr int MSBFIRST = 1;  ///< Most Significant Bit First
+
+/**
+ * @brief Generate a square wave tone on a pin (Arduino-inspired)
+ * 
+ * Generates a square wave of the specified frequency on a pin. Useful for
+ * making beeps, alarms, or simple music with a piezo buzzer or speaker.
+ * 
+ * @param pin GPIO pin number (must support PWM)
+ * @param frequency Frequency in Hertz (31Hz - 65535Hz)
+ * @param duration Optional duration in milliseconds (0 = continuous)
+ * 
+ * @note Pin is automatically configured as OUTPUT
+ * @note Uses hardware or software PWM depending on pin capability
+ * @note Only one tone can play per pin at a time
+ * @note Call noTone() to stop continuous tones
+ * @note Frequency range: 31Hz to 65535Hz (human hearing: ~20Hz-20kHz)
+ * 
+ * @example
+ * // Simple beep
+ * tone(17, 1000);      // 1kHz tone continuously
+ * delay(500);          // Play for 500ms
+ * noTone(17);          // Stop
+ * 
+ * @example
+ * // Play melody
+ * tone(17, 262);  // C4
+ * delay(500);
+ * tone(17, 294);  // D4
+ * delay(500);
+ * tone(17, 330);  // E4
+ * delay(500);
+ * noTone(17);
+ * 
+ * @example
+ * // With duration parameter
+ * tone(17, 1000, 500);  // 1kHz for 500ms (blocking)
+ */
+void tone(int pin, unsigned int frequency, unsigned long duration = 0);
+
+/**
+ * @brief Stop tone generation on a pin (Arduino-inspired)
+ * 
+ * Stops the tone (square wave) being generated by tone().
+ * 
+ * @param pin GPIO pin number
+ * 
+ * @note Pin remains in OUTPUT mode but goes LOW
+ * @note Safe to call even if no tone is playing
+ * 
+ * @example
+ * tone(17, 1000);   // Start tone
+ * delay(2000);      // Play for 2 seconds
+ * noTone(17);       // Stop tone
+ */
+void noTone(int pin);

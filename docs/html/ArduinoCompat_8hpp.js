@@ -1,0 +1,35 @@
+var ArduinoCompat_8hpp =
+[
+    [ "ArduinoPinMode", "ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08", [
+      [ "INPUT", "ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08ae310c909d76b003d016bef8bdf16936a", null ],
+      [ "OUTPUT", "ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08a2ab08d3e103968f5f4f26b66a52e99d6", null ],
+      [ "INPUT_PULLUP", "ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08a851c2ac60276ada62e8d9ba216c7a487", null ],
+      [ "INPUT_PULLDOWN", "ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08a58b097229d3b2a4afa0eb445c1334927", null ]
+    ] ],
+    [ "analogWrite", "ArduinoCompat_8hpp.html#a86bb4d3e9f1bdb233cf01d835adcede0", null ],
+    [ "attachInterrupt", "ArduinoCompat_8hpp.html#a9b6f0d5359c0e6d4ba1bb59d2444af45", null ],
+    [ "constrain", "ArduinoCompat_8hpp.html#a7b27d0d4f9bf6939813594b2d0c60aa2", null ],
+    [ "constrain", "ArduinoCompat_8hpp.html#aca0e96194e7b8f7d6d26cf5609486c6e", null ],
+    [ "constrain", "ArduinoCompat_8hpp.html#a58e8528b684f6181fea314e9e94c21fa", null ],
+    [ "delay", "ArduinoCompat_8hpp.html#a6bc5f943544a887f8b23cadfb26a5e30", null ],
+    [ "delayMicroseconds", "ArduinoCompat_8hpp.html#a62e0a53bc261f9de8700cc5a92307e85", null ],
+    [ "detachInterrupt", "ArduinoCompat_8hpp.html#a4b0c851eee8d4c23e5f048234d4cdf83", null ],
+    [ "digitalRead", "ArduinoCompat_8hpp.html#ae1e3d979645a535a8ce49f935392d8bc", null ],
+    [ "digitalToggle", "ArduinoCompat_8hpp.html#a7b76d6388c8368354b777801ecf697d5", null ],
+    [ "digitalWrite", "ArduinoCompat_8hpp.html#a9d16a91b1911a641ea3ff91bdbb0125e", null ],
+    [ "getMode", "ArduinoCompat_8hpp.html#adca69d76a1a0e4f2582df3f68dc4e831", null ],
+    [ "isInput", "ArduinoCompat_8hpp.html#a588b38c7001df781d9f27721c7096347", null ],
+    [ "isOutput", "ArduinoCompat_8hpp.html#a60f9eaeafd8dd95e2270186b4d26a364", null ],
+    [ "map", "ArduinoCompat_8hpp.html#aada2d75bc8a8c6eb845bd940eadfa3fd", null ],
+    [ "micros", "ArduinoCompat_8hpp.html#a8b24cbb7c3486e1bfa05c86db83ecb01", null ],
+    [ "millis", "ArduinoCompat_8hpp.html#a6ff7f2532a22366f0013bc41397129fd", null ],
+    [ "pinMode", "ArduinoCompat_8hpp.html#ac7bdb53335528ad073ca13eb2b1bdc00", null ],
+    [ "sq", "ArduinoCompat_8hpp.html#a5fcfabb016a2ac0228d4eae15ea7beb6", null ],
+    [ "CHANGE", "ArduinoCompat_8hpp.html#a4bbc3dff3eaa3789399b8107b85f0aa1", null ],
+    [ "DEG_TO_RAD", "ArduinoCompat_8hpp.html#a410b5189721a469108e809fbf4f6e601", null ],
+    [ "FALLING", "ArduinoCompat_8hpp.html#aee92494a4f72f731865fcf8e1937b901", null ],
+    [ "HIGH", "ArduinoCompat_8hpp.html#a823fbedc6aaf4e38f6016bc1c0ef096a", null ],
+    [ "LOW", "ArduinoCompat_8hpp.html#a7d13ec9e69e059440678c128f1a29708", null ],
+    [ "RAD_TO_DEG", "ArduinoCompat_8hpp.html#a7f95b5d2bf49e6debc73481d885ea505", null ],
+    [ "RISING", "ArduinoCompat_8hpp.html#af21e73ac72d6c0fa4f01f0717f6d9325", null ]
+];

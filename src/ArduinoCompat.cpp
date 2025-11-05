@@ -343,3 +343,169 @@ long random(long min, long max)
     std::uniform_int_distribution<long> dist(min, max - 1);
     return dist(randomEngine);
 }
+
+/* ------------------------------------------------------------ */
+/*                  ADVANCED I/O FUNCTIONS                      */
+/* ------------------------------------------------------------ */
+
+unsigned long pulseIn(int pin, bool state, unsigned long timeout)
+{
+    // Ensure pin is INPUT
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        auto it = globalPins.find(pin);
+        if (it == globalPins.end()) {
+            // Pin not initialized, set as INPUT
+            pinMode(pin, INPUT);
+        } else if (it->second.mode == ArduinoPinMode::OUTPUT) {
+            // Don't change OUTPUT pins
+            throw PinError("Pin " + std::to_string(pin) + " is configured as OUTPUT. "
+                          "Cannot use pulseIn() on output pins.");
+        }
+    }
+    
+    auto start = std::chrono::steady_clock::now();
+    auto timeoutDuration = std::chrono::microseconds(timeout);
+    
+    // Wait for pin to go to opposite state (start of pulse)
+    while (digitalRead(pin) == state) {
+        if (std::chrono::steady_clock::now() - start >= timeoutDuration) {
+            return 0;  // Timeout waiting for pulse start
+        }
+    }
+    
+    // Wait for pin to change to desired state (beginning of pulse)
+    while (digitalRead(pin) != state) {
+        if (std::chrono::steady_clock::now() - start >= timeoutDuration) {
+            return 0;  // Timeout waiting for pulse
+        }
+    }
+    
+    // Measure pulse duration
+    auto pulseStart = std::chrono::steady_clock::now();
+    while (digitalRead(pin) == state) {
+        if (std::chrono::steady_clock::now() - start >= timeoutDuration) {
+            return 0;  // Timeout during pulse
+        }
+    }
+    auto pulseEnd = std::chrono::steady_clock::now();
+    
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(pulseEnd - pulseStart);
+    return static_cast<unsigned long>(duration.count());
+}
+
+void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
+{
+    // Ensure pins are OUTPUT
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        if (globalPins.find(dataPin) == globalPins.end() || 
+            globalPins[dataPin].mode != ArduinoPinMode::OUTPUT) {
+            pinMode(dataPin, OUTPUT);
+        }
+        if (globalPins.find(clockPin) == globalPins.end() || 
+            globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
+            pinMode(clockPin, OUTPUT);
+        }
+    }
+    
+    for (int i = 0; i < 8; i++) {
+        bool bitValue;
+        if (bitOrder == LSBFIRST) {
+            bitValue = !!(value & (1 << i));  // LSB first
+        } else {
+            bitValue = !!(value & (1 << (7 - i)));  // MSB first
+        }
+        
+        digitalWrite(dataPin, bitValue);
+        digitalWrite(clockPin, HIGH);
+        // Small delay for clock pulse (optional, can be removed for speed)
+        delayMicroseconds(1);
+        digitalWrite(clockPin, LOW);
+    }
+}
+
+unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
+{
+    // Ensure dataPin is INPUT and clockPin is OUTPUT
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        if (globalPins.find(dataPin) == globalPins.end() || 
+            !isInput(dataPin)) {
+            pinMode(dataPin, INPUT);
+        }
+        if (globalPins.find(clockPin) == globalPins.end() || 
+            globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
+            pinMode(clockPin, OUTPUT);
+        }
+    }
+    
+    unsigned char value = 0;
+    
+    for (int i = 0; i < 8; i++) {
+        digitalWrite(clockPin, HIGH);
+        delayMicroseconds(1);  // Small delay for data to stabilize
+        
+        bool bitValue = digitalRead(dataPin);
+        
+        if (bitOrder == LSBFIRST) {
+            value |= (bitValue << i);  // LSB first
+        } else {
+            value |= (bitValue << (7 - i));  // MSB first
+        }
+        
+        digitalWrite(clockPin, LOW);
+        delayMicroseconds(1);
+    }
+    
+    return value;
+}
+
+// Tone generation - uses PWM with 50% duty cycle
+void tone(int pin, unsigned int frequency, unsigned long duration)
+{
+    if (frequency == 0 || frequency > 65535) {
+        throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
+    }
+    
+    // Ensure pin is OUTPUT
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        auto it = globalPins.find(pin);
+        if (it == globalPins.end()) {
+            pinMode(pin, OUTPUT);
+        } else if (it->second.mode != ArduinoPinMode::OUTPUT) {
+            throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone()");
+        }
+    }
+    
+    // Start PWM at 50% duty cycle with specified frequency
+    PWMManager::getInstance().startPWM(pin, 128, frequency);  // 128 = 50% of 255
+    
+    // If duration specified, wait and then stop
+    if (duration > 0) {
+        delay(duration);
+        noTone(pin);
+    }
+    
+    PIPINPP_LOG_INFO("tone: Pin " << pin << " frequency=" << frequency 
+                     << "Hz duration=" << duration << "ms");
+}
+
+void noTone(int pin)
+{
+    // Stop PWM (which stops the tone)
+    PWMManager::getInstance().stopPWM(pin);
+    
+    // Set pin LOW
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        auto it = globalPins.find(pin);
+        if (it != globalPins.end() && it->second.mode == ArduinoPinMode::OUTPUT) {
+            it->second.pin->write(false);
+            it->second.lastValue = false;
+        }
+    }
+    
+    PIPINPP_LOG_INFO("noTone: Stopped tone on pin " << pin);
+}
