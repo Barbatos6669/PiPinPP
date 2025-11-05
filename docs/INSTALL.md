@@ -144,6 +144,66 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
+## Updating PiPinPP
+
+If you already have PiPinPP installed and want to update to a newer version:
+
+### Method 1: Quick Update (Recommended)
+
+```bash
+cd PiPinPP
+git pull origin main
+git checkout v0.3.3    # Replace with desired version
+./build.sh
+cd build
+sudo make install
+```
+
+### Method 2: One-Line Reinstall
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.3/install.sh | sudo bash
+```
+
+This will automatically update to the specified version.
+
+### Method 3: Fresh Install
+
+If you prefer a clean installation:
+
+```bash
+# Remove old installation (optional)
+sudo rm -rf /usr/local/include/pipinpp
+sudo rm -f /usr/local/lib/libpipinpp.*
+sudo rm -f /usr/local/lib/pkgconfig/pipinpp.pc
+
+# Clone and install new version
+cd ~
+rm -rf PiPinPP
+git clone https://github.com/Barbatos6669/PiPinPP.git
+cd PiPinPP
+git checkout v0.3.3    # Replace with desired version
+./build.sh
+cd build
+sudo make install
+```
+
+### Verify Update
+
+Check that the new version is installed:
+
+```bash
+pkg-config --modversion pipinpp
+# Should show: 0.3.3 (or your target version)
+```
+
+### Important Notes
+
+- **Backward Compatibility:** All minor/patch updates (v0.3.x) are 100% backward compatible
+- **No Code Changes Needed:** Your existing projects will continue to work
+- **Safe to Reinstall:** Installing over an existing version is safe - files are simply replaced
+- **Check Release Notes:** Always review release notes for new features: [release_notes/](../release_notes/)
+
 ## Verification
 
 ### Test GPIO Access
@@ -241,4 +301,4 @@ Once installed, check out:
 ---
 
 **Platform Support:** Raspberry Pi OS (Bullseye+), Ubuntu 20.04+  
-**Last Updated:** October 29, 2025
+**Last Updated:** November 5, 2025
