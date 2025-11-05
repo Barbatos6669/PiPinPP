@@ -144,21 +144,27 @@ See CHANGELOG.md for full v0.3.2 release notes.
 **PWM**
 - ✅ `analogWrite(pin, value)` - Software PWM output (0-255)
 
+**Extended Math** (✅ COMPLETE in v0.3.2-v0.3.4)
+- ✅ `sq(x)` - Square function (v0.3.2)
+- ✅ `DEG_TO_RAD`, `RAD_TO_DEG` - Angle conversion constants (v0.3.3)
+- Note: Use `std::sqrt()`, `std::pow()`, `std::max()`, `std::min()` from standard library
+- Note: Use `std::sin()`, `std::cos()`, `std::tan()` from <cmath>
+
+**Random Numbers** (✅ COMPLETE in v0.3.4)
+- ✅ `random(max)`, `random(min, max)`, `randomSeed(seed)`
+
+**Bits and Bytes** (✅ COMPLETE in v0.3.4)
+- ✅ `bit(n)`, `bitRead()`, `bitWrite()`, `bitSet()`, `bitClear()`
+- ✅ `highByte()`, `lowByte()`
+
+**Characters** (✅ COMPLETE in v0.3.4 - Documented)
+- Documented to use standard library functions (isAlpha → std::isalpha, etc.)
+- Avoids naming conflicts with std library
+
+**Pin Queries** (✅ COMPLETE in v0.3.1)
+- ✅ `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
+
 #### 📋 Planned for v0.4.0
-
-**Extended Math** (Easy)
-- `sq(x)`, `sqrt(x)`, `pow(base, exp)`, `max(a,b)`, `min(a,b)`
-- `sin(rad)`, `cos(rad)`, `tan(rad)` with `DEG_TO_RAD`/`RAD_TO_DEG` helpers
-
-**Random Numbers** (Easy)
-- `random(max)`, `random(min, max)`, `randomSeed(seed)`
-
-**Bits and Bytes** (Easy)
-- `bit(n)`, `bitRead()`, `bitWrite()`, `bitSet()`, `bitClear()`
-- `highByte()`, `lowByte()`
-
-**Characters** (Easy)
-- All standard character classification functions (isAlpha, isDigit, etc.)
 
 **Advanced I/O** (Medium)
 - `pulseIn()`, `pulseInLong()`, `shiftIn()`, `shiftOut()`
