@@ -2,7 +2,7 @@
 
 This checklist tracks the planned work for PiPinPP development.
 
-**Current Version**: v0.3.2 (Released November 4, 2025)  
+**Current Version**: v0.3.4 (Released November 5, 2025)  
 **Next Target**: v0.4.0 (Communication Protocols & Hardware PWM)
 
 Legend: [easy] quick win · [medium] moderate · [hard] larger feature
@@ -236,13 +236,14 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Full Arduino API compatibility without naming conflicts
   - Documentation explaining std library approach
 
-- [ ] Random number functions [easy]
-  - `long random(max)` - Random number [0, max)
+- ✅ Random number functions [easy] - **COMPLETE (v0.3.4)**
+  - `long random(max)` - Random number [0, max) using Mersenne Twister
   - `long random(min, max)` - Random number [min, max)
   - `void randomSeed(seed)` - Seed random generator
-  - Use std::random with Mersenne Twister
+  - Thread-safe implementation with mutex protection
+  - Perfect for LED patterns, delays, animations, and games
 
-- [ ] Bits and bytes functions [easy]
+- ✅ Bits and bytes functions [easy] - **COMPLETE (v0.3.4)**
   - `bit(n)` - Get bit value at position n (1 << n)
   - `bitRead(x, n)` - Read bit n from value x
   - `bitWrite(x, n, b)` - Write bit b to position n in x
@@ -250,7 +251,7 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - `bitClear(x, n)` - Clear bit n in x to 0
   - `highByte(x)` - Get high byte of word
   - `lowByte(x)` - Get low byte of word
-  - All as inline functions or macros
+  - All inline functions (zero runtime overhead)
 
 - [ ] Analog input example [easy]
   - Example showing MCP3008 ADC via SPI (once SPI implemented)
@@ -264,13 +265,12 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Angle to pulse width conversion
   - Multiple servo control demonstration
 
-- [ ] Character classification functions [easy]
-  - Use std library wrappers for Arduino compatibility
-  - `isAlpha()`, `isAlphaNumeric()`, `isAscii()`
-  - `isControl()`, `isDigit()`, `isGraph()`
-  - `isHexadecimalDigit()`, `isLowerCase()`, `isUpperCase()`
-  - `isPrintable()`, `isPunct()`, `isSpace()`, `isWhitespace()`
-  - All using std::isalpha, std::isdigit, etc. with char parameter
+- ✅ Character classification functions [easy] - **COMPLETE (v0.3.4)**
+  - Documented in ArduinoCompat.hpp header
+  - Users should use std::isalpha(), std::isdigit(), std::isspace(), etc. from <cctype>
+  - No wrappers provided to avoid std:: library conflicts
+  - Complete list of available functions documented
+  - Arduino code: isAlpha(ch) → PiPinPP code: std::isalpha(ch)
 
 ### Medium Tasks
 

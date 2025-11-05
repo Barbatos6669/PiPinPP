@@ -307,3 +307,39 @@ void digitalToggle(int pin)
         throw GpioAccessError("pin " + std::to_string(pin), "Failed to toggle GPIO pin");
     }
 }
+
+/* ------------------------------------------------------------ */
+/*                    RANDOM FUNCTIONS                          */
+/* ------------------------------------------------------------ */
+
+#include <random>
+
+// Static random engine and distribution (thread-safe via mutex)
+static std::mt19937 randomEngine;
+static std::mutex randomMutex;
+
+void randomSeed(unsigned long seed)
+{
+    std::lock_guard<std::mutex> lock(randomMutex);
+    randomEngine.seed(seed);
+}
+
+long random(long max)
+{
+    if (max <= 0) {
+        return 0;
+    }
+    std::lock_guard<std::mutex> lock(randomMutex);
+    std::uniform_int_distribution<long> dist(0, max - 1);
+    return dist(randomEngine);
+}
+
+long random(long min, long max)
+{
+    if (min >= max) {
+        return min;
+    }
+    std::lock_guard<std::mutex> lock(randomMutex);
+    std::uniform_int_distribution<long> dist(min, max - 1);
+    return dist(randomEngine);
+}

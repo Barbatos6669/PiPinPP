@@ -431,3 +431,207 @@ constexpr double RAD_TO_DEG = 57.295779513082320876798154814105;
 // - #include <cmath> for std::sin(), std::cos(), std::tan()
 // Arduino code like sin(angle * DEG_TO_RAD) becomes std::sin(angle * DEG_TO_RAD)
 // This avoids naming conflicts when users write "using namespace std;".
+
+/* ------------------------------------------------------------ */
+/*                    RANDOM FUNCTIONS                          */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Initialize the random number generator (Arduino-compatible)
+ * 
+ * Seeds the pseudo-random number generator with a value. Use different
+ * seeds to get different random sequences. Common practice is to seed
+ * with micros() or a reading from an analog pin.
+ * 
+ * @param seed The seed value (any unsigned long)
+ * 
+ * @example
+ * randomSeed(micros());  // Seed with current time
+ * long value = random(100);  // Get random number 0-99
+ */
+void randomSeed(unsigned long seed);
+
+/**
+ * @brief Generate random number in range [0, max) (Arduino-compatible)
+ * 
+ * Returns a pseudo-random number from 0 up to (but not including) max.
+ * 
+ * @param max Upper bound (exclusive) - must be positive
+ * @return long Random number in range [0, max)
+ * 
+ * @example
+ * long dice = random(6) + 1;  // Simulate dice roll (1-6)
+ * long value = random(100);    // Random 0-99
+ */
+long random(long max);
+
+/**
+ * @brief Generate random number in range [min, max) (Arduino-compatible)
+ * 
+ * Returns a pseudo-random number from min up to (but not including) max.
+ * 
+ * @param min Lower bound (inclusive)
+ * @param max Upper bound (exclusive)
+ * @return long Random number in range [min, max)
+ * 
+ * @example
+ * long temp = random(20, 30);  // Random temperature 20-29
+ * long delay = random(100, 500);  // Random delay 100-499ms
+ */
+long random(long min, long max);
+
+/* ------------------------------------------------------------ */
+/*                  BITS AND BYTES FUNCTIONS                    */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Compute the value of a bit (Arduino-compatible)
+ * 
+ * Returns the value of the bit at position n (0-31).
+ * Equivalent to: (1 << n)
+ * 
+ * @param n Bit position (0-31)
+ * @return unsigned long Value with bit n set (2^n)
+ * 
+ * @example
+ * unsigned long mask = bit(4);  // Returns 16 (binary: 00010000)
+ * unsigned long flags = bit(0) | bit(3) | bit(7);  // Multiple bits
+ */
+inline unsigned long bit(unsigned int n) {
+    return 1UL << n;
+}
+
+/**
+ * @brief Read a bit from a value (Arduino-compatible)
+ * 
+ * Returns the value of the bit at position n in value x.
+ * 
+ * @param x Value to read from
+ * @param n Bit position (0-31)
+ * @return unsigned long 1 if bit is set, 0 if bit is clear
+ * 
+ * @example
+ * unsigned long flags = 0b10110100;
+ * bool isSet = bitRead(flags, 5);  // Returns 1 (bit 5 is set)
+ * bool isClear = bitRead(flags, 0);  // Returns 0 (bit 0 is clear)
+ */
+inline unsigned long bitRead(unsigned long x, unsigned int n) {
+    return (x >> n) & 1UL;
+}
+
+/**
+ * @brief Write a bit in a value (Arduino-compatible)
+ * 
+ * Sets or clears the bit at position n in value x.
+ * 
+ * @param x Value to modify
+ * @param n Bit position (0-31)
+ * @param b Bit value (0 or 1)
+ * 
+ * @example
+ * unsigned long flags = 0;
+ * bitWrite(flags, 3, 1);  // Set bit 3: flags = 0b00001000
+ * bitWrite(flags, 3, 0);  // Clear bit 3: flags = 0b00000000
+ */
+inline void bitWrite(unsigned long &x, unsigned int n, unsigned int b) {
+    if (b) {
+        x |= (1UL << n);   // Set bit
+    } else {
+        x &= ~(1UL << n);  // Clear bit
+    }
+}
+
+/**
+ * @brief Set a bit in a value (Arduino-compatible)
+ * 
+ * Sets the bit at position n in value x to 1.
+ * 
+ * @param x Value to modify
+ * @param n Bit position (0-31)
+ * 
+ * @example
+ * unsigned long flags = 0b00000000;
+ * bitSet(flags, 2);  // flags = 0b00000100
+ * bitSet(flags, 5);  // flags = 0b00100100
+ */
+inline void bitSet(unsigned long &x, unsigned int n) {
+    x |= (1UL << n);
+}
+
+/**
+ * @brief Clear a bit in a value (Arduino-compatible)
+ * 
+ * Sets the bit at position n in value x to 0.
+ * 
+ * @param x Value to modify
+ * @param n Bit position (0-31)
+ * 
+ * @example
+ * unsigned long flags = 0b11111111;
+ * bitClear(flags, 2);  // flags = 0b11111011
+ * bitClear(flags, 5);  // flags = 0b11011011
+ */
+inline void bitClear(unsigned long &x, unsigned int n) {
+    x &= ~(1UL << n);
+}
+
+/**
+ * @brief Get the high byte of a word (Arduino-compatible)
+ * 
+ * Extracts the high-order (leftmost) byte of a word (16-bit value).
+ * 
+ * @param x 16-bit word value
+ * @return unsigned char High byte (bits 8-15)
+ * 
+ * @example
+ * unsigned int value = 0xABCD;
+ * unsigned char high = highByte(value);  // Returns 0xAB
+ * unsigned char low = lowByte(value);    // Returns 0xCD
+ */
+inline unsigned char highByte(unsigned int x) {
+    return (x >> 8) & 0xFF;
+}
+
+/**
+ * @brief Get the low byte of a word (Arduino-compatible)
+ * 
+ * Extracts the low-order (rightmost) byte of a word (16-bit value).
+ * 
+ * @param x 16-bit word value
+ * @return unsigned char Low byte (bits 0-7)
+ * 
+ * @example
+ * unsigned int value = 0xABCD;
+ * unsigned char low = lowByte(value);   // Returns 0xCD
+ * unsigned char high = highByte(value); // Returns 0xAB
+ */
+inline unsigned char lowByte(unsigned int x) {
+    return x & 0xFF;
+}
+
+/* ------------------------------------------------------------ */
+/*                 CHARACTER FUNCTIONS                          */
+/* ------------------------------------------------------------ */
+
+// Note: Arduino's character classification functions (isAlpha, isDigit, 
+// isSpace, etc.) are already available in C++ standard library <cctype>.
+// Use std::isalpha(), std::isdigit(), std::isspace(), etc.
+//
+// We don't provide wrappers to avoid naming conflicts when users write
+// "using namespace std;".
+//
+// Arduino code:    if (isAlpha(ch)) { ... }
+// PiPinPP code:    if (std::isalpha(ch)) { ... }
+//
+// Available functions in <cctype>:
+// - std::isalpha(ch)   - Check if alphabetic
+// - std::isdigit(ch)   - Check if digit
+// - std::isspace(ch)   - Check if whitespace
+// - std::isalnum(ch)   - Check if alphanumeric
+// - std::isupper(ch)   - Check if uppercase
+// - std::islower(ch)   - Check if lowercase
+// - std::isxdigit(ch)  - Check if hexadecimal digit
+// - std::ispunct(ch)   - Check if punctuation
+// - std::isprint(ch)   - Check if printable
+// - std::iscntrl(ch)   - Check if control character
+// - std::isgraph(ch)   - Check if graphical character
