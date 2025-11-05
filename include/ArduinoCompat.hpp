@@ -398,3 +398,36 @@ inline T sq(T x) {
 // - #include <algorithm>  for std::max() and std::min()
 // These are already available in C++ and creating wrappers causes ambiguity
 // when users write "using namespace std;" in their code.
+
+/* ------------------------------------------------------------ */
+/*                  TRIGONOMETRY CONSTANTS                      */
+/* ------------------------------------------------------------ */
+
+/**
+ * @brief Convert degrees to radians (Arduino-compatible constant)
+ * 
+ * Multiply an angle in degrees by DEG_TO_RAD to convert to radians.
+ * Use with std::sin(), std::cos(), std::tan() from <cmath>.
+ * 
+ * @example
+ * double angleInDegrees = 45.0;
+ * double angleInRadians = angleInDegrees * DEG_TO_RAD;
+ * double sineValue = std::sin(angleInRadians);
+ */
+constexpr double DEG_TO_RAD = 0.017453292519943295769236907684886;
+
+/**
+ * @brief Convert radians to degrees (Arduino-compatible constant)
+ * 
+ * Multiply an angle in radians by RAD_TO_DEG to convert to degrees.
+ * 
+ * @example
+ * double angleInRadians = 1.5708;
+ * double angleInDegrees = angleInRadians * RAD_TO_DEG;  // ~90 degrees
+ */
+constexpr double RAD_TO_DEG = 57.295779513082320876798154814105;
+
+// Note: For sin(), cos(), tan() use the standard library functions:
+// - #include <cmath> for std::sin(), std::cos(), std::tan()
+// Arduino code like sin(angle * DEG_TO_RAD) becomes std::sin(angle * DEG_TO_RAD)
+// This avoids naming conflicts when users write "using namespace std;".

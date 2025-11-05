@@ -228,10 +228,13 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Updated API_REFERENCE.md explaining why only sq() is provided
   - Math functions example demonstrating sq() with std library functions
 
-- [ ] Trigonometry functions [easy]
-  - `sin(rad)`, `cos(rad)`, `tan(rad)` - Use std::sin/cos/tan wrappers
-  - Helper macros: `DEG_TO_RAD`, `RAD_TO_DEG`
-  - Documentation showing Arduino compatibility
+- ✅ Trigonometry functions [easy] - **COMPLETE (v0.3.3)**
+  - `DEG_TO_RAD` and `RAD_TO_DEG` constants for angle conversion
+  - Note: sin(), cos(), tan() NOT provided to avoid std:: conflicts
+  - Users should use std::sin(), std::cos(), std::tan() from <cmath>
+  - Comprehensive trig_functions example with practical applications
+  - Full Arduino API compatibility without naming conflicts
+  - Documentation explaining std library approach
 
 - [ ] Random number functions [easy]
   - `long random(max)` - Random number [0, max)

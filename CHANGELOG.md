@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3] - 2025-11-05
+
+### Added
+- **Trigonometry support** - Arduino-compatible angle conversion constants
+  - `DEG_TO_RAD` constant for converting degrees to radians (π/180)
+  - `RAD_TO_DEG` constant for converting radians to degrees (180/π)
+  - Full precision double constants matching Arduino values
+  - Use with std::sin(), std::cos(), std::tan() from <cmath>
+  - No function wrappers to avoid std:: library conflicts
+  - Comprehensive trig_functions example demonstrating:
+    - Angle conversions (degrees ↔ radians)
+    - Trigonometric calculations (sine, cosine, tangent)
+    - Circular motion (position calculations on circles)
+    - Right triangle calculations (opposite, adjacent sides)
+    - Wave generation (LED breathing effects, PWM patterns)
+    - Servo positioning (angle to pulse width conversion)
+    - Angle calculations from coordinates (atan2 usage)
+  - Updated API_REFERENCE.md with Trigonometry Constants section
+  - Practical examples for LED effects, servo control, and motion
+
+### Changed
+- Updated API_REFERENCE.md version to 0.3.3 (November 5, 2025)
+- Added Trigonometry Constants to Table of Contents
+
+### Documentation
+- Comprehensive trig_functions example (400+ lines)
+- Detailed documentation explaining std library approach
+- Practical applications for makers and Arduino users
+- Clear guidance on using std::sin(), std::cos(), std::tan()
+
 ## [0.3.2] - 2025-11-04
 
 ### Added
