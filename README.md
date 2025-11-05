@@ -171,6 +171,33 @@ sudo usermod -a -G gpio $USER
 # Log out and back in for this to take effect
 ```
 
+### 🔄 Updating to a Newer Version
+
+Already have PiPinPP installed? Updating is just as easy!
+
+**Option 1: One-Line Update (Recommended)**
+```bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.3/install.sh | sudo bash
+```
+*Replace `v0.3.3` with the version you want (e.g., `v0.4.0`)*
+
+**Option 2: Manual Update**
+```bash
+cd PiPinPP
+git pull origin main
+git checkout v0.3.3  # Replace with desired version
+./build.sh
+cd build
+sudo make install
+```
+
+**Check your installed version:**
+```bash
+pkg-config --modversion pipinpp
+```
+
+> 💡 **All updates are backward compatible** - your existing code will continue to work!
+
 ### Using in Your Projects
 
 **With pkg-config:**
