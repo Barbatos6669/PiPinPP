@@ -17,8 +17,11 @@ These notes provide:
 
 When creating a GitHub Release, copy the contents of the corresponding file to the release description.
 
-## Index
+## 📋 Release Notes Index
 
+Listed in reverse chronological order (newest first):
+
+- [v0.3.4](v0.3.4.md) - Arduino Utility Functions (Random, Bits & Bytes) (Nov 5, 2025)
 - [v0.3.3](v0.3.3.md) - Trigonometry Constants & Angle Conversion (Nov 5, 2025)
 - [v0.3.2](v0.3.2.md) - Extended Math Functions & Project Polish (Nov 4, 2025)
 - [v0.3.1](v0.3.1.md) - Pin State Query Functions (Nov 4, 2025)
