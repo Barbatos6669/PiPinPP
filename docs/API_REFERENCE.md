@@ -1,7 +1,7 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.2  
-**Date**: November 4, 2025
+**Version**: 0.3.3  
+**Date**: November 5, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino compatibility, interrupts, PWM, and professional tooling.
 
@@ -18,6 +18,7 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
    - [PWM Functions](#pwm-functions)
    - [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
+   - [Trigonometry Constants](#trigonometry-constants)
 4. [Examples](#examples)
 5. [Error Handling](#error-handling)
 6. [Hardware Notes](#hardware-notes)
@@ -604,6 +605,112 @@ double c = sq(-4.0);  // Returns 16.0
 Creating our own `sqrt()`, `pow()`, `max()`, `min()` functions causes naming conflicts 
 when users write `using namespace std;` in their code. The standard library functions 
 are already widely available and well-optimized.
+
+### Trigonometry Constants
+
+PiPinPP provides Arduino-compatible angle conversion constants for use with standard library trigonometric functions.
+
+#### `DEG_TO_RAD`
+Constant for converting degrees to radians.
+
+**Value**: `0.017453292519943295769236907684886` (π/180)
+
+**Usage:**
+Multiply an angle in degrees by `DEG_TO_RAD` to convert to radians for use with `std::sin()`, `std::cos()`, `std::tan()`.
+
+**Example:**
+```cpp
+#include <cmath>
+#include <ArduinoCompat.hpp>
+
+double angleDegrees = 45.0;
+double angleRadians = angleDegrees * DEG_TO_RAD;
+double sineValue = std::sin(angleRadians);  // sin(45°) ≈ 0.707
+```
+
+#### `RAD_TO_DEG`
+Constant for converting radians to degrees.
+
+**Value**: `57.295779513082320876798154814105` (180/π)
+
+**Usage:**
+Multiply an angle in radians by `RAD_TO_DEG` to convert to degrees.
+
+**Example:**
+```cpp
+#include <cmath>
+#include <ArduinoCompat.hpp>
+
+double angleRadians = M_PI / 2;  // 90 degrees in radians
+double angleDegrees = angleRadians * RAD_TO_DEG;  // Returns 90.0
+```
+
+**Trigonometric Functions:**
+
+For trigonometric calculations, use the standard library functions from `<cmath>`:
+
+- **Sine**: Use `std::sin(radians)` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::sin(45.0 * DEG_TO_RAD);  // sin(45°) ≈ 0.707
+  ```
+
+- **Cosine**: Use `std::cos(radians)` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::cos(60.0 * DEG_TO_RAD);  // cos(60°) = 0.5
+  ```
+
+- **Tangent**: Use `std::tan(radians)` from `<cmath>`
+  ```cpp
+  #include <cmath>
+  double result = std::tan(45.0 * DEG_TO_RAD);  // tan(45°) ≈ 1.0
+  ```
+
+- **Arc Tangent (2-argument)**: Use `std::atan2(y, x)` for angle calculations
+  ```cpp
+  #include <cmath>
+  double angle = std::atan2(10.0, 10.0) * RAD_TO_DEG;  // Returns 45.0°
+  ```
+
+**Practical Applications:**
+
+**Circular Motion:**
+```cpp
+// Calculate position on a circle
+double angleDeg = 30.0;
+double radius = 10.0;
+double x = radius * std::cos(angleDeg * DEG_TO_RAD);
+double y = radius * std::sin(angleDeg * DEG_TO_RAD);
+```
+
+**LED Breathing Effect (Sine Wave):**
+```cpp
+// Generate smooth breathing pattern
+for (int angle = 0; angle < 360; angle++) {
+    double rad = angle * DEG_TO_RAD;
+    int brightness = 127.5 + 127.5 * std::sin(rad);  // 0-255 range
+    analogWrite(ledPin, brightness);
+    delay(10);
+}
+```
+
+**Servo Positioning:**
+```cpp
+// Calculate servo position using angles
+double servoAngle = 90.0;  // Center position
+int pulseWidth = 1500;     // Center pulse width (1.5ms)
+
+// For angled movement calculations
+double armLength = 10.0;   // cm
+double height = armLength * std::sin(servoAngle * DEG_TO_RAD);
+double reach = armLength * std::cos(servoAngle * DEG_TO_RAD);
+```
+
+**Why not provide sin(), cos(), tan() wrappers?**  
+Like `sqrt()` and `pow()`, these functions exist in the C++ standard library (`<cmath>`). 
+Creating wrappers causes naming conflicts when users write `using namespace std;`. 
+The constants `DEG_TO_RAD` and `RAD_TO_DEG` provide Arduino-style angle handling without conflicts.
 
 ---
 
