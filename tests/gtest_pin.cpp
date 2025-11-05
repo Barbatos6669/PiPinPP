@@ -27,7 +27,7 @@
  * Tests Pin class features:
  * - Construction with different modes
  * - Read/write operations
- * - Arduino compatibility
+ * - Arduino-inspired API
  * 
  * Note: These tests require real GPIO hardware (/dev/gpiochip0)
  * They will be skipped in CI environments without hardware.

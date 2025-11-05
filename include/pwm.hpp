@@ -25,11 +25,11 @@
  * @brief Software PWM (Pulse Width Modulation) support for Raspberry Pi
  * 
  * @details
- * Provides Arduino-compatible PWM functionality using software-based pulse generation.
+ * Provides Arduino-inspired PWM functionality using software-based pulse generation.
  * Allows controlling LED brightness, motor speed, and other analog-like outputs.
  * 
  * Features:
- * - Arduino-compatible analogWrite() function
+ * - Arduino-inspired analogWrite() function
  * - Configurable PWM frequency (default 490Hz like Arduino)
  * - 8-bit duty cycle resolution (0-255)
  * - Multiple independent PWM outputs

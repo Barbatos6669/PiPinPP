@@ -1,7 +1,7 @@
 /*
  * PiPin++ Interrupt Example
  * 
- * Demonstrates GPIO interrupt handling (edge detection) with Arduino-compatible API.
+ * Demonstrates GPIO interrupt handling (edge detection) with Arduino-inspired API.
  * This example shows how to detect button presses using interrupts instead of polling.
  * 
  * Hardware Setup:

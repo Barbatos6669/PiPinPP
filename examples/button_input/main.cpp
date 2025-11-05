@@ -25,7 +25,7 @@
  * @brief Button input reading with Arduino-style API and debouncing
  * 
  * This example demonstrates reading digital input from a button using the
- * Arduino compatibility layer. It includes proper debouncing to handle
+ * Arduino-inspired API layer. It includes proper debouncing to handle
  * mechanical switch bounce and shows both immediate and debounced readings.
  * 
  * Hardware Setup:

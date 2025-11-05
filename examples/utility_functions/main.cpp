@@ -1,7 +1,7 @@
 /*
  * PiPinPP Utility Functions Example
  * 
- * This example demonstrates the Arduino-compatible utility functions:
+ * This example demonstrates the Arduino-inspired utility functions:
  * - Random number generation (random, randomSeed)
  * - Bit manipulation (bit, bitRead, bitWrite, bitSet, bitClear)
  * - Byte extraction (highByte, lowByte)
@@ -335,7 +335,7 @@ int main() {
     std::cout << "╔════════════════════════════════════════════════════════════════════╗\n";
     std::cout << "║                  PiPinPP Utility Functions Demo                    ║\n";
     std::cout << "║                                                                    ║\n";
-    std::cout << "║  Demonstrates Arduino-compatible utility functions:               ║\n";
+    std::cout << "║  Demonstrates Arduino-inspired utility functions:               ║\n";
     std::cout << "║    • Random number generation                                      ║\n";
     std::cout << "║    • Bit manipulation                                              ║\n";
     std::cout << "║    • Byte extraction                                               ║\n";
@@ -363,7 +363,7 @@ int main() {
         std::cout << "  1. Use randomSeed(micros()) to initialize random generator\n";
         std::cout << "  2. Bit functions are inline (zero overhead)\n";
         std::cout << "  3. High/low byte extraction useful for data transmission\n";
-        std::cout << "  4. All functions are Arduino-compatible\n\n";
+        std::cout << "  4. All functions are Arduino-inspired\n\n";
         
         return 0;
         

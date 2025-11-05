@@ -290,7 +290,7 @@ int digitalRead(int pin);               // NOT: readPin()
 
 ### **Constants**
 ```cpp
-// Use Arduino-compatible constants
+// Use Arduino-inspired constants
 #define HIGH true
 #define LOW false
 #define INPUT 0
@@ -299,7 +299,7 @@ int digitalRead(int pin);               // NOT: readPin()
 
 ### **Parameter Types**
 ```cpp
-// Use Arduino-compatible parameter types
+// Use Arduino-inspired parameter types
 void digitalWrite(int pin, bool value); // bool for HIGH/LOW
 int digitalRead(int pin);               // int return (not bool)
 ```
@@ -393,8 +393,8 @@ set(PIPINPP_SOURCES
 )
 
 # Document complex build logic
-# Enable Arduino compatibility by default
-option(BUILD_ARDUINO_COMPAT "Build Arduino compatibility layer" ON)
+# Enable Arduino-inspired API by default
+option(BUILD_ARDUINO_COMPAT "Build Arduino-inspired API layer" ON)
 ```
 
 ### **Compiler Warnings**
@@ -415,7 +415,7 @@ Before submitting code, verify:
 - [ ] **Error handling** is appropriate
 - [ ] **Memory management** follows RAII principles
 - [ ] **Tests** are included for new functionality
-- [ ] **Arduino compatibility** is maintained (if applicable)
+- [ ] **Arduino-inspired API** is maintained (if applicable)
 - [ ] **Build** succeeds without warnings
 - [ ] **Examples** are updated if needed
 

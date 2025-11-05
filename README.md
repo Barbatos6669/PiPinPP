@@ -72,7 +72,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ## Features
 
-**v0.3.4 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with utility functions!
+**v0.3.4 RELEASED!** 🎉 Complete Arduino-inspired GPIO library with utility functions!
 
 ### ✅ Current Features (v0.3.2)
 
@@ -95,7 +95,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
-- ✅ **Math functions**: Arduino-compatible `sq()` function (v0.3.2)
+- ✅ **Math functions**: Arduino-inspired `sq()` function (v0.3.2)
 
 ### Quality & Testing (v0.3.0+)
 - ✅ **GoogleTest framework**: 40 comprehensive automated tests
@@ -104,7 +104,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **10 Examples**: Comprehensive demonstrations from basic to advanced usage
 - ✅ **Clean project structure**: Organized documentation, no root clutter (v0.3.2)
 
-**v0.3.2 is production-ready with excellent Arduino compatibility!**
+**v0.3.2 is production-ready with Arduino-inspired API!**
 
 ### Longer-Term Goals (v0.4.0+)
 

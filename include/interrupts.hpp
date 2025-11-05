@@ -25,7 +25,7 @@
  * @brief GPIO interrupt (edge detection) support for Raspberry Pi
  * 
  * @details
- * Provides Arduino-compatible interrupt handling using libgpiod v2 edge event API.
+ * Provides Arduino-inspired interrupt handling using libgpiod v2 edge event API.
  * Allows registering callback functions to be invoked when GPIO pins change state.
  * 
  * Features:
@@ -72,7 +72,7 @@
 #include <string>
 
 /**
- * @brief Interrupt trigger modes (Arduino-compatible)
+ * @brief Interrupt trigger modes (Arduino-inspired)
  */
 enum class InterruptMode {
     RISING,   ///< Trigger on rising edge (LOW to HIGH transition)

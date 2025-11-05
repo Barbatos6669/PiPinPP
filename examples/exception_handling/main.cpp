@@ -134,11 +134,11 @@ void example4_exception_hierarchy() {
     }
 }
 
-// Example 5: Arduino compatibility layer exceptions
+// Example 5: Arduino-inspired API layer exceptions
 void example5_arduino_exceptions() {
     printSection("Example 5: Arduino Function Exceptions");
     
-    std::cout << "Testing Arduino compatibility functions:\n\n";
+    std::cout << "Testing Arduino-inspired API functions:\n\n";
     
     // Test digitalWrite without pinMode
     std::cout << "Test 1: digitalWrite() without pinMode()...\n";

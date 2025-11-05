@@ -1,7 +1,7 @@
 /*
  * PiPinPP - Extended Math Functions Example
  * 
- * Demonstrates the Arduino-compatible math functions:
+ * Demonstrates the Arduino-inspired math functions:
  * - sq()        - Square a number (PiPinPP function)
  * - std::sqrt() - Square root (from <cmath>)
  * - std::pow()  - Power function (from <cmath>)
@@ -205,7 +205,7 @@ int main() {
     
     printSeparator();
     std::cout << "\n✓ All math functions tested successfully!" << std::endl;
-    std::cout << "\nNote: PiPinPP provides sq() for Arduino compatibility." << std::endl;
+    std::cout << "\nNote: PiPinPP provides sq() for Arduino-inspired API." << std::endl;
     std::cout << "Use std::sqrt(), std::pow(), std::max(), std::min() from" << std::endl;
     std::cout << "the standard library (<cmath> and <algorithm>)." << std::endl;
     std::cout << "\nFor more information, see docs/API_REFERENCE.md" << std::endl;

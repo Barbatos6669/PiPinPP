@@ -1,7 +1,7 @@
 /*
  * Trigonometry Functions Example for PiPin++
  * 
- * This example demonstrates how to use trigonometric functions with Arduino-compatible
+ * This example demonstrates how to use trigonometric functions with Arduino-inspired
  * angle conversion constants (DEG_TO_RAD and RAD_TO_DEG).
  * 
  * Since sin(), cos(), and tan() exist in the C++ standard library (<cmath>), PiPin++

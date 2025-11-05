@@ -26,7 +26,7 @@
  * 
  * This example demonstrates the core Pin class functionality for controlling
  * an LED connected to GPIO pin 17. It shows the object-oriented approach
- * to GPIO control without Arduino compatibility layer.
+ * to GPIO control without Arduino-inspired API layer.
  * 
  * Hardware Setup:
  * - Connect LED positive (long leg) to GPIO pin 17

@@ -13,7 +13,7 @@ This document tracks the development roadmap for PiPinPP, a modern C++ GPIO libr
 
 ### v0.3.0 - Released November 3, 2025 ✅
 
-**Production-ready Arduino-compatible GPIO library with advanced features!**
+**Production-ready Arduino-inspired GPIO library with advanced features!**
 
 Eight major features delivered:
 - ✅ v0.3.1 - Timing functions (millis, micros, delay, delayMicroseconds)
@@ -36,8 +36,8 @@ Eight major features delivered:
   - ✅ Implement `pinMode(pin, mode)` wrapper function
   - ✅ Implement `digitalWrite(pin, value)` wrapper function  
   - ✅ Implement `digitalRead(pin)` wrapper function
-  - ✅ Add `HIGH` and `LOW` constants for Arduino compatibility
-  - ✅ Add `delay(ms)` function for Arduino compatibility
+  - ✅ Add `HIGH` and `LOW` constants for Arduino-inspired API
+  - ✅ Add `delay(ms)` function for Arduino-inspired API
 
 ### ✅ Pin Management - **COMPLETED**
 - ✅ **Pull-up/Pull-down Resistor Support**
@@ -64,7 +64,7 @@ Eight major features delivered:
 - ✅ **Enhanced Documentation** 
   - ✅ GitHub Wiki with comprehensive Home page
   - ✅ CODE_STANDARDS.md with formatting guidelines
-  - ✅ Complete Doxygen documentation for Arduino compatibility functions
+  - ✅ Complete Doxygen documentation for Arduino-inspired API functions
   - ✅ Usage examples in header documentation
 
 - ✅ **API Documentation**
@@ -262,7 +262,7 @@ Eight major features delivered:
   - [ ] Add quiet mode for library usage
 
 - [ ] **Performance Optimizations**
-  - [ ] Remove global pin storage overhead in Arduino compatibility layer
+  - [ ] Remove global pin storage overhead in Arduino-inspired API layer
   - [ ] Optimize pin creation/destruction cycles
   - [ ] Add pin state caching for repeated reads
 
