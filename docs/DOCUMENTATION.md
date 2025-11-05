@@ -29,7 +29,7 @@ xdg-open docs/html/index.html
 - **Classes:** Complete API reference for all classes
 - **Files:** Source file documentation
 - **Examples:** Code samples and usage patterns
-- **Modules:** Grouped functionality (GPIO, timing, Arduino compatibility)
+- **Modules:** Grouped functionality (GPIO, timing, Arduino-inspired API)
 
 ## 🔄 Auto-Update
 

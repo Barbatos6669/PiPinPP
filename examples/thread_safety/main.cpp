@@ -26,7 +26,7 @@
  * 
  * This example shows:
  * - Safe concurrent access to different GPIO pins
- * - Arduino compatibility functions with multiple threads
+ * - Arduino-inspired API functions with multiple threads
  * - Proper synchronization and cleanup
  * - Practical multi-threaded GPIO patterns
  * 

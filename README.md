@@ -16,7 +16,7 @@
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-📍 **[Development Roadmap](docs/planning/ROADMAP.md)** | 🚀 **[Version 0.3.4](CHANGELOG.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering Guide](docs/PIN_NUMBERING.md)** | 🔐 **[Permissions Setup](docs/PERMISSIONS.md)**
+� **[Getting Started](docs/GETTING_STARTED.md)** | � **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
 
 ---
 
@@ -70,9 +70,24 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ---
 
+## 📚 New to GPIO? Start Here!
+
+**Complete beginner?** We've got you covered:
+
+1. 🚀 **[Getting Started Guide](docs/GETTING_STARTED.md)** - Your first LED in 10 minutes
+2. 📚 **[Tutorials](docs/tutorials/)** - Step-by-step projects (Traffic Light, Buttons, PWM)
+3. 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Fix common issues
+4. 📖 **[API Reference](docs/API_REFERENCE.md)** - Complete function documentation
+
+**Coming from Arduino?** Check out:
+- [Arduino Migration Example](examples/arduino_migration/) - Side-by-side comparison
+- [Arduino Style Example](examples/arduino_style/) - Familiar `setup()` and `loop()`
+
+---
+
 ## Features
 
-**v0.3.4 RELEASED!** 🎉 Complete Arduino-compatible GPIO library with utility functions!
+**v0.3.4 RELEASED!** 🎉 Complete Arduino-inspired GPIO library with utility functions!
 
 ### ✅ Current Features (v0.3.2)
 
@@ -95,7 +110,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
-- ✅ **Math functions**: Arduino-compatible `sq()` function (v0.3.2)
+- ✅ **Math functions**: Arduino-inspired `sq()` function (v0.3.2)
 
 ### Quality & Testing (v0.3.0+)
 - ✅ **GoogleTest framework**: 40 comprehensive automated tests
@@ -104,7 +119,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **10 Examples**: Comprehensive demonstrations from basic to advanced usage
 - ✅ **Clean project structure**: Organized documentation, no root clutter (v0.3.2)
 
-**v0.3.2 is production-ready with excellent Arduino compatibility!**
+**v0.3.2 is production-ready with Arduino-inspired API!**
 
 ### Longer-Term Goals (v0.4.0+)
 

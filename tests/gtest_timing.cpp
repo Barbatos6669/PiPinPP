@@ -24,7 +24,7 @@
  * @file gtest_timing.cpp
  * @brief GoogleTest-based tests for timing functions
  * 
- * Tests the Arduino-compatible timing functions using GoogleTest framework:
+ * Tests the Arduino-inspired timing functions using GoogleTest framework:
  * - millis() - milliseconds since program start
  * - micros() - microseconds since program start
  * - delay() - millisecond delay

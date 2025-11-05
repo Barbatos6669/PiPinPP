@@ -5,10 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **Terminology Update** - Changed "Arduino-compatible" to "Arduino-inspired" throughout project
+  - Updated project description, documentation, code comments, and examples
+  - Clarifies this is a Raspberry Pi library with an API familiar to Arduino users
+  - Avoids confusion about Arduino hardware compatibility or official endorsement
+  - No functional changes - documentation and branding clarity only
+
 ## [0.3.4] - 2025-11-05
 
 ### Added
-- **Random number functions** - Arduino-compatible random number generation
+- **Random number functions** - Arduino-inspired random number generation
   - `randomSeed(seed)` - Initialize random number generator with seed value
   - `random(max)` - Generate random number in range [0, max)
   - `random(min, max)` - Generate random number in range [min, max)
@@ -16,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Thread-safe implementation with mutex protection
   - Perfect for LED patterns, delays, animations, and games
 
-- **Bit manipulation functions** - Arduino-compatible bit operations
+- **Bit manipulation functions** - Arduino-inspired bit operations
   - `bit(n)` - Compute value of bit at position n (1 << n)
   - `bitRead(x, n)` - Read value of bit n from value x
   - `bitWrite(x, n, b)` - Write bit b to position n in value x
@@ -25,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All inline functions (zero runtime overhead)
   - Perfect for status flags, hardware registers, and protocol implementation
 
-- **Byte extraction functions** - Arduino-compatible byte manipulation
+- **Byte extraction functions** - Arduino-inspired byte manipulation
   - `highByte(x)` - Extract high-order byte from 16-bit word (bits 8-15)
   - `lowByte(x)` - Extract low-order byte from 16-bit word (bits 0-7)
   - Inline functions for efficient byte-level operations
@@ -50,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.3] - 2025-11-05
 
 ### Added
-- **Trigonometry support** - Arduino-compatible angle conversion constants
+- **Trigonometry support** - Arduino-inspired angle conversion constants
   - `DEG_TO_RAD` constant for converting degrees to radians (π/180)
   - `RAD_TO_DEG` constant for converting radians to degrees (180/π)
   - Full precision double constants matching Arduino values
@@ -80,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2025-11-04
 
 ### Added
-- **Extended math function** - Arduino-compatible square function (v0.3.2)
+- **Extended math function** - Arduino-inspired square function (v0.3.2)
   - `sq(x)` - Square a number (template function for any numeric type)
   - Header-only inline implementation for optimal performance
   - Template provides type flexibility (int, long, float, double)
@@ -107,12 +116,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0] - 2025-11-03 🎉
 
-**Complete Arduino-compatible GPIO library with advanced features!**
+**Complete Arduino-inspired GPIO library with advanced features!**
 
 This major release brings PiPinPP to production-ready status with 8 major feature additions including interrupt support, PWM, comprehensive testing framework, and professional tooling.
 
 ### Added
-- **Software PWM support** - Arduino-compatible analog output (v0.3.8)
+- **Software PWM support** - Arduino-inspired analog output (v0.3.8)
   - analogWrite(pin, value) function with 0-255 duty cycle range
   - Configurable PWM frequency (default 490Hz, matches Arduino UNO)
   - Per-pin dedicated threads for accurate pulse generation
@@ -127,7 +136,7 @@ This major release brings PiPinPP to production-ready status with 8 major featur
 
 - **GPIO interrupt support** - Edge detection with callbacks (v0.3.7)
   - attachInterrupt(pin, callback, mode) and detachInterrupt(pin) functions
-  - Interrupt modes: RISING, FALLING, CHANGE (Arduino-compatible)
+  - Interrupt modes: RISING, FALLING, CHANGE (Arduino-inspired)
   - Thread-safe interrupt handling with background monitoring thread
   - Efficient poll()-based event monitoring for multiple pins
   - Uses libgpiod v2 edge event API (gpiod_edge_event_buffer)
@@ -260,7 +269,7 @@ This major release brings PiPinPP to production-ready status with 8 major featur
 
 ### Fixed
 - Compiler warnings from unused variables
-- Thread-safety issues in Arduino compatibility layer
+- Thread-safety issues in Arduino-inspired API layer
 
 ### Security
 - Added mutex protection against race conditions in multi-threaded programs
@@ -278,7 +287,7 @@ This major release brings PiPinPP to production-ready status with 8 major featur
   - Dual constructors supporting both legacy PinDirection and new PinMode
   - Pin number validation with comprehensive error checking
 
-- **Complete Arduino compatibility layer** - Full ArduinoCompat.hpp implementation
+- **Complete Arduino-inspired API layer** - Full ArduinoCompat.hpp implementation
   - `pinMode(pin, mode)` function supporting INPUT, OUTPUT, INPUT_PULLUP
   - `digitalWrite(pin, value)` for setting pin states (HIGH/LOW)
   - `digitalRead(pin)` for reading pin values
@@ -293,14 +302,14 @@ This major release brings PiPinPP to production-ready status with 8 major featur
   - Full floating-point and integer support
 
 - **Comprehensive example programs** - Four complete working examples
-  - `arduino_style/` - LED blinking using Arduino-compatible API
+  - `arduino_style/` - LED blinking using Arduino-inspired API
   - `basic_led/` - Object-oriented LED control with Pin class
   - `button_input/` - Button reading with debouncing and pull-up resistors
   - `arduino_migration/` - Side-by-side Arduino vs PiPinPP code comparison
 
 - **Complete API documentation** - Professional Doxygen documentation
   - Full Pin class method documentation with examples
-  - Arduino compatibility function documentation
+  - Arduino-inspired API function documentation
   - PinMode enum documentation with hardware details
   - Code examples and usage patterns for all features
   - Author attribution and version information

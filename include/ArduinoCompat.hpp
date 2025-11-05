@@ -374,7 +374,7 @@ void digitalToggle(int pin);
 /* ------------------------------------------------------------ */
 
 /**
- * @brief Calculate the square of a number (Arduino-compatible function)
+ * @brief Calculate the square of a number (Arduino-inspired function)
  * 
  * Returns x * x. More efficient than using pow(x, 2).
  * Works with any numeric type (int, long, float, double).
@@ -404,7 +404,7 @@ inline T sq(T x) {
 /* ------------------------------------------------------------ */
 
 /**
- * @brief Convert degrees to radians (Arduino-compatible constant)
+ * @brief Convert degrees to radians (Arduino-inspired constant)
  * 
  * Multiply an angle in degrees by DEG_TO_RAD to convert to radians.
  * Use with std::sin(), std::cos(), std::tan() from <cmath>.
@@ -417,7 +417,7 @@ inline T sq(T x) {
 constexpr double DEG_TO_RAD = 0.017453292519943295769236907684886;
 
 /**
- * @brief Convert radians to degrees (Arduino-compatible constant)
+ * @brief Convert radians to degrees (Arduino-inspired constant)
  * 
  * Multiply an angle in radians by RAD_TO_DEG to convert to degrees.
  * 
@@ -437,7 +437,7 @@ constexpr double RAD_TO_DEG = 57.295779513082320876798154814105;
 /* ------------------------------------------------------------ */
 
 /**
- * @brief Initialize the random number generator (Arduino-compatible)
+ * @brief Initialize the random number generator (Arduino-inspired)
  * 
  * Seeds the pseudo-random number generator with a value. Use different
  * seeds to get different random sequences. Common practice is to seed
@@ -452,7 +452,7 @@ constexpr double RAD_TO_DEG = 57.295779513082320876798154814105;
 void randomSeed(unsigned long seed);
 
 /**
- * @brief Generate random number in range [0, max) (Arduino-compatible)
+ * @brief Generate random number in range [0, max) (Arduino-inspired)
  * 
  * Returns a pseudo-random number from 0 up to (but not including) max.
  * 
@@ -466,7 +466,7 @@ void randomSeed(unsigned long seed);
 long random(long max);
 
 /**
- * @brief Generate random number in range [min, max) (Arduino-compatible)
+ * @brief Generate random number in range [min, max) (Arduino-inspired)
  * 
  * Returns a pseudo-random number from min up to (but not including) max.
  * 
@@ -485,7 +485,7 @@ long random(long min, long max);
 /* ------------------------------------------------------------ */
 
 /**
- * @brief Compute the value of a bit (Arduino-compatible)
+ * @brief Compute the value of a bit (Arduino-inspired)
  * 
  * Returns the value of the bit at position n (0-31).
  * Equivalent to: (1 << n)
@@ -502,7 +502,7 @@ inline unsigned long bit(unsigned int n) {
 }
 
 /**
- * @brief Read a bit from a value (Arduino-compatible)
+ * @brief Read a bit from a value (Arduino-inspired)
  * 
  * Returns the value of the bit at position n in value x.
  * 
@@ -520,7 +520,7 @@ inline unsigned long bitRead(unsigned long x, unsigned int n) {
 }
 
 /**
- * @brief Write a bit in a value (Arduino-compatible)
+ * @brief Write a bit in a value (Arduino-inspired)
  * 
  * Sets or clears the bit at position n in value x.
  * 
@@ -542,7 +542,7 @@ inline void bitWrite(unsigned long &x, unsigned int n, unsigned int b) {
 }
 
 /**
- * @brief Set a bit in a value (Arduino-compatible)
+ * @brief Set a bit in a value (Arduino-inspired)
  * 
  * Sets the bit at position n in value x to 1.
  * 
@@ -559,7 +559,7 @@ inline void bitSet(unsigned long &x, unsigned int n) {
 }
 
 /**
- * @brief Clear a bit in a value (Arduino-compatible)
+ * @brief Clear a bit in a value (Arduino-inspired)
  * 
  * Sets the bit at position n in value x to 0.
  * 
@@ -576,7 +576,7 @@ inline void bitClear(unsigned long &x, unsigned int n) {
 }
 
 /**
- * @brief Get the high byte of a word (Arduino-compatible)
+ * @brief Get the high byte of a word (Arduino-inspired)
  * 
  * Extracts the high-order (leftmost) byte of a word (16-bit value).
  * 
@@ -593,7 +593,7 @@ inline unsigned char highByte(unsigned int x) {
 }
 
 /**
- * @brief Get the low byte of a word (Arduino-compatible)
+ * @brief Get the low byte of a word (Arduino-inspired)
  * 
  * Extracts the low-order (rightmost) byte of a word (16-bit value).
  * 

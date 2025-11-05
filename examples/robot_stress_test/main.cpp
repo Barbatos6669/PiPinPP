@@ -11,7 +11,7 @@
  * - Multi-threaded concurrent operations
  * 
  * This stress test exercises:
- * ✓ All Arduino-compatible functions
+ * ✓ All Arduino-inspired functions
  * ✓ Thread-safety under concurrent access
  * ✓ Exception handling and recovery
  * ✓ Interrupt handling with callbacks

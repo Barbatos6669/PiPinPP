@@ -3,7 +3,7 @@
 **Version**: 0.3.3  
 **Date**: November 5, 2025
 
-Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino compatibility, interrupts, PWM, and professional tooling.
+Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
 
 ---
 
@@ -156,7 +156,7 @@ if (state == 0) {
 
 ## Arduino Compatibility Layer
 
-The Arduino compatibility layer provides familiar functions for Arduino users.
+The Arduino-inspired API layer provides familiar functions for Arduino users.
 
 ### Constants
 
@@ -284,7 +284,7 @@ detachInterrupt(18);  // Stop monitoring pin 18
 ### PWM Functions
 
 #### `void analogWrite(int pin, int value)`
-Generate PWM output on a GPIO pin (Arduino-compatible).
+Generate PWM output on a GPIO pin (Arduino-inspired).
 
 **Parameters:**
 - `pin`: GPIO pin number (0-27)
@@ -608,7 +608,7 @@ are already widely available and well-optimized.
 
 ### Trigonometry Constants
 
-PiPinPP provides Arduino-compatible angle conversion constants for use with standard library trigonometric functions.
+PiPinPP provides Arduino-inspired angle conversion constants for use with standard library trigonometric functions.
 
 #### `DEG_TO_RAD`
 Constant for converting degrees to radians.

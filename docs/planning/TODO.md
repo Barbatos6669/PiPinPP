@@ -26,7 +26,7 @@ See CHANGELOG.md for full v0.3.2 release notes.
 
 - ✅ Tidy HIGH/LOW constants [easy]
     - Replaced #define macros with constexpr bool for type safety
-    - Kept simple global scope for Arduino compatibility
+    - Kept simple global scope for Arduino-inspired API
     - No namespace needed - HIGH/LOW don't conflict with std library
     - Updated TODO.md to mark task as complete"
 
@@ -220,7 +220,7 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Only works on OUTPUT pins (throws PinError for INPUT)
 
 - ✅ Extended math functions [easy] - **COMPLETE (v0.3.2)**
-  - `sq(x)` - Square a number (x²) - template function for Arduino compatibility
+  - `sq(x)` - Square a number (x²) - template function for Arduino-inspired API
   - Note: sqrt(), pow(), max(), min() NOT provided to avoid std:: conflicts
   - Users should use std::sqrt(), std::pow(), std::max(), std::min() directly
   - Header-only inline implementation for optimal performance
@@ -382,7 +382,7 @@ inline double sqrt(double x) { return std::sqrt(x); }
 
 - [ ] Namespace core API [hard]
   - Wrap Pin, enums, timing, interrupts, PWM in `pipinpp::` namespace
-  - Keep Arduino compatibility layer in global scope
+  - Keep Arduino-inspired API layer in global scope
   - Provide `using pipinpp::Pin;` transitional declarations
   - Update all headers with namespace wrapping
   - Update examples to show both namespaced and global usage
@@ -546,7 +546,7 @@ inline double sqrt(double x) { return std::sqrt(x); }
 
 ## 📝 Notes for v0.4.0
 
-- Focus on Arduino-compatible APIs for all protocols
+- Focus on Arduino-inspired APIs for all protocols
 - Maintain backward compatibility with v0.3.0
 - Consider namespace migration carefully (breaking change)
 - Prioritize hardware testing for all protocols

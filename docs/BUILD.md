@@ -127,7 +127,7 @@ After building, you'll find:
 - **Library**: `build/libpipinpp.a` - Static library
 - **Tests**: `build/test_pipinpp` - Test executable
 - **Examples**: `build/examples/` - Example programs:
-  - `example_arduino_style` - Arduino-compatible LED blinking
+  - `example_arduino_style` - Arduino-inspired LED blinking
   - `example_basic_led` - Object-oriented LED control 
   - `example_button_input` - Button reading with debouncing
   - `example_arduino_migration` - Arduino to PiPinPP migration guide
