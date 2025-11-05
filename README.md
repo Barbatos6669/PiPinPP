@@ -33,11 +33,40 @@
 - **Arduino makers often struggle to migrate projects to Raspberry Pi**, facing steep learning curves and inconsistent libraries.
 - **We want PiPin++ to bridge that gap** with a clean, intuitive API and modern C++ features.
 
-## Who’s it for?
+## Who's it for?
 
 - Arduino users wanting to try Raspberry Pi projects
 - Makers, hackers, students, educators
 - Anyone needing simple, reliable GPIO control in C++
+
+---
+
+## Quick Start Example
+
+**Blink an LED in 10 lines of code:**
+
+```cpp
+#include <ArduinoCompat.hpp>
+
+int main() {
+    pinMode(17, OUTPUT);              // Set GPIO 17 as output
+    
+    while (true) {
+        digitalWrite(17, HIGH);       // Turn LED on
+        delay(1000);                  // Wait 1 second
+        digitalWrite(17, LOW);        // Turn LED off
+        delay(1000);                  // Wait 1 second
+    }
+}
+```
+
+**Compile and run:**
+```bash
+g++ blink.cpp $(pkg-config --cflags --libs pipinpp) -o blink
+sudo ./blink
+```
+
+That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ---
 
