@@ -5,14 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.5] - 2025-11-05
 
 ### Changed
 - **Terminology Update** - Changed "Arduino-compatible" to "Arduino-inspired" throughout project
-  - Updated project description, documentation, code comments, and examples
+  - Updated project description, documentation, code comments, and examples (29 files)
   - Clarifies this is a Raspberry Pi library with an API familiar to Arduino users
   - Avoids confusion about Arduino hardware compatibility or official endorsement
   - No functional changes - documentation and branding clarity only
+
+### Added
+- **Getting Started Guide** - Complete beginner tutorial (466 lines)
+  - 10-minute quickstart for first LED
+  - Step-by-step hardware setup with circuit diagrams
+  - Your first program with line-by-line explanations
+  - Interactive button example
+  - Troubleshooting section for common issues
+  
+- **Troubleshooting Guide** - Comprehensive issue resolution (595 lines)
+  - Installation issues and fixes
+  - Permission errors and solutions
+  - Hardware debugging (LEDs, buttons)
+  - Compilation and runtime errors
+  - Pin numbering confusion help
+  - Performance tips and advanced debugging
+  
+- **FAQ** - Frequently Asked Questions (577 lines)
+  - 30+ common questions answered
+  - Getting started help
+  - Hardware safety tips
+  - Programming guidance
+  - Performance expectations
+  - Community resources
+  
+- **Tutorials Directory** - Step-by-step projects
+  - Traffic Light tutorial with challenges (419 lines)
+  - Tutorial index with learning paths
+  - Project ideas for all skill levels (30+ suggestions)
+  - Contributing guidelines for community tutorials
+
+### Documentation
+- Updated README.md with beginner-focused navigation
+- Added "New to GPIO? Start Here!" section
+- Reorganized top navigation for better discoverability
+- Enhanced learning progression clarity
 
 ## [0.3.4] - 2025-11-05
 
