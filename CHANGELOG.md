@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.6] - 2025-11-05
+
 ### Added
 - **Advanced I/O Functions** - Implemented 5 new functions for sensor and peripheral interfacing
   - `pulseIn(pin, state, timeout)` - Measure pulse widths for ultrasonic sensors (HC-SR04), IR receivers

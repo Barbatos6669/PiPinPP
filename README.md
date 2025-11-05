@@ -10,7 +10,7 @@
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.3.5-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.5)
+[![Version](https://img.shields.io/badge/version-0.3.6-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.6)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
@@ -20,7 +20,7 @@
 
 ---
 
-> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.5/install.sh | sudo bash`
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.6/install.sh | sudo bash`
 
 ---
 
@@ -87,7 +87,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ## Features
 
-**v0.3.5 RELEASED!** 🎉 Arduino-inspired GPIO library with comprehensive beginner documentation!
+**v0.3.6 RELEASED!** 🎉 Advanced I/O functions: pulseIn, shift registers, and tone generation!
 
 ### ✅ Current Features (v0.3.2)
 
@@ -134,15 +134,15 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ### 🚀 One-Line Install (Easiest!)
 
-Install PiPinPP v0.3.5 with a single command - just like pip!
+Install PiPinPP v0.3.6 with a single command - just like pip!
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.5/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.6/install.sh | sudo bash
 ```
 
 **What this does:**
 - ✅ Installs all dependencies (build tools, libgpiod v2)
-- ✅ Downloads and builds PiPinPP v0.3.4
+- ✅ Downloads and builds PiPinPP v0.3.6
 - ✅ Installs to `/usr/local` (system-wide)
 - ✅ Configures GPIO permissions (adds you to `gpio` group)
 - ✅ Sets up udev rules for non-sudo access
@@ -151,7 +151,7 @@ curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.5/install.
 **Trust but verify?** Download and inspect the script first:
 
 ```bash
-wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.5/install.sh
+wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.6/install.sh
 less install.sh  # Review the script
 sudo bash install.sh
 ```
@@ -168,7 +168,7 @@ sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
 ```bash
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.5  # Install latest stable release
+git checkout v0.3.6  # Install latest stable release
 ./build.sh           # Build with all tests
 cd build
 sudo make install    # Install to /usr/local
@@ -177,13 +177,34 @@ sudo ldconfig        # Update library cache
 
 **3. Verify installation:**
 ```bash
-pkg-config --modversion pipinpp  # Should show: 0.3.5
+pkg-config --modversion pipinpp  # Should show: 0.3.6
 ```
 
 **4. Configure permissions (optional but recommended):**
 ```bash
 sudo usermod -a -G gpio $USER
 # Log out and back in for this to take effect
+```
+
+### 🔄 Updating to a Newer Version
+
+Already have PiPinPP installed? Updating is just as easy!
+
+**Option 1: One-Line Update (Recommended)**
+```bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.6/install.sh | sudo bash
+```
+*Replace `v0.3.6` with the version you want (e.g., `v0.4.0`)*
+
+**Option 2: Manual Update**
+```bash
+cd PiPinPP
+git fetch
+git checkout v0.3.6  # Replace with desired version
+./build.sh
+cd build
+sudo make install
+sudo ldconfig
 ```
 
 ### 🔄 Updating to a Newer Version
