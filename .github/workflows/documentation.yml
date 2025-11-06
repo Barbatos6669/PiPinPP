@@ -2,14 +2,12 @@ name: Documentation
 
 # Run on:
 # - Every push to main
-# - Every new tag (v*.*.*)
 # - Manual trigger
+# Note: Not triggered by tags to avoid deployment conflicts
 on:
   push:
     branches:
       - main
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
 
 # Give GitHub Actions permission to deploy to GitHub Pages
