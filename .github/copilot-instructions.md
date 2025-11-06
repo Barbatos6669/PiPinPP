@@ -172,8 +172,8 @@ docs/          - Comprehensive markdown docs
 
 ## Version & Release Process
 
-**Current Development**: v0.3.7 (unreleased, in development)
-**Last Released**: v0.3.6 (November 5, 2025)
+**Current Development**: v0.3.8 (unreleased, in development)
+**Last Released**: v0.3.7 (November 6, 2025)
 
 - Major versions: Breaking API changes
 - Minor versions: New features (backward compatible)

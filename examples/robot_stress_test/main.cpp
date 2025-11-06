@@ -506,7 +506,7 @@ void stressTestThread([[maybe_unused]] LEDSystem& leds) {
 int main(int argc, char** argv) {
     std::cout << "\n";
     std::cout << "═══════════════════════════════════════════════════════════\n";
-    std::cout << "  🤖 PiPinPP ROBOT STRESS TEST v0.3.6\n";
+    std::cout << "  🤖 PiPinPP ROBOT STRESS TEST v0.3.7\n";
     std::cout << "═══════════════════════════════════════════════════════════\n";
     
     // Check for demo mode

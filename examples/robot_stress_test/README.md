@@ -193,7 +193,7 @@ Press E-Stop button (GPIO 4 pulled LOW) or Ctrl+C to:
 ## 🔍 What This Tests
 
 ### Functional
-- All v0.3.6 API functions work correctly
+- All v0.3.7 API functions work correctly
 - Pin state queries return accurate results
 - Interrupts trigger reliably
 - PWM generates proper signals
@@ -242,4 +242,4 @@ When v0.4.0 APIs are available:
 
 ---
 
-**This stress test demonstrates that PiPinPP v0.3.6 is production-ready for real-world robotics applications!** 🚀
+**This stress test demonstrates that PiPinPP v0.3.7 is production-ready for real-world robotics applications!** 🚀

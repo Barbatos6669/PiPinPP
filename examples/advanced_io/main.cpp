@@ -35,8 +35,8 @@
  * 4. tone()/noTone() - Generate audio frequencies (buzzer control)
  * 
  * @author PiPinPP Team
- * @version 0.3.6
- * @date 2025-11-05
+ * @version 0.3.7
+ * @date 2025-11-06
  */
 
 #include <ArduinoCompat.hpp>
@@ -410,7 +410,7 @@ int main() {
     cout << "║     PiPin++ Advanced I/O Functions Demonstration             ║\n";
     cout << "║                                                               ║\n";
     cout << "║  Exploring Arduino-inspired advanced I/O capabilities         ║\n";
-    cout << "║  Version 0.3.6 - November 5, 2025                            ║\n";
+    cout << "║  Version 0.3.7 - November 6, 2025                            ║\n";
     cout << "╚══════════════════════════════════════════════════════════════╝\n";
     
     cout << "\nThis demonstration shows how to use PiPin++'s advanced I/O\n";
