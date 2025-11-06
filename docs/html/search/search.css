@@ -265,7 +265,7 @@ div.searchresults {
 
 .pages b {
    color: white;
-   padding: 5px 5px 3px 5px;
+   padding: 5px 5px 3px;
    background-image: var(--nav-gradient-active-image-parent);
    background-repeat: repeat-x;
    text-shadow: 0 1px 1px #000000;

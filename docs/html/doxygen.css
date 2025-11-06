@@ -357,8 +357,6 @@ body, table, div, p, dl {
 /* @group Heading Levels */
 
 .title {
-	font-weight: 400;
-	font-size: 14px;
 	font-family: var(--font-family-normal);
 	line-height: 28px;
 	font-size: 150%;
@@ -644,14 +642,13 @@ pre.fragment {
         margin: 4px 8px 4px 2px;
         overflow: auto;
         word-wrap: break-word;
-        font-size:  9pt;
         line-height: 125%;
         font-family: var(--font-family-monospace);
         font-size: 105%;
 }
 
 div.fragment {
-	padding: 0 0 1px 0; /*Fixed: last line underline overlap border*/
+	padding: 0 0 1px; /*Fixed: last line underline overlap border*/
 	margin: 4px 8px 4px 2px;
 	color: var(--fragment-foreground-color);
 	background-color: var(--fragment-background-color);
@@ -934,7 +931,7 @@ table.memberdecls {
 }
 
 .mdescLeft, .mdescRight {
-	padding: 0px 8px 4px 8px;
+	padding: 0px 8px 4px;
 	color: var(--memdecl-foreground-color);
 }
 
@@ -1029,7 +1026,7 @@ table.memberdecls {
         border-top: 1px solid var(--memdef-border-color);
         border-left: 1px solid var(--memdef-border-color);
         border-right: 1px solid var(--memdef-border-color);
-        padding: 6px 0px 6px 0px;
+        padding: 6px 0px;
         color: var(--memdef-proto-text-color);
         font-weight: bold;
         text-shadow: var(--memdef-proto-text-shadow);
@@ -1047,7 +1044,7 @@ table.memberdecls {
         border-bottom: 1px solid var(--memdef-border-color);
         border-left: 1px solid var(--memdef-border-color);
         border-right: 1px solid var(--memdef-border-color);
-        padding: 6px 10px 2px 10px;
+        padding: 6px 10px 2px;
         border-top-width: 0;
         background-image:url('nav_g.png');
         background-repeat:repeat-x;
@@ -1071,7 +1068,7 @@ dl.reflist dt {
 }
 
 dl.reflist dd {
-        margin: 0px 0px 10px 0px;
+        margin: 0px 0px 10px;
         padding: 5px;
 }
 
@@ -1425,7 +1422,6 @@ table.fieldtable {
 {
 	height:32px;
 	display:block;
-	text-decoration: none;
 	outline: none;
 	color: var(--nav-text-normal-color);
 	font-family: var(--font-family-nav);
@@ -1511,7 +1507,7 @@ div.headertitle
 }
 
 dl {
-        padding: 0 0 0 0;
+        padding: 0;
 }
 
 /* dl.note, dl.warning, dl.attention, dl.pre, dl.post, dl.invariant, dl.deprecated, dl.todo, dl.test, dl.bug, dl.examples */
@@ -1683,7 +1679,7 @@ div.toc {
         padding: 14px 25px;
         background-color: var(--toc-background-color);
         border: 1px solid var(--toc-border-color);
-        border-radius: 7px 7px 7px 7px;
+        border-radius: 7px;
         float: right;
         height: auto;
         margin: 0 8px 10px 10px;
@@ -1775,7 +1771,7 @@ tr.heading h2 {
         color: var(--tooltip-foreground-color);
 	background-color: var(--tooltip-background-color);
 	border: 1px solid var(--tooltip-border-color);
-	border-radius: 4px 4px 4px 4px;
+	border-radius: 4px;
 	box-shadow: var(--tooltip-shadow);
 	display: none;
 	font-size: smaller;
