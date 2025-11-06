@@ -2,16 +2,28 @@
 
 This checklist tracks the planned work for PiPinPP development.
 
-**Current Version**: v0.3.4 (Released November 5, 2025)  
-**Next Target**: v0.4.0 (Communication Protocols & Hardware PWM)
+**Current Version**: v0.3.7 (Released November 6, 2025)  
+**Next Target**: v0.4.0 (Hardware PWM & UART)
 
 Legend: [easy] quick win · [medium] moderate · [hard] larger feature
 
 ---
 
-## 🎉 v0.3.2 - CURRENT! (Released November 4, 2025)
+## 🎉 v0.3.7 - CURRENT! (Released November 6, 2025)
 
-See CHANGELOG.md for full v0.3.2 release notes.
+- ✅ SPI communication with Arduino-inspired API
+- ✅ 74HC595 shift register example
+- ✅ Comprehensive READMEs for all 19 examples
+- ✅ Wire deadlock bugfix
+- ✅ 88 automated tests passing
+
+See CHANGELOG.md for full v0.3.7 release notes.
+
+---
+
+## 🎉 v0.3.6 - COMPLETE! (Released November 5, 2025)
+
+See CHANGELOG.md for full v0.3.6 release notes.
 
 ---
 
@@ -164,14 +176,13 @@ See CHANGELOG.md for full v0.3.2 release notes.
 **Pin Queries** (✅ COMPLETE in v0.3.1)
 - ✅ `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 
+**Advanced I/O** (✅ COMPLETE in v0.3.6)
+- ✅ `pulseIn()`, `pulseInLong()` - Pulse width measurement
+- ✅ `shiftIn()`, `shiftOut()` - Shift register communication
+- ✅ `tone()`, `noTone()` - Audio generation
+- ✅ `LSBFIRST`, `MSBFIRST` - Bit order constants
+
 #### 📋 Planned for v0.4.0
-
-**Advanced I/O** (Medium)
-- `pulseIn()`, `pulseInLong()`, `shiftIn()`, `shiftOut()`
-- `tone()`, `noTone()` for audio generation
-
-**Pin Queries** (Easy)
-- `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 
 **Communication** (Medium/Hard)
 - `Wire` (I2C) - Complete Wire library API

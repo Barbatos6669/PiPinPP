@@ -23,6 +23,8 @@
 /**
  * @file pwm.hpp
  * @brief Software PWM (Pulse Width Modulation) support for Raspberry Pi
+ * @author Barbatos6669
+ * @date 2025
  * 
  * @details
  * Provides Arduino-inspired PWM functionality using software-based pulse generation.

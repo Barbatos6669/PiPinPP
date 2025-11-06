@@ -1,4 +1,9 @@
-/*
+/**
+ * @file log.hpp
+ * @brief Optional logging macros for debugging GPIO operations
+ * @author Barbatos6669
+ * @date 2025
+ * 
  * Copyright (c) 2025 HobbyHacker
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy

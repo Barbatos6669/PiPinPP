@@ -7,6 +7,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.7] - 2025-11-06
+
+### Added
+- **SPI Communication** - Full Arduino-compatible SPI master support
+  - `SPI.begin()`, `SPI.begin(bus, cs)` - Initialize hardware SPI
+  - `SPI.end()` - Close SPI interface
+  - `SPI.setDataMode(mode)` - Configure SPI mode (MODE0-MODE3)
+  - `SPI.setBitOrder(order)` - Set bit order (MSBFIRST/LSBFIRST)
+  - `SPI.setClockDivider(divider)` - Arduino-style clock setting
+  - `SPI.setClock(speed)` - Direct clock speed in Hz (up to 125 MHz)
+  - `SPI.getClock()` - Query current clock speed
+  - `SPI.transfer(data)` - Single byte transfer
+  - `SPI.transfer(buffer, length)` - Multi-byte transfer (in-place)
+  - `SPI.transfer(txBuffer, rxBuffer, length)` - Separate TX/RX buffers
+  - `SPI.isInitialized()` - Check initialization state
+  - Global `SPI` instance for Arduino compatibility
+  - Thread-safe with mutex protection
+  - Uses Linux `/dev/spidev*` interface
+- **SPI Example** - 74HC595 shift register demonstration (300+ lines)
+  - `examples/spi_74hc595/main.cpp` - Hardware SPI vs software shiftOut() comparison
+  - Complete wiring diagrams for 74HC595 connections
+  - Performance benchmarking (hardware SPI ~2-4x faster)
+  - Common LED patterns (walking bits, binary counter, etc.)
+  - Real-world usage examples
+  - Comprehensive README with troubleshooting
+- **SPI Unit Tests** - 22 new tests for SPI functionality
+  - `tests/gtest_spi.cpp` - Initialization, configuration, transfer, thread safety
+  - Hardware tests skip gracefully when `/dev/spidev*` unavailable
+  - Test coverage for all SPI modes, bit orders, and clock speeds
+  - Concurrent access safety verification
+- **Example Documentation** - Comprehensive READMEs for all 19 examples
+  - `examples/basic_led/README.md` - LED blink guide with wiring
+  - `examples/button_input/README.md` - Button reading with pull-ups
+  - `examples/button_interrupt/README.md` - Interrupt-driven GPIO
+  - `examples/led_fade/README.md` - PWM brightness control
+  - `examples/arduino_style/README.md` - Pure Arduino syntax demo
+  - `examples/arduino_migration/README.md` - Complete migration guide
+  - `examples/exception_handling/README.md` - Error handling patterns
+  - `examples/thread_safety/README.md` - Multi-threaded GPIO
+  - `examples/timing_benchmark/README.md` - Performance measurements
+  - `examples/advanced_io/README.md` - shiftOut, shiftIn, pulseIn, tone
+  - `examples/math_functions/README.md` - map, constrain, min/max
+  - `examples/trig_functions/README.md` - Degree-based trigonometry
+  - `examples/utility_functions/README.md` - Bit manipulation, random
+  - `examples/i2c_scanner/README.md` - I2C device discovery
+  - `examples/i2c_bmp280/README.md` - Pressure/temperature sensor
+  - `examples/i2c_mpu6050/README.md` - 6-axis IMU
+  - `examples/i2c_ssd1306/README.md` - OLED display
+  - Each README includes hardware requirements, wiring diagrams, building instructions, troubleshooting, and extension ideas
+
+### Changed
+- **Constant Definitions** - Resolved MSBFIRST/LSBFIRST conflicts
+  - Unified bit order constants in ArduinoCompat.hpp (MSBFIRST=1, LSBFIRST=0)
+  - SPI.hpp now references Arduino constants for consistency
+  - Fixed compilation errors when including both headers
+- **Test Count** - Increased from 66 to 88 tests (22 new SPI tests)
+- **Documentation Updates**
+  - `docs/API_REFERENCE.md` - Added comprehensive SPI and Wire/I2C API sections
+  - Updated version to 0.3.7 and date to November 6, 2025
+  - Added Communication Protocols chapter with I2C and SPI documentation
+  - Complete function reference with parameters, returns, and examples
+- **README.md Updates**
+  - Updated version badge to 0.3.7
+  - Updated test count badge to 88 passing tests
+  - Added SPI to Advanced Features list
+  - Updated example documentation count to 19 with full READMEs
+  - Changed install script URLs to v0.3.7
+  - Updated feature descriptions for production-ready status
+
+### Fixed
+- **Wire Deadlock** - Fixed mutex deadlock in Wire.cpp
+  - `begin()` was calling `begin(int)` while holding mutex
+  - Refactored to duplicate initialization logic instead of nested call
+  - All 66 Wire tests now pass (previously froze at test 37)
+
 ## [0.3.6] - 2025-11-05
 
 ### Added

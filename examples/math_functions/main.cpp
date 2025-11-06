@@ -176,7 +176,9 @@ void testPWMCalculation() {
 int main() {
     std::cout << "\n╔════════════════════════════════════════════════════════════╗" << std::endl;
     std::cout << "║        PiPinPP Extended Math Functions Example           ║" << std::endl;
-    std::cout << "║                    Version 0.3.2                          ║" << std::endl;
+    std::cout << "║                                                           ║" << std::endl;
+    std::cout << "║                    Version 0.3.6                          ║" << std::endl;
+    std::cout << "╚═══════════════════════════════════════════════════════════╝" << std::endl;
     std::cout << "╚════════════════════════════════════════════════════════════╝" << std::endl;
     
     printSeparator();

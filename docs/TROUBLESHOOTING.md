@@ -68,7 +68,7 @@ sudo apt install curl
 ```bash
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.4
+git checkout v0.3.7
 ./build.sh
 cd build
 sudo make install
@@ -457,14 +457,14 @@ while (true) {
 
 ```bash
 pkg-config --modversion pipinpp
-# Shows: 0.3.2 (but want 0.3.4)
+# Shows: 0.3.2 (but want 0.3.7)
 ```
 
 **Solution: Force reinstall**
 ```bash
 cd PiPinPP
 git pull origin main
-git checkout v0.3.4
+git checkout v0.3.7
 ./build.sh
 cd build
 sudo make install
@@ -489,7 +489,7 @@ sudo rm -f /usr/local/lib/pkgconfig/pipinpp.pc
 # Reinstall
 cd PiPinPP
 git pull origin main
-git checkout v0.3.4
+git checkout v0.3.7
 ./build.sh
 cd build
 sudo make install

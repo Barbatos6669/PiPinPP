@@ -74,7 +74,7 @@ Quick answers to common questions about PiPin++.
 **A:** No! Use our one-line installer:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.4/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
 This installs everything automatically. If you prefer to compile manually, see [INSTALL.md](INSTALL.md).
@@ -462,14 +462,15 @@ See [CONTRIBUTING.md](../.github/CONTRIBUTING.md) for guidelines.
 
 ### Q: Is PiPin++ production-ready?
 
-**A:** Yes! Version 0.3.4+ is stable and production-ready for most applications.
+**A:** Yes! Version 0.3.7+ is stable and production-ready for most applications.
 
 **Current status:**
 - ✅ Digital I/O - Fully tested
 - ✅ Timing functions - Stable
 - ✅ Interrupts - Production-ready
 - ✅ PWM - Software PWM stable
-- ⚠️ I2C/SPI - Coming in v0.4.0
+- ✅ I2C/Wire - Full Arduino Wire library compatibility
+- ⚠️ SPI/UART - Coming in v0.4.0
 
 **Used in production?** Let us know! We'd love to feature your project.
 
@@ -482,9 +483,9 @@ See [CONTRIBUTING.md](../.github/CONTRIBUTING.md) for guidelines.
 **A:** Planned for v0.4.0 (Q1 2026)
 
 **Current roadmap:**
-- v0.3.5 - Documentation improvements (current)
-- v0.4.0 - I2C, SPI, UART support
-- v0.5.0 - Hardware PWM, analog input
+- v0.3.7 - SPI support, comprehensive documentation (current)
+- v0.4.0 - Hardware PWM, UART support
+- v0.5.0 - Advanced peripherals, analog input
 - v1.0.0 - Full feature completion
 
 See [ROADMAP.md](planning/ROADMAP.md) for details.

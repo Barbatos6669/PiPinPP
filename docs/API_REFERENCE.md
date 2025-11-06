@@ -1,7 +1,7 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.3  
-**Date**: November 5, 2025
+**Version**: 0.3.7  
+**Date**: November 6, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
 
@@ -19,9 +19,12 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
    - [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
    - [Trigonometry Constants](#trigonometry-constants)
-4. [Examples](#examples)
-5. [Error Handling](#error-handling)
-6. [Hardware Notes](#hardware-notes)
+4. [Communication Protocols](#communication-protocols)
+   - [Wire (I²C)](#wire-i2c)
+   - [SPI](#spi)
+5. [Examples](#examples)
+6. [Error Handling](#error-handling)
+7. [Hardware Notes](#hardware-notes)
 
 ---
 
@@ -865,6 +868,463 @@ try {
 | `GpioAccessError` | Permission denied | Add user to 'gpio' group: `sudo usermod -a -G gpio $USER` |
 | `GpioAccessError` | Device not found | Verify `/dev/gpiochip0` exists, check kernel module loaded |
 | `GpioAccessError` | Line already in use | Another process is using the GPIO pin |
+
+---
+
+## Communication Protocols
+
+PiPinPP provides Arduino-compatible APIs for I²C and SPI communication.
+
+---
+
+### Wire (I²C)
+
+Arduino-compatible I²C communication library for Raspberry Pi.
+
+#### Include
+```cpp
+#include "Wire.hpp"
+using namespace pipinpp;
+```
+
+#### I²C Pin Connections
+
+**Raspberry Pi 0-4:**
+- SDA: GPIO 2 (Physical Pin 3)
+- SCL: GPIO 3 (Physical Pin 5)
+- Bus: `/dev/i2c-1`
+
+**Raspberry Pi 5:**
+- SDA: GPIO 2 (Physical Pin 3)
+- SCL: GPIO 3 (Physical Pin 5)
+- Bus: `/dev/i2c-20` (for pin headers)
+
+#### Enable I²C
+```bash
+sudo raspi-config
+# Navigate to: Interface Options → I2C → Enable
+
+# Verify:
+ls -l /dev/i2c-*
+```
+
+#### Wire Functions
+
+##### `Wire.begin()`
+Initialize I²C interface with automatic bus detection.
+
+**Returns:** `true` on success, `false` on error
+
+**Example:**
+```cpp
+if (!Wire.begin()) {
+    std::cerr << "I2C initialization failed" << std::endl;
+}
+```
+
+##### `Wire.begin(int busNumber)`
+Initialize I²C with specific bus number.
+
+**Parameters:**
+- `busNumber`: I²C bus number (1 for Pi 0-4, 20 for Pi 5)
+
+**Example:**
+```cpp
+Wire.begin(1);  // Explicitly use /dev/i2c-1
+```
+
+##### `Wire.end()`
+Close I²C interface.
+
+##### `Wire.setClock(uint32_t frequency)`
+Set I²C bus speed.
+
+**Parameters:**
+- `frequency`: Clock frequency in Hz (default: 100000 = 100 kHz)
+
+**Common Speeds:**
+- Standard: 100,000 Hz (100 kHz)
+- Fast: 400,000 Hz (400 kHz)
+- Fast Plus: 1,000,000 Hz (1 MHz)
+
+**Example:**
+```cpp
+Wire.setClock(400000);  // 400 kHz fast mode
+```
+
+##### `Wire.getClock()`
+Get current I²C clock speed.
+
+**Returns:** Clock frequency in Hz
+
+##### `Wire.beginTransmission(uint8_t address)`
+Start I²C transmission to device.
+
+**Parameters:**
+- `address`: 7-bit I²C device address (0x08-0x77)
+
+**Example:**
+```cpp
+Wire.beginTransmission(0x68);  // MPU6050 address
+```
+
+##### `Wire.write(uint8_t data)`
+Write single byte to I²C device.
+
+**Returns:** Number of bytes written (1 on success)
+
+**Example:**
+```cpp
+Wire.write(0x6B);  // Write register address
+Wire.write(0x00);  // Write register value
+```
+
+##### `Wire.write(const uint8_t* data, size_t length)`
+Write multiple bytes.
+
+**Parameters:**
+- `data`: Pointer to data buffer
+- `length`: Number of bytes to write
+
+##### `Wire.endTransmission(bool sendStop = true)`
+End I²C transmission.
+
+**Parameters:**
+- `sendStop`: Send I²C stop condition (default: true)
+
+**Returns:** Status code
+- `0`: Success
+- `1`: Data too long
+- `2`: NACK on address
+- `3`: NACK on data
+- `4`: Other error
+
+**Example:**
+```cpp
+Wire.beginTransmission(0x68);
+Wire.write(0x6B);
+Wire.write(0x00);
+uint8_t error = Wire.endTransmission();
+if (error != 0) {
+    std::cerr << "I2C error: " << (int)error << std::endl;
+}
+```
+
+##### `Wire.requestFrom(uint8_t address, size_t length, bool sendStop = true)`
+Request data from I²C device.
+
+**Parameters:**
+- `address`: 7-bit I²C device address
+- `length`: Number of bytes to request
+- `sendStop`: Send stop condition after reading
+
+**Returns:** Number of bytes available to read
+
+**Example:**
+```cpp
+Wire.requestFrom(0x68, 2);  // Request 2 bytes from device
+uint8_t high = Wire.read();
+uint8_t low = Wire.read();
+```
+
+##### `Wire.available()`
+Check how many bytes are available to read.
+
+**Returns:** Number of bytes in receive buffer
+
+##### `Wire.read()`
+Read one byte from receive buffer.
+
+**Returns:** Next byte (uint8_t)
+
+##### `Wire.peek()`
+Peek at next byte without removing from buffer.
+
+**Returns:** Next byte (uint8_t)
+
+#### Helper Functions
+
+##### `Wire.exists(uint8_t address)`
+Check if device exists at address.
+
+**Returns:** `true` if device responds, `false` otherwise
+
+**Example:**
+```cpp
+if (Wire.exists(0x76)) {
+    std::cout << "BMP280 sensor found" << std::endl;
+}
+```
+
+##### `Wire.scan()`
+Scan all I²C addresses for connected devices.
+
+**Returns:** `std::vector<uint8_t>` of found addresses
+
+**Example:**
+```cpp
+std::vector<uint8_t> devices = Wire.scan();
+for (uint8_t addr : devices) {
+    std::cout << "Device at 0x" << std::hex << (int)addr << std::endl;
+}
+```
+
+##### `Wire.readRegister(uint8_t address, uint8_t reg, uint8_t& value)`
+Read single register from device.
+
+**Parameters:**
+- `address`: Device I²C address
+- `reg`: Register address
+- `value`: Reference to store read value
+
+**Returns:** `true` on success
+
+##### `Wire.writeRegister(uint8_t address, uint8_t reg, uint8_t value)`
+Write single register to device.
+
+**Returns:** `true` on success
+
+#### Complete I²C Example
+```cpp
+#include "Wire.hpp"
+
+// Read temperature from MPU6050
+Wire.begin();
+Wire.setClock(400000);  // 400 kHz
+
+// Read WHO_AM_I register (0x75)
+Wire.beginTransmission(0x68);
+Wire.write(0x75);
+Wire.endTransmission(false);
+
+Wire.requestFrom(0x68, 1);
+uint8_t whoami = Wire.read();
+
+std::cout << "WHO_AM_I: 0x" << std::hex << (int)whoami << std::endl;
+```
+
+---
+
+### SPI
+
+Arduino-compatible SPI master communication for Raspberry Pi.
+
+#### Include
+```cpp
+#include "SPI.hpp"
+using namespace pipinpp;
+```
+
+#### SPI Pin Connections (All Raspberry Pi Models)
+
+**Hardware SPI0:**
+- MOSI: GPIO 10 (Physical Pin 19)
+- MISO: GPIO 9 (Physical Pin 21)
+- SCLK: GPIO 11 (Physical Pin 23)
+- CE0: GPIO 8 (Physical Pin 24)
+- CE1: GPIO 7 (Physical Pin 26)
+
+**Device:** `/dev/spidev0.0` or `/dev/spidev0.1`
+
+#### Enable SPI
+```bash
+sudo raspi-config
+# Navigate to: Interface Options → SPI → Enable
+
+# Verify:
+ls -l /dev/spidev*
+```
+
+#### SPI Constants
+
+##### Modes
+```cpp
+SPI_MODE0  // CPOL=0, CPHA=0 (most common)
+SPI_MODE1  // CPOL=0, CPHA=1
+SPI_MODE2  // CPOL=1, CPHA=0
+SPI_MODE3  // CPOL=1, CPHA=1
+```
+
+##### Bit Order
+```cpp
+MSBFIRST  // Most Significant Bit First (default, most devices)
+LSBFIRST  // Least Significant Bit First
+```
+
+##### Clock Dividers
+```cpp
+SPI_CLOCK_DIV2    // 125 MHz
+SPI_CLOCK_DIV4    // 62.5 MHz
+SPI_CLOCK_DIV8    // 31.25 MHz
+SPI_CLOCK_DIV16   // 15.625 MHz
+SPI_CLOCK_DIV32   // 7.8125 MHz
+SPI_CLOCK_DIV64   // 3.90625 MHz
+SPI_CLOCK_DIV128  // 1.953125 MHz
+```
+
+#### SPI Functions
+
+##### `SPI.begin()`
+Initialize SPI with default settings (MODE0, MSBFIRST, 4 MHz).
+
+**Returns:** `true` on success, `false` if hardware not available
+
+**Example:**
+```cpp
+if (!SPI.begin()) {
+    std::cerr << "SPI initialization failed" << std::endl;
+}
+```
+
+##### `SPI.begin(int bus, int cs)`
+Initialize specific SPI bus and chip select.
+
+**Parameters:**
+- `bus`: SPI bus number (0 or 1)
+- `cs`: Chip select (0 or 1)
+
+**Example:**
+```cpp
+SPI.begin(0, 0);  // /dev/spidev0.0
+SPI.begin(0, 1);  // /dev/spidev0.1
+```
+
+##### `SPI.end()`
+Close SPI interface.
+
+##### `SPI.setDataMode(uint8_t mode)`
+Set SPI mode (clock polarity and phase).
+
+**Parameters:**
+- `mode`: `SPI_MODE0`, `SPI_MODE1`, `SPI_MODE2`, or `SPI_MODE3`
+
+**Example:**
+```cpp
+SPI.setDataMode(SPI_MODE0);  // Most common mode
+```
+
+##### `SPI.setBitOrder(uint8_t order)`
+Set bit transmission order.
+
+**Parameters:**
+- `order`: `MSBFIRST` (default) or `LSBFIRST`
+
+**Example:**
+```cpp
+SPI.setBitOrder(MSBFIRST);  // Send MSB first
+```
+
+##### `SPI.setClockDivider(uint8_t divider)`
+Set clock speed using divider (Arduino compatibility).
+
+**Parameters:**
+- `divider`: `SPI_CLOCK_DIV2` through `SPI_CLOCK_DIV128`
+
+**Example:**
+```cpp
+SPI.setClockDivider(SPI_CLOCK_DIV8);  // 31.25 MHz
+```
+
+##### `SPI.setClock(uint32_t speed)`
+Set clock speed directly in Hz.
+
+**Parameters:**
+- `speed`: Clock frequency in Hz (up to 125 MHz)
+
+**Example:**
+```cpp
+SPI.setClock(1000000);   // 1 MHz
+SPI.setClock(10000000);  // 10 MHz
+```
+
+##### `SPI.getClock()`
+Get current clock speed.
+
+**Returns:** Clock frequency in Hz
+
+##### `SPI.transfer(uint8_t data)`
+Send and receive one byte (full-duplex).
+
+**Parameters:**
+- `data`: Byte to send
+
+**Returns:** Byte received
+
+**Example:**
+```cpp
+digitalWrite(CS_PIN, LOW);   // Select device
+uint8_t response = SPI.transfer(0x42);
+digitalWrite(CS_PIN, HIGH);  // Deselect device
+```
+
+##### `SPI.transfer(uint8_t* buffer, size_t length)`
+Transfer multiple bytes (in-place).
+
+**Parameters:**
+- `buffer`: Data to send, will be overwritten with received data
+- `length`: Number of bytes
+
+**Example:**
+```cpp
+uint8_t data[] = {0x01, 0x02, 0x03};
+digitalWrite(CS_PIN, LOW);
+SPI.transfer(data, 3);  // data[] now contains received bytes
+digitalWrite(CS_PIN, HIGH);
+```
+
+##### `SPI.transfer(const uint8_t* txBuffer, uint8_t* rxBuffer, size_t length)`
+Transfer with separate TX and RX buffers.
+
+**Parameters:**
+- `txBuffer`: Data to send
+- `rxBuffer`: Buffer for received data
+- `length`: Number of bytes
+
+##### `SPI.isInitialized()`
+Check if SPI is initialized.
+
+**Returns:** `true` if initialized
+
+#### Complete SPI Example
+```cpp
+#include "ArduinoCompat.hpp"
+#include "SPI.hpp"
+
+const int CS_PIN = 8;  // Chip select
+
+void setup() {
+    // Initialize SPI
+    SPI.begin();
+    SPI.setDataMode(SPI_MODE0);
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setClock(1000000);  // 1 MHz
+    
+    // Setup chip select
+    pinMode(CS_PIN, OUTPUT);
+    digitalWrite(CS_PIN, HIGH);
+}
+
+void loop() {
+    // Send command to SPI device
+    digitalWrite(CS_PIN, LOW);
+    
+    SPI.transfer(0x40);  // Command byte
+    uint8_t status = SPI.transfer(0x00);  // Read status
+    
+    digitalWrite(CS_PIN, HIGH);
+    
+    delay(100);
+}
+```
+
+#### SPI vs shiftOut Performance
+
+| Method | Speed | Use Case |
+|--------|-------|----------|
+| **Hardware SPI** | ~1-125 MHz | Fast, reliable, recommended |
+| **shiftOut()** | ~200-300 kHz | Any GPIO pins, flexible |
+
+See `examples/spi_74hc595/` for performance comparison demonstration.
 
 ---
 

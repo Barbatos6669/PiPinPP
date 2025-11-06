@@ -21,8 +21,10 @@
  */
 
 /**
- * @file Pin.hpp
+ * @file pin.hpp
  * @brief Object-oriented GPIO pin control using libgpiod on Raspberry Pi
+ * @author Barbatos6669
+ * @date 2025
  * 
  * @details
  * The Pin class provides a clean, Arduino-style C++ interface for interacting with

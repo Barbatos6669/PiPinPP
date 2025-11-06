@@ -70,7 +70,7 @@ Open a terminal on your Raspberry Pi and run:
 
 ```bash
 # One-line installation (easiest!)
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.4/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
 **What this does:**
@@ -87,7 +87,7 @@ curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.4/install.
 pkg-config --modversion pipinpp
 ```
 
-✅ Should show: `0.3.4`
+✅ Should show: `0.3.7`
 
 ### Set Up Permissions (Important!)
 
@@ -394,7 +394,7 @@ sudo ./blink
 pkg-config --modversion pipinpp
 
 # If not found, reinstall
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.4/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
 **"ArduinoCompat.hpp not found":**

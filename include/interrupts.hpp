@@ -23,6 +23,8 @@
 /**
  * @file interrupts.hpp
  * @brief GPIO interrupt (edge detection) support for Raspberry Pi
+ * @author Barbatos6669
+ * @date 2025
  * 
  * @details
  * Provides Arduino-inspired interrupt handling using libgpiod v2 edge event API.

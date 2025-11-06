@@ -29,7 +29,7 @@ sudo apt install -y doxygen graphviz
 
 ## Quick Installation
 
-### Method 1: Install Latest Release (v0.3.2)
+### Method 1: Install Latest Release (v0.3.7)
 
 1. **Clone the repository:**
    ```bash
@@ -40,7 +40,7 @@ sudo apt install -y doxygen graphviz
 2. **Checkout the latest version (optional):**
    ```bash
    # For latest release
-   git checkout v0.3.2
+   git checkout v0.3.7
    
    # Or for development branch
    # git checkout main
@@ -60,7 +60,7 @@ sudo apt install -y doxygen graphviz
    ```bash
    # Check with pkg-config
    pkg-config --modversion pipinpp
-   # Should output: 0.3.2
+   # Should output: 0.3.7
    
    # Check installed files
    ls /usr/local/include/pipinpp/
@@ -153,7 +153,7 @@ If you already have PiPinPP installed and want to update to a newer version:
 ```bash
 cd PiPinPP
 git pull origin main
-git checkout v0.3.3    # Replace with desired version
+git checkout v0.3.7    # Replace with desired version
 ./build.sh
 cd build
 sudo make install
@@ -162,7 +162,7 @@ sudo make install
 ### Method 2: One-Line Reinstall
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.3/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
 This will automatically update to the specified version.
@@ -182,7 +182,7 @@ cd ~
 rm -rf PiPinPP
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.3    # Replace with desired version
+git checkout v0.3.7    # Replace with desired version
 ./build.sh
 cd build
 sudo make install
@@ -194,7 +194,7 @@ Check that the new version is installed:
 
 ```bash
 pkg-config --modversion pipinpp
-# Should show: 0.3.3 (or your target version)
+# Should show: 0.3.7 (or your target version)
 ```
 
 ### Important Notes

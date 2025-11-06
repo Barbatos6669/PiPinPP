@@ -1,4 +1,9 @@
-/*
+/**
+ * @file exceptions.hpp
+ * @brief Custom exception classes for GPIO error handling
+ * @author Barbatos6669
+ * @date 2025
+ * 
  * Copyright (c) 2025 HobbyHacker
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
