@@ -123,6 +123,172 @@ See CHANGELOG.md for full v0.3.6 release notes.
 
 ---
 
+## 🧪 v0.3.8 - Hardware Validation & Documentation (Post-Release Testing)
+
+**Target**: November 2025  
+**Focus**: Real-world hardware testing, demo videos, workaround examples, platform validation
+
+### Hardware Validation Tasks
+
+- [ ] **Basic GPIO validation** [easy] - 1-2 hours
+  - Test basic_led, button_input, button_interrupt on actual Pi
+  - Verify pinMode(), digitalWrite(), digitalRead(), attachInterrupt()
+  - Document any hardware-specific quirks or pin issues
+  - Create troubleshooting notes for common wiring mistakes
+
+- [ ] **PWM/LED fade validation** [easy] - 1-2 hours
+  - Test led_fade example with real LED on breadboard
+  - Verify analogWrite() smooth brightness transitions
+  - Measure and document software PWM jitter
+  - Test multiple frequencies (100Hz, 490Hz, 1kHz, 5kHz)
+  - Compare visual perception vs oscilloscope measurements
+
+- [ ] **I2C hardware validation** [medium] - 2-3 hours
+  - Test i2c_scanner, i2c_bmp280, i2c_mpu6050, i2c_ssd1306
+  - Verify Wire API on Pi 4 (/dev/i2c-1) and Pi 5 (/dev/i2c-20)
+  - Test both 100kHz and 400kHz speeds
+  - Document sensor-specific initialization requirements
+  - Create wiring diagram gallery for common I2C sensors
+
+- [ ] **SPI hardware validation** [medium] - 2-3 hours
+  - Test spi_74hc595 with actual shift register + 8 LEDs
+  - Verify SPI.transfer(), SPI.setClockDivider(), animations
+  - Compare hardware SPI speed vs software shiftOut()
+  - Measure throughput and timing accuracy
+  - Document clock speed limits and signal integrity
+
+- [ ] **Advanced I/O validation** [medium] - 2-3 hours
+  - Test pulseIn() with HC-SR04 ultrasonic sensor
+  - Test shiftOut() with 74HC595, shiftIn() with 74HC165
+  - Test tone() with piezo buzzer (musical notes + alarms)
+  - Measure pulseIn() accuracy (±10µs target)
+  - Document real-world sensor performance vs simulated
+
+- [ ] **Timing benchmark validation** [easy] - 1 hour
+  - Run timing_benchmark on Pi 4 and Pi 5
+  - Measure GPIO toggle speeds (target: ~100kHz)
+  - Verify millis()/micros() accuracy under load
+  - Test delay precision with various system loads
+  - Compare performance across Pi models
+
+- [ ] **Thread safety validation** [medium] - 1-2 hours
+  - Run thread_safety example with real GPIO operations
+  - Monitor for race conditions, deadlocks, crashes
+  - Test with multiple concurrent PWM pins
+  - Test with simultaneous interrupt handling
+  - Monitor CPU usage and memory consumption
+
+- [ ] **Robot stress test validation** [hard] - 3-4 hours
+  - Connect motors, sensors, LEDs per robot_stress_test pinout
+  - Verify all 18 GPIO pins function simultaneously
+  - Test emergency stop interrupt reliability
+  - Measure actual operations/second on hardware
+  - Run extended test (30+ minutes) for stability
+  - Document power requirements and thermal behavior
+
+### Documentation & Demos
+
+- [ ] **Hardware validation report** [medium] - 2-3 hours
+  - Create docs/HARDWARE_VALIDATION.md
+  - Include test results, photos, performance metrics
+  - Document observed issues and workarounds
+  - Add wiring diagrams for each example
+  - Include troubleshooting tips from testing experience
+
+- [ ] **Basic GPIO demo video** [medium] - 2-3 hours
+  - Record LED blinking, button input, interrupts
+  - Show code alongside running hardware
+  - Voice-over explaining Arduino-inspired API
+  - Compare PiPinPP code to Arduino equivalent
+  - Upload to YouTube, embed in README
+
+- [ ] **I2C sensors demo video** [medium] - 2-3 hours
+  - Record i2c_scanner discovering devices
+  - Show BMP280 temperature/pressure readings
+  - Show OLED displaying text and graphics
+  - Demonstrate Wire API ease-of-use
+  - Side-by-side comparison with Arduino Wire code
+
+- [ ] **SPI demo video** [medium] - 2-3 hours
+  - Record 74HC595 with LED animations
+  - Show Knight Rider, binary counter, patterns
+  - Demonstrate 3-pin to 8+ output expansion
+  - Visual effects for social media appeal
+  - Time-lapse of cascading multiple shift registers
+
+### Workaround Examples (Address Current Limitations)
+
+- [ ] **Servo control with PCA9685** [medium] - 2-3 hours
+  - Create example using PCA9685 I2C PWM driver
+  - Show 0-180° servo positioning
+  - Implement smooth sweeps and multi-servo control
+  - Document as workaround until hardware PWM in v0.4.0
+  - Compare to Arduino Servo library API
+
+- [ ] **Analog input with MCP3008** [medium] - 2-3 hours
+  - Create example using MCP3008 SPI ADC
+  - Read potentiometer, analog sensors
+  - Implement voltage measurement (0-3.3V)
+  - Map to 0-1023 range (Arduino-style)
+  - Show multi-channel reading and averaging
+
+### Platform Testing
+
+- [ ] **Fresh Pi OS installation test** [easy] - 1-2 hours
+  - Flash Raspberry Pi OS Bookworm to SD card
+  - Run one-line installer script
+  - Verify libgpiod v2 builds correctly
+  - Test compilation of all examples
+  - Document installation time and any issues
+
+- [ ] **Ubuntu 22.04 installation test** [easy] - 1-2 hours
+  - Flash Ubuntu 22.04 for Raspberry Pi
+  - Run installer, verify source build
+  - Test examples compilation and execution
+  - Document Ubuntu-specific permission issues
+  - Create troubleshooting guide for Ubuntu users
+
+### Reliability & Performance Testing
+
+- [ ] **Power consumption measurement** [easy] - 1 hour
+  - Measure current draw: idle, single GPIO, multiple PWM
+  - Test robot_stress_test power requirements
+  - Document requirements for battery-powered projects
+  - Create power budget calculator guide
+
+- [ ] **Temperature stress test** [medium] - 2+ hours (mostly waiting)
+  - Run robot_stress_test for 1+ hour
+  - Monitor Pi temperature (vcgencmd measure_temp)
+  - Check for thermal throttling affecting timing
+  - Test with/without heatsink and fan
+  - Document thermal management recommendations
+
+- [ ] **GPIO pin reliability test** [medium] - 2+ hours (mostly waiting)
+  - Connect LEDs to all GPIO pins (0-27)
+  - Run toggle test for extended period
+  - Monitor for pin failures or intermittent behavior
+  - Document any reserved pin warnings (0,1,14,15)
+  - Create GPIO pin health report
+
+- [ ] **Interrupt latency measurement** [hard] - 2-3 hours
+  - Measure interrupt response time on hardware
+  - Use logic analyzer or oscilloscope if available
+  - Compare RISING, FALLING, CHANGE modes
+  - Test under various system loads
+  - Document worst-case latency for robotics applications
+
+### Success Criteria for v0.3.8
+- ✅ All 19 examples tested on real hardware
+- ✅ Hardware validation report published
+- ✅ At least 2 demo videos created
+- ✅ PCA9685 servo example working
+- ✅ MCP3008 ADC example working
+- ✅ Installation tested on 2+ platforms
+- ✅ Performance metrics documented
+- ✅ Known issues and workarounds documented
+
+---
+
 ## 🚀 v0.4.0 - Communication Protocols & Complete Arduino API
 
 **Target**: Q1 2026  
@@ -291,14 +457,17 @@ inline double sqrt(double x) { return std::sqrt(x); }
 
 ### Medium Tasks
 
-- [ ] Advanced I/O functions [medium]
-  - `pulseIn(pin, value, timeout)` - Measure pulse width
-  - `pulseInLong(pin, value, timeout)` - Long pulse measurement
-  - `shiftIn(dataPin, clockPin, bitOrder)` - Shift in byte (SPI-like)
-  - `shiftOut(dataPin, clockPin, bitOrder, value)` - Shift out byte (SPI-like)
-  - `tone(pin, frequency, duration)` - Generate audio tone (software PWM)
-  - `noTone(pin)` - Stop tone generation
-  - Unit tests for all functions
+- ✅ Advanced I/O functions [medium] - **COMPLETE (v0.3.6)**
+  - ✅ `pulseIn(pin, value, timeout)` - Measure pulse width (±10µs accuracy)
+  - ✅ `pulseInLong(pin, value, timeout)` - Long pulse measurement
+  - ✅ `shiftIn(dataPin, clockPin, bitOrder)` - Shift in byte (SPI-like)
+  - ✅ `shiftOut(dataPin, clockPin, bitOrder, value)` - Shift out byte (SPI-like)
+  - ✅ `tone(pin, frequency, duration)` - Generate audio tone (software PWM)
+  - ✅ `noTone(pin)` - Stop tone generation
+  - ✅ `LSBFIRST`, `MSBFIRST` - Bit order constants
+  - ✅ Comprehensive advanced_io example demonstrating all functions
+  - ✅ Full API documentation in API_REFERENCE.md
+  - Note: Hardware validation on real sensors needed (v0.3.8 tasks)
 
 - [ ] Interrupt control functions [medium]
   - `interrupts()` - Enable global interrupts (no-op on Linux)
@@ -313,43 +482,34 @@ inline double sqrt(double x) { return std::sqrt(x); }
   - Store settings for when ADC is implemented
   - Document that these are placeholders for v0.5.0+
 
-- [ ] I2C/Wire support [medium]
-  - I2C master implementation using Linux i2c-dev
-  - Arduino Wire library compatible API:
-    - `Wire.begin()` / `Wire.begin(address)` - Initialize as master/slave
-    - `Wire.beginTransmission(address)` - Start transmission
-    - `Wire.write(data)` / `Wire.write(buffer, len)` - Write data
-    - `Wire.endTransmission()` / `Wire.endTransmission(stop)` - End transmission
-    - `Wire.requestFrom(address, quantity)` - Request bytes from slave
-    - `Wire.available()` - Check available bytes
-    - `Wire.read()` - Read received byte
-    - `Wire.setClock(frequency)` - Set I2C clock speed
-    - `Wire.onReceive(handler)` - Register receive handler (slave mode)
-    - `Wire.onRequest(handler)` - Register request handler (slave mode)
-  - I2C bus scanning utility
-  - Support for 7-bit and 10-bit addressing
-  - Example: BME280 temperature/pressure/humidity sensor
-  - Unit tests with I2C device simulation
+- ✅ I2C/Wire support [medium] - **COMPLETE (v0.3.6)**
+  - ✅ I2C master implementation using Linux i2c-dev
+  - ✅ Arduino Wire library compatible API (15+ functions)
+  - ✅ `Wire.begin()`, `Wire.beginTransmission()`, `Wire.write()`, `Wire.endTransmission()`
+  - ✅ `Wire.requestFrom()`, `Wire.available()`, `Wire.read()`
+  - ✅ `Wire.setClock()` - 100kHz and 400kHz speeds
+  - ✅ Helper functions: `readRegister()`, `writeRegister()`, `scan()`
+  - ✅ Auto-detection of I2C bus (Pi 4: /dev/i2c-1, Pi 5: /dev/i2c-20)
+  - ✅ Thread-safe with mutex protection
+  - ✅ Examples: i2c_scanner, i2c_bmp280, i2c_mpu6050, i2c_ssd1306
+  - ✅ Unit tests for Wire API
+  - Note: Slave mode not implemented (low priority)
+  - Note: Hardware validation on real sensors needed (v0.3.8 tasks)
 
-- [ ] SPI support [medium]
-  - SPI master implementation using Linux spidev
-  - Arduino SPI library compatible API:
-    - `SPI.begin()` - Initialize SPI interface
-    - `SPI.end()` - Disable SPI interface
-    - `SPI.beginTransaction(settings)` - Configure SPI for transaction
-    - `SPI.endTransaction()` - Release SPI bus
-    - `SPI.transfer(data)` - Transfer single byte
-    - `SPI.transfer(buffer, len)` - Transfer multiple bytes
-    - `SPI.transfer16(data)` - Transfer 16-bit word
-    - `SPI.setBitOrder(order)` - MSBFIRST or LSBFIRST
-    - `SPI.setDataMode(mode)` - SPI_MODE0, SPI_MODE1, SPI_MODE2, SPI_MODE3
-    - `SPI.setClockDivider(divider)` - Set clock speed divider
-    - `SPI.usingInterrupt(interrupt)` - Not needed on Linux
-  - SPISettings class for transaction configuration
-  - Multiple chip select support
-  - Example: MCP3008 8-channel ADC
-  - Example: NRF24L01 wireless module
-  - Unit tests for SPI transactions
+- ✅ SPI support [medium] - **COMPLETE (v0.3.7)**
+  - ✅ SPI master implementation using Linux spidev
+  - ✅ Arduino SPI library compatible API (11+ functions)
+  - ✅ `SPI.begin()`, `SPI.end()`, `SPI.transfer()`, `SPI.transfer16()`
+  - ✅ `SPI.beginTransaction()`, `SPI.endTransaction()`
+  - ✅ `SPI.setBitOrder()` - MSBFIRST, LSBFIRST
+  - ✅ `SPI.setDataMode()` - SPI_MODE0 through SPI_MODE3
+  - ✅ `SPI.setClockDivider()` - Speed control
+  - ✅ SPISettings class for transaction configuration
+  - ✅ Thread-safe with mutex protection
+  - ✅ Example: spi_74hc595 (shift register with LED animations)
+  - ✅ Unit tests for SPI API
+  - Note: Slave mode not implemented (low priority)
+  - Note: Hardware validation with real 74HC595 needed (v0.3.8 tasks)
 
 - [ ] UART/Serial support [medium]
   - Serial interface using Linux termios
