@@ -5,8 +5,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "PiPinPP"
-PROJECT_NUMBER         = "0.3.3"
-PROJECT_BRIEF          = "Arduino-compatible GPIO library for Raspberry Pi"
+PROJECT_NUMBER         = "0.3.7"
+PROJECT_BRIEF          = "Arduino-inspired GPIO library for Raspberry Pi"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = docs/html
 CREATE_SUBDIRS         = NO
