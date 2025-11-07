@@ -31,15 +31,7 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 
 ## Quick Start
 
-### Installation
-```bash
-git clone https://github.com/YourUsername/PiPinPP.git
-cd PiPinPP
-mkdir build && cd build
-cmake ..
-make
-sudo make install
-```
+**Installation:** See [INSTALL.md](INSTALL.md) for complete installation instructions.
 
 ### Basic Usage
 ```cpp

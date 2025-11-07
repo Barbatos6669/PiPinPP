@@ -228,45 +228,25 @@ gpiodetect
 
 ## Troubleshooting
 
-### Common Issues
+Having installation issues? See the comprehensive [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide.
 
-**"Permission denied" when accessing GPIO:**
-- Make sure you're in the gpio group: `groups $USER`
-- Try running with sudo as a temporary test
-- Check /dev/gpiochip* permissions
+**Quick fixes for common installation problems:**
 
-**"libgpiod not found" during compilation:**
+**"libgpiod not found":**
 ```bash
-# Install development headers
 sudo apt install libgpiod-dev
-
-# Check if pkg-config can find it
-pkg-config --libs libgpiod
 ```
 
-**"gpiochip not found" errors:**
-- Ensure GPIO is enabled: `ls /dev/gpio*`
-- Check if using a Raspberry Pi with GPIO support
-- Verify you're not running in a container without GPIO access
-
-**Compilation errors:**
-- Ensure C++11 support: `g++ --version` (should be 4.8+)
-- Check include paths are correct
-- Verify all dependencies are installed
-
-### Enable GPIO (if disabled)
-
-If GPIO is disabled on your Pi:
-
+**"Permission denied" after installation:**
 ```bash
-# Edit config
-sudo nano /boot/config.txt
+sudo usermod -a -G gpio $USER
+# Log out and back in
+```
 
-# Ensure this line exists and is uncommented:
-dtparam=gpio=on
-
-# Reboot
-sudo reboot
+**Build fails:**
+```bash
+# Ensure all dependencies installed
+sudo apt install build-essential cmake pkg-config git libgpiod-dev
 ```
 
 ## Development Setup
@@ -288,15 +268,16 @@ git checkout -b feature/your-feature-name
 ## Next Steps
 
 Once installed, check out:
-- [examples/](examples/) - Sample code and usage patterns
-- [docs/API.md](docs/API.md) - Complete API reference
-- [README.md](README.md) - Project overview and roadmap
+- [GETTING_STARTED.md](GETTING_STARTED.md) - Your first GPIO program
+- [examples/](../examples/) - Sample code and usage patterns
+- [API_REFERENCE.md](API_REFERENCE.md) - Complete API reference
+- [README.md](../README.md) - Project overview
 
 ## Getting Help
 
 - **Issues:** [GitHub Issues](https://github.com/Barbatos6669/PiPinPP/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/Barbatos6669/PiPinPP/discussions)
-- **Documentation:** [docs/](docs/) directory
+- **Discord:** [Community Support](https://discord.gg/wXeZP8Ev)
+- **Documentation:** [Full docs](https://barbatos6669.github.io/PiPinPP/)
 
 ---
 

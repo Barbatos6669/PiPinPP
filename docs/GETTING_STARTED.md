@@ -73,13 +73,9 @@ Open a terminal on your Raspberry Pi and run:
 curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
-**What this does:**
-- Installs required tools (CMake, compiler)
-- Installs libgpiod (GPIO library)
-- Builds and installs PiPin++
-- Sets up permissions so you don't need `sudo`
-
 ⏱️ **Takes about 2-3 minutes**
+
+This installs all dependencies, builds PiPin++, and configures GPIO permissions automatically.
 
 ### Verify Installation
 
@@ -89,16 +85,9 @@ pkg-config --modversion pipinpp
 
 ✅ Should show: `0.3.7`
 
-### Set Up Permissions (Important!)
+💡 **Note:** The installer automatically adds you to the `gpio` group and configures permissions. You'll need to log out and back in for permission changes to take effect.
 
-```bash
-# Add yourself to the gpio group
-sudo usermod -a -G gpio $USER
-
-# Log out and back in for this to take effect!
-```
-
-💡 **Why?** Without this, you'll need to run programs with `sudo` every time.
+📖 **For manual installation or troubleshooting, see [INSTALL.md](INSTALL.md)**
 
 ---
 
@@ -360,50 +349,26 @@ gpioset gpiochip0 17=0
 Error: Failed to open /dev/gpiochip0: Permission denied
 ```
 
-**Solution 1: Add yourself to gpio group**
+**Quick fix:**
 ```bash
 sudo usermod -a -G gpio $USER
-# Log out and back in!
-```
-
-**Solution 2: Run with sudo (temporary)**
-```bash
-sudo ./blink
+# Log out and back in for this to take effect
 ```
 
 ### LED Very Dim or Flickering
 
-**Problem:** Might be using wrong resistor value
-- Too much resistance (10kΩ) = very dim
-- Too little resistance (no resistor) = might damage LED
-
-**Solution:** Use 220Ω to 1kΩ resistor (ideal range)
+**Problem:** Wrong resistor value  
+**Solution:** Use 220Ω to 1kΩ resistor (ideal range for 3.3V)
 
 ### Wrong Pin Numbers
 
-**Remember:**
-- 🎯 Use **GPIO numbers** in code, not physical pin numbers!
-- Physical Pin 11 = GPIO 17
-- [See full pinout →](PIN_NUMBERING.md)
+**Remember:** Use **GPIO numbers** in code, not physical pin numbers!  
+Example: Physical Pin 11 = GPIO 17  
+[See full pinout →](PIN_NUMBERING.md)
 
-### Compilation Errors
+### More Issues?
 
-**"pipinpp not found":**
-```bash
-# Check if installed
-pkg-config --modversion pipinpp
-
-# If not found, reinstall
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
-```
-
-**"ArduinoCompat.hpp not found":**
-```bash
-# Check installation
-ls /usr/local/include/ArduinoCompat.hpp
-
-# If missing, reinstall PiPin++
-```
+See the comprehensive [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide for detailed solutions to common problems.
 
 ---
 
@@ -418,9 +383,8 @@ Congratulations! You've:
 ### Next Steps
 
 **Beginner Tutorials:**
-1. [Multiple LEDs Tutorial](tutorials/MULTIPLE_LEDS.md) - Control several LEDs
-2. [Traffic Light Tutorial](tutorials/TRAFFIC_LIGHT.md) - Build a traffic light
-3. [Button Patterns Tutorial](tutorials/BUTTON_PATTERNS.md) - Create LED patterns
+1. [Traffic Light Tutorial](tutorials/TRAFFIC_LIGHT.md) - Build a traffic light with multiple LEDs
+2. [More tutorials](tutorials/) - Check the tutorials directory for additional projects
 
 **Example Programs:**
 - [examples/basic_led/](../examples/basic_led/) - More LED patterns
