@@ -38,8 +38,8 @@
  * - Register-based access helpers
  * 
  * @author PiPinPP Team
- * @version 0.4.0
- * @date 2025-11-05
+ * @version 0.3.7
+ * @date 2025-11-06
  */
 
 #ifndef PIPINPP_WIRE_HPP

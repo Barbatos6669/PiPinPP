@@ -60,8 +60,8 @@
  * @endcode
  * 
  * @author HobbyHacker / Barbatos6669
- * @version 0.3.8
- * @date 2025-11-03
+ * @version 0.3.7
+ * @date 2025-11-06
  */
 
 #pragma once

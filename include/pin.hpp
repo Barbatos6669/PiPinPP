@@ -54,8 +54,8 @@
  * 
  * @author  
  * HobbyHacker / Barbatos6669  
- * @version 0.2.0
- * @date    2025-10-31
+ * @version 0.3.7
+ * @date    2025-11-06
  */
 
 #pragma once
