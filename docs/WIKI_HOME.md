@@ -98,25 +98,23 @@ sudo ./examples/example_arduino_style
 
 ## 🔧 Current Status
 
-**Version:** 0.2.0 (Complete Arduino-inspired API with pull-resistor support!)  
+**Version:** 0.3.7 (Production-ready with full Arduino API compatibility!)  
 **Platform:** Raspberry Pi (all models with 40-pin GPIO)  
 **Language:** C++17  
 **License:** MIT  
 
-### ✅ Working Features:
-- Digital output (LED control)
-- Digital input (button reading)
-- Arduino-style functions
-- Object-oriented `Pin` class
-- CMake build system
+### ✅ Available Features:
+- Digital I/O (LED control, button reading)
+- Arduino-style API (`pinMode`, `digitalWrite`, etc.)
+- Object-oriented `Pin` class with RAII
+- Timing functions (`millis`, `micros`, `delay`)
+- Interrupts with edge detection
+- Software PWM
+- I2C/Wire communication
+- SPI communication
+- Math and utility functions
 
-### 🚧 Coming Soon:
-- PWM support (`analogWrite()`)
-- Interrupt handling
-- I2C/SPI communication
-- Pull-up/pull-down resistors
-
-See our [ROADMAP.md](../ROADMAP.md) for detailed development plans.
+See our [ROADMAP.md](planning/ROADMAP.md) for future development plans.
 
 ---
 

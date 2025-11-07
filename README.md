@@ -129,87 +129,48 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ## Installation
 
-### 🚀 One-Line Install (Easiest!)
-
-Install PiPinPP v0.3.7 with a single command - just like pip!
+### 🚀 One-Line Install (Recommended)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
 ```
 
-**What this does:**
-- ✅ Installs all dependencies (build tools, libgpiod v2)
-- ✅ Downloads and builds PiPinPP v0.3.7
-- ✅ Installs to `/usr/local` (system-wide)
-- ✅ Configures GPIO permissions (adds you to `gpio` group)
-- ✅ Sets up udev rules for non-sudo access
-- ✅ Verifies installation
+This installs all dependencies, builds PiPinPP v0.3.7, and configures GPIO permissions automatically.
 
-**Trust but verify?** Download and inspect the script first:
-
+**Trust but verify?** Review the script first:
 ```bash
 wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh
-less install.sh  # Review the script
+less install.sh
 sudo bash install.sh
 ```
 
 ### Manual Installation
 
-**1. Install dependencies:**
 ```bash
+# 1. Install dependencies
 sudo apt-get update
 sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
-```
 
-**2. Build and install:**
-```bash
+# 2. Build and install
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.7  # Install latest stable release
-./build.sh           # Build with all tests
-cd build
-sudo make install    # Install to /usr/local
-sudo ldconfig        # Update library cache
-```
-
-**3. Verify installation:**
-```bash
-pkg-config --modversion pipinpp  # Should show: 0.3.7
-```
-
-**4. Configure permissions (optional but recommended):**
-```bash
-sudo usermod -a -G gpio $USER
-# Log out and back in for this to take effect
-```
-
-### 🔄 Updating to a Newer Version
-
-Already have PiPinPP installed? Updating is just as easy!
-
-**Option 1: One-Line Update (Recommended)**
-```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
-```
-*Replace `v0.3.7` with the version you want (e.g., `v0.4.0`)*
-
-**Option 2: Manual Update**
-```bash
-cd PiPinPP
-git fetch
-git checkout v0.3.7  # Replace with desired version
+git checkout v0.3.7
 ./build.sh
 cd build
 sudo make install
 sudo ldconfig
+
+# 3. Configure permissions
+sudo usermod -a -G gpio $USER
+# Log out and back in for this to take effect
 ```
 
-**Check your installed version:**
+**Verify installation:**
 ```bash
-pkg-config --modversion pipinpp
+pkg-config --modversion pipinpp  # Should show: 0.3.7
 ```
 
-> 💡 **All updates are backward compatible** - your existing code will continue to work!
+📖 **For detailed installation options and troubleshooting, see [INSTALL.md](docs/INSTALL.md)**
 
 ### Using in Your Projects
 
