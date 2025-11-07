@@ -383,9 +383,8 @@ Congratulations! You've:
 ### Next Steps
 
 **Beginner Tutorials:**
-1. [Multiple LEDs Tutorial](tutorials/MULTIPLE_LEDS.md) - Control several LEDs
-2. [Traffic Light Tutorial](tutorials/TRAFFIC_LIGHT.md) - Build a traffic light
-3. [Button Patterns Tutorial](tutorials/BUTTON_PATTERNS.md) - Create LED patterns
+1. [Traffic Light Tutorial](tutorials/TRAFFIC_LIGHT.md) - Build a traffic light with multiple LEDs
+2. [More tutorials](tutorials/) - Check the tutorials directory for additional projects
 
 **Example Programs:**
 - [examples/basic_led/](../examples/basic_led/) - More LED patterns
