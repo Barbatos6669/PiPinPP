@@ -70,7 +70,7 @@
 }
 
 #nav-tree {
-  padding: 0px 0px;
+  padding: 0px;
   font-size:14px;
   overflow:auto;
 }
@@ -117,7 +117,7 @@
 }
 
 #nav-tree-contents {
-  margin: 6px 0px 0px 0px;
+  margin: 6px 0px 0px;
 }
 
 #nav-tree {
