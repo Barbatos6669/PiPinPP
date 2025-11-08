@@ -62,9 +62,13 @@ detect_system() {
     print_info "Detecting system..."
     
     if [ -f /etc/os-release ]; then
+        # Save our VERSION before sourcing os-release
+        PIPINPP_VERSION="$VERSION"
         . /etc/os-release
         OS=$NAME
         VER=$VERSION_ID
+        # Restore our VERSION after sourcing
+        VERSION="$PIPINPP_VERSION"
         print_success "Detected: $OS $VER"
     else
         print_warning "Cannot detect OS, assuming Debian-based system"
