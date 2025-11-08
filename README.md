@@ -12,7 +12,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP/badge)](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![Version](https://img.shields.io/badge/version-0.3.7-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.7)
+[![Version](https://img.shields.io/badge/version-0.3.8-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.8)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
@@ -22,7 +22,7 @@
 
 ---
 
-> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash`
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.8/install.sh | sudo bash`
 
 ---
 

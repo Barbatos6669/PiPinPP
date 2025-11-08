@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.8] - 2025-11-08
+
+### Fixed
+- **Installation Script** - Critical fix for libgpiod dependency handling
+  - Separated core build dependencies from optional libgpiod packages
+  - Script no longer fails when libgpiod packages are unavailable in repositories
+  - Added proper version detection for "unknown" and outdated libgpiod versions
+  - Enhanced source build with comprehensive error handling at each step
+  - Multiple kernel header package attempts for better distro compatibility
+  - Post-build verification ensures libgpiod v2.x installed correctly
+  - Resolves installation failures on fresh Raspberry Pi OS and Ubuntu systems
+
+### Changed
+- **Version Updates** - Bumped version to 0.3.8 across all files
+  - `CMakeLists.txt` - Project version updated
+  - `install.sh` - VERSION variable updated
+  - `README.md` - Badge and install URL updated
+  - `docs/API_REFERENCE.md` - Version and date updated
+
 ## [0.3.7] - 2025-11-06
 
 ### Added
