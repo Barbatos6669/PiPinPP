@@ -6,6 +6,6 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} -lpipinpp
-Libs.private: -lgpiod
+Requires: libgpiod >= 2.0
+Libs: -L${libdir} -lpipinpp -lgpiod
 Cflags: -I${includedir}
