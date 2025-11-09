@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.9] - 2025-11-09
+
+### Fixed
+- **pkg-config Configuration** - Critical fix for linking user programs
+  - Moved `-lgpiod` from `Libs.private` to `Libs` in `cmake/pipinpp.pc.in`
+  - Added `Requires: libgpiod >= 2.0` for proper dependency tracking
+  - Users no longer need to manually add `-lgpiod` when compiling
+  - Fixes "undefined reference to gpiod_*" link errors
+  - Discovered during Issue #11 hardware validation testing
+
 ## [0.3.8] - 2025-11-08
 
 ### Fixed
