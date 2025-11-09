@@ -108,10 +108,14 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     handler->callback = callback;
     handler->mode = mode;
     
-    // Open GPIO chip
-    handler->chip = gpiod_chip_open(chipname.c_str());
+    // Open GPIO chip (prepend /dev/ if not already present)
+    std::string chip_path = chipname;
+    if (chipname.find("/dev/") != 0) {
+        chip_path = "/dev/" + chipname;
+    }
+    handler->chip = gpiod_chip_open(chip_path.c_str());
     if (!handler->chip) {
-        throw GpioAccessError("Failed to open GPIO chip: " + chipname);
+        throw GpioAccessError("Failed to open GPIO chip: " + chip_path);
     }
     
     // Configure line settings for edge detection
