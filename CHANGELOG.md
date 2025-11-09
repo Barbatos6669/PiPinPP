@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.10] - 2025-11-09
+
+### Fixed
+- **Interrupt GPIO Chip Path** - Fixed interrupt initialization on Raspberry Pi 5
+  - `interrupts.cpp` was opening GPIO chip without `/dev/` prefix
+  - Caused "Failed to open GPIO chip: gpiochip0" error in interrupt tests
+  - Now prepends `/dev/` to chipname if not already present
+  - Makes interrupt code consistent with Pin class implementation
+  - Fixes Issue #11 interrupt validation failures on Pi 5
+
 ## [0.3.9] - 2025-11-09
 
 ### Fixed
