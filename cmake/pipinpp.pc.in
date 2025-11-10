@@ -7,5 +7,5 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 Requires: libgpiod >= 2.0
-Libs: -L${libdir} -lpipinpp -lgpiod
+Libs: -L${libdir} -lpipinpp
 Cflags: -I${includedir}
