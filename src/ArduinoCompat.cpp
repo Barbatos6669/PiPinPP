@@ -402,7 +402,9 @@ unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 
 void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 {
-    // Verify pins are OUTPUT (don't auto-configure to avoid deadlock)
+    // Verify pins are OUTPUT. Don't auto-configure with pinMode() here, as that
+    // would acquire globalPinsMutex while it is already held, causing a deadlock.
+    // (pinMode() locks globalPinsMutex internally.)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         if (globalPins.find(dataPin) == globalPins.end() || 
@@ -435,7 +437,10 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 
 unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 {
-    // Verify dataPin is INPUT and clockPin is OUTPUT (don't auto-configure to avoid deadlock)
+    // Verify dataPin is INPUT and clockPin is OUTPUT. Don't auto-configure with
+    // pinMode() here, as that would acquire globalPinsMutex while it is already
+    // held, causing a deadlock. (pinMode() locks globalPinsMutex internally.)
+    // Also can't call isInput() helper as it also locks the mutex.
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto dataIt = globalPins.find(dataPin);
@@ -524,17 +529,12 @@ void noTone(int pin)
     }
     
     // Stop PWM (which stops the tone)
+    // PWMManager's stopPWM() will set pin LOW and clean up the PWM channel
     PWMManager::getInstance().stopPWM(pin);
     
-    // Set pin LOW
-    {
-        std::lock_guard<std::mutex> lock(globalPinsMutex);
-        auto it = globalPins.find(pin);
-        if (it != globalPins.end() && it->second.mode == ArduinoPinMode::OUTPUT) {
-            it->second.pin->write(false);
-            it->second.lastValue = false;
-        }
-    }
+    // Note: Pin won't be in globalPins after tone() erases it (line 500).
+    // This is intentional - PWM needs exclusive control. The pin is left
+    // in OUTPUT mode at LOW state by PWMManager.
     
     PIPINPP_LOG_INFO("noTone: Stopped tone on pin " << pin);
 }

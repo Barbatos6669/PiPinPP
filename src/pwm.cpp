@@ -36,6 +36,10 @@ PWMChannel::~PWMChannel() {
     if (pwmThread.joinable()) {
         pwmThread.join();
     }
+    // Set pin LOW before releasing
+    if (pinObj) {
+        pinObj->write(false);
+    }
 }
 
 // PWMManager implementation
