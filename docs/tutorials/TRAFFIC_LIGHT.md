@@ -387,10 +387,10 @@ Check your wiring - you might have swapped two LEDs!
 
 ## Next Steps
 
-**More Tutorials:**
-- [Multiple LED Patterns](MULTIPLE_LEDS.md) - Create cool light patterns
-- [Button-Controlled Patterns](BUTTON_PATTERNS.md) - Interactive LED control
-- [PWM LED Fading](PWM_BASICS.md) - Smooth LED transitions
+**More Tutorials:** *(Coming in v0.3.8)*
+- Multiple LED Patterns - Create cool light patterns
+- Button-Controlled Patterns - Interactive LED control
+- PWM LED Fading - Smooth LED transitions
 
 **Example Code:**
 - [examples/led_fade/](../../examples/led_fade/) - PWM examples
