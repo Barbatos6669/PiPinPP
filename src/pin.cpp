@@ -37,9 +37,15 @@ Pin::Pin(int pin, PinDirection direction, const std::string& chipname)
 {
     validatePinNumber(pin);
     
-    gpiod_line_direction gpio_dir = (direction == PinDirection::OUTPUT) 
-                                     ? GPIOD_LINE_DIRECTION_OUTPUT 
-                                     : GPIOD_LINE_DIRECTION_INPUT;
+    gpiod_line_direction gpio_dir;
+    if (direction == PinDirection::OUTPUT)
+    {
+        gpio_dir = GPIOD_LINE_DIRECTION_OUTPUT;
+    }
+    else
+    {
+        gpio_dir = GPIOD_LINE_DIRECTION_INPUT;
+    }
     
     initializeGpio(chipname, gpio_dir, GPIOD_LINE_BIAS_AS_IS);
     
