@@ -124,6 +124,9 @@ if(BUILD_TESTS)
     add_executable(gtest_spi tests/gtest_spi.cpp)
     target_link_libraries(gtest_spi pipinpp GTest::gtest_main)
     
+    add_executable(gtest_advanced_io tests/gtest_advanced_io.cpp)
+    target_link_libraries(gtest_advanced_io pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -131,6 +134,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_pin COMMAND gtest_pin)
     add_test(NAME gtest_wire COMMAND gtest_wire)
     add_test(NAME gtest_spi COMMAND gtest_spi)
+    add_test(NAME gtest_advanced_io COMMAND gtest_advanced_io)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -139,6 +143,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_pin)
     gtest_discover_tests(gtest_wire)
     gtest_discover_tests(gtest_spi)
+    gtest_discover_tests(gtest_advanced_io)
 endif()
 
 if(BUILD_EXAMPLES)
