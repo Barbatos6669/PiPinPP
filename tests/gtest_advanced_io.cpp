@@ -297,16 +297,13 @@ TEST_F(AdvancedIOTest, ShiftInMSBFIRSTBasic)
     pinMode(DATA_PIN, INPUT);
     pinMode(CLOCK_PIN, OUTPUT);
 
-    // Should not throw, returns some value
-    unsigned char result = 0;
+    // Should not throw, returns some value (can't verify exact value without hardware loopback)
     EXPECT_NO_THROW(
         {
-            result = shiftIn(DATA_PIN, CLOCK_PIN, MSBFIRST);
+            unsigned char result = shiftIn(DATA_PIN, CLOCK_PIN, MSBFIRST);
+            (void)result; // Suppress unused variable warning
         }
     );
-
-    // Result is valid (0-255) - unsigned char is always >= 0
-    EXPECT_LE(result, 255);
 }
 
 TEST_F(AdvancedIOTest, ShiftInLSBFIRSTBasic)
@@ -322,16 +319,13 @@ TEST_F(AdvancedIOTest, ShiftInLSBFIRSTBasic)
     pinMode(DATA_PIN, INPUT);
     pinMode(CLOCK_PIN, OUTPUT);
 
-    // Should not throw
-    unsigned char result = 0;
+    // Should not throw (can't verify exact value without hardware loopback)
     EXPECT_NO_THROW(
         {
-            result = shiftIn(DATA_PIN, CLOCK_PIN, LSBFIRST);
+            unsigned char result = shiftIn(DATA_PIN, CLOCK_PIN, LSBFIRST);
+            (void)result; // Suppress unused variable warning
         }
     );
-
-    // Result is valid (0-255) - unsigned char is always >= 0
-    EXPECT_LE(result, 255);
 }
 
 // ============================================================================

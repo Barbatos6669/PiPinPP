@@ -492,19 +492,21 @@ void tone(int pin, unsigned int frequency, unsigned long duration)
         throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
     }
     
-    // Check if pin is already configured - must be OUTPUT mode.
+    // Verify pin is configured as OUTPUT. pinMode() must be called first.
     // If pin is held by pinMode(), release it so PWM can create its own Pin object.
-    // Note: pinMode() must be called first to configure pin as OUTPUT before calling tone().
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
-        if (it != globalPins.end()) {
-            if (it->second.mode != ArduinoPinMode::OUTPUT) {
-                throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone(). Call pinMode(pin, OUTPUT) first.");
-            }
-            // Release the pin so PWM can take control (creates its own Pin object)
-            globalPins.erase(it);
+        if (it == globalPins.end()) {
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " must be configured with pinMode(pin, OUTPUT) before calling tone().");
         }
+        if (it->second.mode != ArduinoPinMode::OUTPUT) {
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " must be OUTPUT for tone(). Call pinMode(pin, OUTPUT) first.");
+        }
+        // Release the pin so PWM can take control (creates its own Pin object)
+        globalPins.erase(it);
     }
     
     // Start PWM at 50% duty cycle with specified frequency
@@ -533,9 +535,19 @@ void noTone(int pin)
     // PWMManager's stopPWM() will set pin LOW and clean up the PWM channel
     PWMManager::getInstance().stopPWM(pin);
     
-    // Note: Pin won't be in globalPins after tone() erases it from the registry.
-    // This is intentional - PWM needs exclusive control. The pin is left
-    // in OUTPUT mode at LOW state by PWMManager.
+    // Re-add pin to globalPins so it can be used again with tone() or digitalWrite()
+    // Note: tone() erased it from globalPins to let PWM have exclusive control
+    {
+        std::lock_guard<std::mutex> lock(globalPinsMutex);
+        if (globalPins.find(pin) == globalPins.end()) {
+            // Pin was erased by tone(), recreate it as OUTPUT
+            PinInfo pinInfo;
+            pinInfo.pin = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
+            pinInfo.mode = ArduinoPinMode::OUTPUT;
+            pinInfo.lastValue = false;
+            globalPins[pin] = std::move(pinInfo);
+        }
+    }
     
     PIPINPP_LOG_INFO("noTone: Stopped tone on pin " << pin);
 }
