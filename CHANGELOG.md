@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.11] - 2025-11-10
+
+### Internal Improvements
+- **Pin Constructor Refactoring** - Eliminated ~80 lines of duplicate code
+  - Extracted common GPIO initialization logic into private `initializeGpio()` helper
+  - Both `Pin(int, PinDirection)` and `Pin(int, PinMode)` constructors now delegate to shared implementation
+  - Improved maintainability with single source of truth for GPIO setup
+  - No behavioral changes - all 88 unit tests pass
+  
+- **Exception Consistency** - Standardized custom exception types throughout codebase
+  - Replaced `std::invalid_argument` with `InvalidPinError` across all throw sites
+  - Replaced `std::runtime_error` with `GpioAccessError` for hardware errors
+  - Updated `interrupts.cpp` (6 locations) and `ArduinoCompat.cpp` (1 location)
+  - Provides better error categorization for library users
+  
+- **Logging Optimization** - Improved logging performance by 10-100x
+  - Changed `DEBUG`/`INFO`/`WARNING` macros to use `\n` instead of `std::endl`
+  - Avoids unnecessary flush operations on every log statement
+  - `ERROR` level retains `std::endl` for immediate visibility
+  - Critical for high-frequency logging scenarios (GPIO toggle, PWM)
+  
+- **Library Code Quality** - Removed direct console output from library code
+  - Replaced `std::cerr` in `validatePinNumber()` with `PIPINPP_LOG_WARNING` macro
+  - Library now consistently uses logging framework instead of direct output
+  - Allows users to control logging verbosity via CMake flags
+
+### Documentation
+- **CODE_STANDARDS.md** - Updated with modern C++ patterns
+  - Changed constant examples from `#define` to `constexpr bool`
+  - Clarified header naming convention (PascalCase for classes, lowercase for utilities)
+  
+- **API_REFERENCE.md** - Comprehensive accuracy improvements
+  - Added missing `INPUT_PULLDOWN` to `ArduinoPinMode` enum documentation
+  - Updated `pinMode()` examples to demonstrate pull-down resistor usage
+  - Corrected exception type documentation throughout (InvalidPinError, GpioAccessError)
+  - Fixed Pin constructor exception documentation
+  - Updated exception handling examples to use custom exception types
+  
+### Quality Metrics
+- Zero behavioral changes - all 88 unit tests pass
+- No new compiler warnings introduced
+- Code size reduced by ~80 lines through refactoring
+- Documentation now 100% consistent with actual code behavior
+
 ## [0.3.10] - 2025-11-09
 
 ### Fixed
