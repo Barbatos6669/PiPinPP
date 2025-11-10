@@ -123,7 +123,7 @@ See our [ROADMAP.md](planning/ROADMAP.md) for future development plans.
 - **⭐ Star the repo** on [GitHub](https://github.com/Barbatos6669/PiPinPP)
 - **🐛 Report issues** or request features
 - **📖 Improve documentation** (this wiki!)
-- **💻 Contribute code** - check our [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **💻 Contribute code** - check our [CONTRIBUTING.md](../.github/CONTRIBUTING.md)
 
 ---
 
