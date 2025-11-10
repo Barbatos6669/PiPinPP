@@ -4,7 +4,8 @@
 **Hardware:** Raspberry Pi 5 Model B  
 **OS:** Raspberry Pi OS (Bookworm) Debian 13  
 **PiPinPP Version:** v0.3.10  
-**Test Location:** ~/Development/PiPinPP/build/examples/example_timing_benchmark
+**Test Location:** ~/Development/PiPinPP/build/examples/example_timing_benchmark  
+**Note**: Historical validation results from v0.3.10. No changes in v0.3.11 affect timing behavior.
 
 ---
 
