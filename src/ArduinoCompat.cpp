@@ -212,7 +212,8 @@ void attachInterrupt(int pin, void (*callback)(), int mode)
             intMode = InterruptMode::CHANGE;
             break;
         default:
-            throw std::invalid_argument("Invalid interrupt mode: " + std::to_string(mode));
+            throw InvalidPinError("Invalid interrupt mode: " + std::to_string(mode) + 
+                                ". Use RISING, FALLING, or CHANGE");
     }
     
     // Wrap the C-style function pointer in a std::function
