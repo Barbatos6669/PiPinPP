@@ -44,10 +44,15 @@ PinDirection direction;
 
 ### **Constants and Macros**
 ```cpp
-// SCREAMING_SNAKE_CASE for constants and macros
-#define HIGH true
-#define LOW false
+// SCREAMING_SNAKE_CASE for macros
+// Use constexpr for type-safe constants (preferred over #define)
+constexpr bool HIGH = true;
+constexpr bool LOW = false;
 const int DEFAULT_CHIP_NUMBER = 0;
+
+// Macros only when preprocessor needed
+#define PIPINPP_VERSION_MAJOR 0
+#define PIPINPP_ENABLE_LOGGING
 ```
 
 ### **Enums**
@@ -65,9 +70,13 @@ enum ArduinoPinMode {
 ```
 
 ### **File Names**
-- **Headers**: `PascalCase.hpp` (e.g., `ArduinoCompat.hpp`)
-- **Source**: `PascalCase.cpp` (e.g., `ArduinoCompat.cpp`)
+- **Class headers**: `PascalCase.hpp` (e.g., `ArduinoCompat.hpp`, `Pin.hpp`, `Wire.hpp`)
+- **Class source**: `PascalCase.cpp` (e.g., `ArduinoCompat.cpp`, `Pin.cpp`)
+- **Utility headers**: `lowercase.hpp` (e.g., `log.hpp`, `exceptions.hpp`)
+  - Rationale: Common C++ pattern, distinguishes infrastructure from main classes
 - **Examples**: `snake_case` directories, `main.cpp` files
+
+**Note**: Utility headers use lowercase to match standard library convention (`<algorithm>`, `<memory>`) and clearly distinguish infrastructure code from business logic classes.
 
 ---
 
@@ -290,11 +299,15 @@ int digitalRead(int pin);               // NOT: readPin()
 
 ### **Constants**
 ```cpp
-// Use Arduino-inspired constants
-#define HIGH true
-#define LOW false
-#define INPUT 0
-#define OUTPUT 1
+// Use Arduino-inspired constants with constexpr for type safety
+constexpr bool HIGH = true;
+constexpr bool LOW = false;
+constexpr int INPUT = 0;
+constexpr int OUTPUT = 1;
+constexpr int INPUT_PULLUP = 2;
+constexpr int INPUT_PULLDOWN = 3;
+
+// constexpr provides compile-time type checking unlike #define
 ```
 
 ### **Parameter Types**
