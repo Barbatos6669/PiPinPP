@@ -19,7 +19,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-VERSION="v0.3.11"
+PIPINPP_VERSION="v0.3.11"
 INSTALL_PREFIX="/usr/local"
 BUILD_DIR="/tmp/pipinpp-build"
 REPO_URL="https://github.com/Barbatos6669/PiPinPP.git"
@@ -62,13 +62,9 @@ detect_system() {
     print_info "Detecting system..."
     
     if [ -f /etc/os-release ]; then
-        # Save our VERSION before sourcing os-release
-        PIPINPP_VERSION="$VERSION"
         . /etc/os-release
         OS=$NAME
         VER=$VERSION_ID
-        # Restore our VERSION after sourcing
-        VERSION="$PIPINPP_VERSION"
         print_success "Detected: $OS $VER"
     else
         print_warning "Cannot detect OS, assuming Debian-based system"
@@ -233,7 +229,7 @@ build_libgpiod_from_source() {
 
 # Download PiPinPP
 download_pipinpp() {
-    print_header "Downloading PiPinPP $VERSION"
+    print_header "Downloading PiPinPP $PIPINPP_VERSION"
     
     # Clean up any existing build directory
     if [ -d "$BUILD_DIR" ]; then
@@ -242,12 +238,12 @@ download_pipinpp() {
     fi
     
     print_info "Cloning from GitHub..."
-    git clone --depth 1 --branch "$VERSION" "$REPO_URL" "$BUILD_DIR" || {
+    git clone --depth 1 --branch "$PIPINPP_VERSION" "$REPO_URL" "$BUILD_DIR" || {
         print_error "Failed to download PiPinPP"
         exit 1
     }
     
-    print_success "Downloaded PiPinPP $VERSION"
+    print_success "Downloaded PiPinPP $PIPINPP_VERSION"
 }
 
 # Build PiPinPP
@@ -437,7 +433,7 @@ main() {
     
     print_header "PiPinPP Installation Script"
     
-    echo "This script will install PiPinPP $VERSION"
+    echo "This script will install PiPinPP $PIPINPP_VERSION"
     echo "Installation prefix: $INSTALL_PREFIX"
     echo ""
     
