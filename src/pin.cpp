@@ -91,17 +91,11 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     
     initializeGpio(chipname, gpio_dir, gpio_bias);
     
-    #ifdef PIPINPP_ENABLE_LOGGING
-    const char* modeStr;
-    switch (mode) {
-        case PinMode::OUTPUT: modeStr = "OUTPUT"; break;
-        case PinMode::INPUT_PULLUP: modeStr = "INPUT_PULLUP"; break;
-        case PinMode::INPUT_PULLDOWN: modeStr = "INPUT_PULLDOWN"; break;
-        default: modeStr = "INPUT"; break;
-    }
-    PIPINPP_LOG_INFO("Initializing pin " << pinNumber << " as " << modeStr 
+    PIPINPP_LOG_INFO("Initializing pin " << pinNumber << " as " 
+                     << (mode == PinMode::OUTPUT ? "OUTPUT" :
+                         mode == PinMode::INPUT_PULLUP ? "INPUT_PULLUP" :
+                         mode == PinMode::INPUT_PULLDOWN ? "INPUT_PULLDOWN" : "INPUT")
                      << " on chip " << chipname);
-    #endif
 }
 
 void Pin::initializeGpio(const std::string& chipname, 
