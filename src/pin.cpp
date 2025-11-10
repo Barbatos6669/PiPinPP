@@ -85,7 +85,6 @@ Pin::Pin(int pin, PinMode mode, const std::string& chipname)
     
     initializeGpio(chipname, gpio_dir, gpio_bias);
     
-    // Log initialization
     #ifdef PIPINPP_ENABLE_LOGGING
     const char* modeStr;
     switch (mode) {
