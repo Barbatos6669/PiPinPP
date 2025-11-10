@@ -1,7 +1,7 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.7  
-**Date**: November 6, 2025
+**Version**: 0.3.11  
+**Date**: November 10, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
 
@@ -85,8 +85,8 @@ Create a pin with basic direction setting.
 - `chipname`: GPIO chip name (default: "gpiochip0")
 
 **Throws:**
-- `std::invalid_argument`: Invalid pin number
-- `std::runtime_error`: GPIO access failure
+- `InvalidPinError`: Invalid pin number
+- `GpioAccessError`: GPIO access failure
 
 **Example:**
 ```cpp
@@ -103,8 +103,8 @@ Create a pin with advanced mode including pull resistors.
 - `chipname`: GPIO chip name (default: "gpiochip0")
 
 **Throws:**
-- `std::invalid_argument`: Invalid pin number
-- `std::runtime_error`: GPIO access failure
+- `InvalidPinError`: Invalid pin number
+- `GpioAccessError`: GPIO access failure
 
 **Example:**
 ```cpp
@@ -157,13 +157,14 @@ The Arduino-inspired API layer provides familiar functions for Arduino users.
 ### Constants
 
 ```cpp
-#define HIGH true
-#define LOW false
+constexpr bool HIGH = true;
+constexpr bool LOW = false;
 
 enum ArduinoPinMode {
-    INPUT = 0,
-    OUTPUT = 1,
-    INPUT_PULLUP = 2
+    INPUT = 0,           // Floating input (high impedance)
+    OUTPUT = 1,          // Output mode
+    INPUT_PULLUP = 2,    // Input with internal pull-up resistor (~50kΩ to 3.3V)
+    INPUT_PULLDOWN = 3   // Input with internal pull-down resistor (~50kΩ to GND)
 };
 ```
 
@@ -174,12 +175,14 @@ Configure pin mode (Arduino-style).
 
 **Parameters:**
 - `pin`: GPIO pin number (0-27)
-- `mode`: `INPUT`, `OUTPUT`, or `INPUT_PULLUP`
+- `mode`: `INPUT`, `OUTPUT`, `INPUT_PULLUP`, or `INPUT_PULLDOWN`
 
 **Example:**
 ```cpp
-pinMode(17, OUTPUT);        // LED output
-pinMode(18, INPUT_PULLUP);  // Button with pull-up
+pinMode(17, OUTPUT);          // LED output
+pinMode(18, INPUT_PULLUP);    // Button with pull-up (reads HIGH when unpressed)
+pinMode(19, INPUT_PULLDOWN);  // Button with pull-down (reads LOW when unpressed)
+pinMode(20, INPUT);           // Floating input (requires external resistor)
 ```
 
 #### `void digitalWrite(int pin, bool value)`
@@ -1939,10 +1942,10 @@ int main() {
 
 ### Exception Types
 
-PiPinPP uses standard C++ exceptions:
+PiPinPP uses custom exception types (all derived from `std::runtime_error`):
 
-- `std::invalid_argument`: Invalid pin numbers, invalid parameters
-- `std::runtime_error`: Hardware access failures, GPIO errors
+- `InvalidPinError`: Invalid pin numbers, invalid parameters
+- `GpioAccessError`: Hardware access failures, GPIO errors
 
 ### Error Handling Example
 ```cpp
@@ -1953,9 +1956,9 @@ try {
         std::cerr << "Failed to turn LED on" << std::endl;
     }
     
-} catch (const std::invalid_argument& e) {
+} catch (const InvalidPinError& e) {
     std::cerr << "Invalid pin configuration: " << e.what() << std::endl;
-} catch (const std::runtime_error& e) {
+} catch (const GpioAccessError& e) {
     std::cerr << "Hardware error: " << e.what() << std::endl;
     std::cerr << "Make sure to run with sudo" << std::endl;
 }

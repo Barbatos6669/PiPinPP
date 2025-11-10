@@ -19,7 +19,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-VERSION="v0.3.7"
+PIPINPP_VERSION="v0.3.11"
 INSTALL_PREFIX="/usr/local"
 BUILD_DIR="/tmp/pipinpp-build"
 REPO_URL="https://github.com/Barbatos6669/PiPinPP.git"
@@ -86,38 +86,68 @@ install_dependencies() {
     print_info "Updating package list..."
     apt-get update -qq
     
-    print_info "Installing build dependencies..."
+    print_info "Installing core build dependencies..."
     apt-get install -y -qq \
         build-essential \
         cmake \
         pkg-config \
         git \
-        libgpiod-dev \
-        libgpiod2 \
-        gpiod \
         || {
-            print_error "Failed to install dependencies"
+            print_error "Failed to install core dependencies"
             exit 1
         }
     
-    print_success "Dependencies installed"
+    print_info "Attempting to install libgpiod from repositories..."
+    # Try to install libgpiod, but don't fail if packages don't exist
+    apt-get install -y -qq libgpiod-dev libgpiod2 gpiod 2>/dev/null || {
+        print_warning "Could not install libgpiod from repositories (packages may not exist)"
+    }
+    
+    print_success "Core dependencies installed"
     
     # Check libgpiod version
     GPIOD_VERSION=$(pkg-config --modversion libgpiod 2>/dev/null || echo "unknown")
     print_info "libgpiod version: $GPIOD_VERSION"
     
-    if [[ "$GPIOD_VERSION" < "2.0" ]]; then
-        print_warning "libgpiod version < 2.0 detected"
+    # Check if we have libgpiod v2.x or need to build from source
+    NEEDS_BUILD=false
+    
+    if [[ "$GPIOD_VERSION" == "unknown" ]]; then
+        print_warning "libgpiod not found via pkg-config"
+        NEEDS_BUILD=true
+    elif [[ "$GPIOD_VERSION" < "2.0" ]]; then
+        print_warning "libgpiod version < 2.0 detected (found $GPIOD_VERSION)"
         print_warning "PiPinPP requires libgpiod v2.x"
+        NEEDS_BUILD=true
+    else
+        print_success "libgpiod v$GPIOD_VERSION is compatible"
+    fi
+    
+    if [ "$NEEDS_BUILD" = true ]; then
         print_info "Attempting to install from backports..."
         
-        # Try to find a newer version
-        apt-get install -y -qq libgpiod-dev/testing 2>/dev/null || \
-        apt-get install -y -qq libgpiod-dev/unstable 2>/dev/null || {
-            print_error "Cannot find libgpiod v2.x in repositories"
+        # Try to find a newer version from backports
+        if apt-get install -y -qq libgpiod-dev/testing 2>/dev/null; then
+            print_success "Installed libgpiod from testing repository"
+            GPIOD_VERSION=$(pkg-config --modversion libgpiod 2>/dev/null || echo "unknown")
+            
+            if [[ "$GPIOD_VERSION" < "2.0" ]]; then
+                print_warning "Backports version still too old, building from source..."
+                build_libgpiod_from_source
+            fi
+        elif apt-get install -y -qq libgpiod-dev/unstable 2>/dev/null; then
+            print_success "Installed libgpiod from unstable repository"
+            GPIOD_VERSION=$(pkg-config --modversion libgpiod 2>/dev/null || echo "unknown")
+            
+            if [[ "$GPIOD_VERSION" < "2.0" ]]; then
+                print_warning "Backports version still too old, building from source..."
+                build_libgpiod_from_source
+            fi
+        else
+            print_warning "Cannot find libgpiod v2.x in repositories"
             print_info "Building libgpiod from source..."
             build_libgpiod_from_source
-        }
+        fi
     fi
 }
 
@@ -125,7 +155,8 @@ install_dependencies() {
 build_libgpiod_from_source() {
     print_info "Building libgpiod v2.2.1 from source..."
     
-    # Install additional build deps
+    print_info "Installing build dependencies for libgpiod..."
+    # Install additional build deps - try common package names
     apt-get install -y -qq \
         autoconf \
         autoconf-archive \
@@ -133,24 +164,63 @@ build_libgpiod_from_source() {
         libtool \
         python3 \
         python3-setuptools \
-        linux-headers-generic \
         libkmod-dev \
         libudev-dev \
         || true
     
+    # Try to install kernel headers (package name varies by distro)
+    apt-get install -y -qq linux-headers-generic 2>/dev/null || \
+    apt-get install -y -qq linux-headers-$(uname -r) 2>/dev/null || \
+    apt-get install -y -qq raspberrypi-kernel-headers 2>/dev/null || {
+        print_warning "Could not install kernel headers (may not be needed)"
+    }
+    
     # Clone and build
+    print_info "Cloning libgpiod v2.2.1 from kernel.org..."
     cd /tmp
+    
+    # Remove any existing build directory
+    if [ -d "libgpiod-build" ]; then
+        rm -rf libgpiod-build
+    fi
+    
     git clone --depth 1 --branch v2.2.1 \
         https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git \
-        libgpiod-build
+        libgpiod-build || {
+            print_error "Failed to clone libgpiod repository"
+            exit 1
+        }
     
     cd libgpiod-build
-    ./autogen.sh --enable-tools=yes --prefix=/usr --disable-bindings-cxx --disable-bindings-python
-    make -j$(nproc)
-    make install
+    
+    print_info "Configuring libgpiod build..."
+    ./autogen.sh --enable-tools=yes --prefix=/usr --disable-bindings-cxx --disable-bindings-python || {
+        print_error "Failed to configure libgpiod"
+        exit 1
+    }
+    
+    print_info "Compiling libgpiod (this may take several minutes)..."
+    make -j$(nproc) || {
+        print_error "Failed to compile libgpiod"
+        exit 1
+    }
+    
+    print_info "Installing libgpiod..."
+    make install || {
+        print_error "Failed to install libgpiod"
+        exit 1
+    }
+    
     ldconfig
     
-    print_success "libgpiod v2.2.1 built and installed"
+    # Verify installation
+    GPIOD_VERSION=$(pkg-config --modversion libgpiod 2>/dev/null || echo "unknown")
+    if [[ "$GPIOD_VERSION" == "unknown" ]]; then
+        print_error "libgpiod installation failed (pkg-config cannot find it)"
+        exit 1
+    fi
+    
+    print_success "libgpiod v$GPIOD_VERSION built and installed from source"
     
     # Cleanup
     cd /tmp
@@ -159,7 +229,7 @@ build_libgpiod_from_source() {
 
 # Download PiPinPP
 download_pipinpp() {
-    print_header "Downloading PiPinPP $VERSION"
+    print_header "Downloading PiPinPP $PIPINPP_VERSION"
     
     # Clean up any existing build directory
     if [ -d "$BUILD_DIR" ]; then
@@ -168,12 +238,12 @@ download_pipinpp() {
     fi
     
     print_info "Cloning from GitHub..."
-    git clone --depth 1 --branch "$VERSION" "$REPO_URL" "$BUILD_DIR" || {
+    git clone --depth 1 --branch "$PIPINPP_VERSION" "$REPO_URL" "$BUILD_DIR" || {
         print_error "Failed to download PiPinPP"
         exit 1
     }
     
-    print_success "Downloaded PiPinPP $VERSION"
+    print_success "Downloaded PiPinPP $PIPINPP_VERSION"
 }
 
 # Build PiPinPP
@@ -363,7 +433,7 @@ main() {
     
     print_header "PiPinPP Installation Script"
     
-    echo "This script will install PiPinPP $VERSION"
+    echo "This script will install PiPinPP $PIPINPP_VERSION"
     echo "Installation prefix: $INSTALL_PREFIX"
     echo ""
     

@@ -39,14 +39,17 @@
     #endif
     
     // Log levels: 0=DEBUG, 1=INFO, 2=WARNING, 3=ERROR
+    // DEBUG, INFO, WARNING use '\n' (buffered) for better performance
+    // ERROR uses std::endl (flushes immediately) for critical messages
+    
     #define PIPINPP_LOG_DEBUG(msg) \
-        do { if (PIPINPP_LOG_LEVEL <= 0) std::cerr << "[DEBUG] " << msg << std::endl; } while(0)
+        do { if (PIPINPP_LOG_LEVEL <= 0) std::cerr << "[DEBUG] " << msg << '\n'; } while(0)
     
     #define PIPINPP_LOG_INFO(msg) \
-        do { if (PIPINPP_LOG_LEVEL <= 1) std::cerr << "[INFO] " << msg << std::endl; } while(0)
+        do { if (PIPINPP_LOG_LEVEL <= 1) std::cerr << "[INFO] " << msg << '\n'; } while(0)
     
     #define PIPINPP_LOG_WARNING(msg) \
-        do { if (PIPINPP_LOG_LEVEL <= 2) std::cerr << "[WARNING] " << msg << std::endl; } while(0)
+        do { if (PIPINPP_LOG_LEVEL <= 2) std::cerr << "[WARNING] " << msg << '\n'; } while(0)
     
     #define PIPINPP_LOG_ERROR(msg) \
         do { if (PIPINPP_LOG_LEVEL <= 3) std::cerr << "[ERROR] " << msg << std::endl; } while(0)

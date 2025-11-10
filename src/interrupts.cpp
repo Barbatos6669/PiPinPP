@@ -65,7 +65,8 @@ InterruptManager::InterruptManager()
     : running_(false), shutdown_requested_(false) {
     // Create wakeup pipe for signaling the monitor thread
     if (pipe(wakeup_pipe_) == -1) {
-        throw std::runtime_error("Failed to create wakeup pipe for interrupt monitoring");
+        throw GpioAccessError("interrupt system", 
+                            "Failed to create wakeup pipe for interrupt monitoring");
     }
     PIPINPP_LOG_DEBUG("InterruptManager initialized");
 }
@@ -92,14 +93,15 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     }
     
     if (!callback) {
-        throw std::invalid_argument("Interrupt callback cannot be null");
+        throw InvalidPinError("Interrupt callback cannot be null");
     }
     
     std::lock_guard<std::mutex> lock(mutex_);
     
     // Check if interrupt already attached
     if (handlers_.find(pin) != handlers_.end()) {
-        throw std::runtime_error("Interrupt already attached to pin " + std::to_string(pin));
+        throw GpioAccessError("GPIO pin " + std::to_string(pin), 
+                            "Interrupt already attached. Call detachInterrupt() first");
     }
     
     // Create new handler
@@ -108,17 +110,22 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     handler->callback = callback;
     handler->mode = mode;
     
-    // Open GPIO chip
-    handler->chip = gpiod_chip_open(chipname.c_str());
+    // Open GPIO chip (prepend /dev/ if not already present)
+    std::string chip_path = chipname;
+    if (chipname.find("/dev/") != 0) {
+        chip_path = "/dev/" + chipname;
+    }
+    handler->chip = gpiod_chip_open(chip_path.c_str());
     if (!handler->chip) {
-        throw GpioAccessError("Failed to open GPIO chip: " + chipname);
+        throw GpioAccessError("Failed to open GPIO chip: " + chip_path);
     }
     
     // Configure line settings for edge detection
     gpiod_line_settings* settings = gpiod_line_settings_new();
     if (!settings) {
         gpiod_chip_close(handler->chip);
-        throw std::runtime_error("Failed to create line settings");
+        throw GpioAccessError("GPIO pin " + std::to_string(pin), 
+                            "Failed to create line settings for interrupt");
     }
     
     // Set as input with edge detection
@@ -130,7 +137,8 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     if (!line_cfg) {
         gpiod_line_settings_free(settings);
         gpiod_chip_close(handler->chip);
-        throw std::runtime_error("Failed to create line config");
+        throw GpioAccessError("GPIO pin " + std::to_string(pin), 
+                            "Failed to create line config for interrupt");
     }
     
     unsigned int pin_offset = static_cast<unsigned int>(pin);
@@ -142,7 +150,8 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
         gpiod_line_config_free(line_cfg);
         gpiod_line_settings_free(settings);
         gpiod_chip_close(handler->chip);
-        throw std::runtime_error("Failed to create request config");
+        throw GpioAccessError("GPIO pin " + std::to_string(pin), 
+                            "Failed to create request config for interrupt");
     }
     
     gpiod_request_config_set_consumer(req_cfg, "PiPinPP-Interrupt");
@@ -166,7 +175,8 @@ void InterruptManager::attachInterrupt(int pin, InterruptCallback callback,
     if (!handler->event_buffer) {
         gpiod_line_request_release(handler->request);
         gpiod_chip_close(handler->chip);
-        throw std::runtime_error("Failed to create edge event buffer");
+        throw GpioAccessError("GPIO pin " + std::to_string(pin), 
+                            "Failed to create edge event buffer for interrupt");
     }
     
     handler->active = true;
