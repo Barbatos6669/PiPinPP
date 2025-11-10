@@ -81,10 +81,9 @@ TEST_F(AdvancedIOTest, PulseInRequiresInputPin)
 
 TEST_F(AdvancedIOTest, PulseInInvalidPinThrows)
 {
-    // Invalid pin number should throw
+    // Invalid pin number should throw from pulseIn() itself
     EXPECT_THROW(
         {
-            pinMode(99, INPUT);
             pulseIn(99, HIGH);
         },
         InvalidPinError
@@ -128,22 +127,25 @@ TEST_F(AdvancedIOTest, PulseInLongIdenticalToPulseIn)
 
 TEST_F(AdvancedIOTest, ShiftOutInvalidPinThrows)
 {
-    // Invalid data pin
+    if (!hasGPIO)
+    {
+        GTEST_SKIP() << "GPIO hardware not available";
+    }
+
+    // Invalid data pin - configure valid clock pin first
+    pinMode(17, OUTPUT);
     EXPECT_THROW(
         {
-            pinMode(99, OUTPUT);
-            pinMode(17, OUTPUT);
             shiftOut(99, 17, MSBFIRST, 0xFF);
         },
         InvalidPinError
     );
 
-    // Invalid clock pin
+    // Invalid clock pin - configure valid data pin first
+    pinMode(18, OUTPUT);
     EXPECT_THROW(
         {
-            pinMode(17, OUTPUT);
-            pinMode(99, OUTPUT);
-            shiftOut(17, 99, MSBFIRST, 0xFF);
+            shiftOut(18, 99, MSBFIRST, 0xFF);
         },
         InvalidPinError
     );
@@ -230,22 +232,25 @@ TEST_F(AdvancedIOTest, ShiftOutLSBFIRSTBasic)
 
 TEST_F(AdvancedIOTest, ShiftInInvalidPinThrows)
 {
-    // Invalid data pin
+    if (!hasGPIO)
+    {
+        GTEST_SKIP() << "GPIO hardware not available";
+    }
+
+    // Invalid data pin - configure valid clock pin first
+    pinMode(17, OUTPUT);
     EXPECT_THROW(
         {
-            pinMode(99, INPUT);
-            pinMode(17, OUTPUT);
             shiftIn(99, 17, MSBFIRST);
         },
         InvalidPinError
     );
 
-    // Invalid clock pin
+    // Invalid clock pin - configure valid data pin first
+    pinMode(18, INPUT);
     EXPECT_THROW(
         {
-            pinMode(17, INPUT);
-            pinMode(99, OUTPUT);
-            shiftIn(17, 99, MSBFIRST);
+            shiftIn(18, 99, MSBFIRST);
         },
         InvalidPinError
     );
@@ -376,9 +381,9 @@ TEST_F(AdvancedIOTest, ShiftOutInLoopback)
 
 TEST_F(AdvancedIOTest, ToneInvalidPinThrows)
 {
+    // Invalid pin number should throw from tone() itself
     EXPECT_THROW(
         {
-            pinMode(99, OUTPUT);
             tone(99, 1000);
         },
         InvalidPinError

@@ -356,15 +356,20 @@ long random(long min, long max)
 
 unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 {
-    // Ensure pin is INPUT
+    // Validate pin number first (before acquiring mutex)
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
+    // Verify pin is INPUT (don't auto-configure to avoid deadlock)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
         if (it == globalPins.end()) {
-            // Pin not initialized, set as INPUT
-            pinMode(pin, INPUT);
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " not initialized. Call pinMode(pin, INPUT) first.");
         } else if (it->second.mode == ArduinoPinMode::OUTPUT) {
-            // Don't change OUTPUT pins
             throw PinError("Pin " + std::to_string(pin) + " is configured as OUTPUT. "
                           "Cannot use pulseIn() on output pins.");
         }
@@ -402,6 +407,16 @@ unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 
 void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 {
+    // Validate pin numbers first (before acquiring mutex)
+    if (dataPin < 0 || dataPin > 27) {
+        throw InvalidPinError("Invalid data pin number: " + std::to_string(dataPin) + 
+                             ". Valid range is 0-27.");
+    }
+    if (clockPin < 0 || clockPin > 27) {
+        throw InvalidPinError("Invalid clock pin number: " + std::to_string(clockPin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     // Verify pins are OUTPUT. Don't auto-configure with pinMode() here, as that
     // would acquire globalPinsMutex while it is already held, causing a deadlock.
     // (pinMode() locks globalPinsMutex internally.)
@@ -437,6 +452,16 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 
 unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 {
+    // Validate pin numbers first (before acquiring mutex)
+    if (dataPin < 0 || dataPin > 27) {
+        throw InvalidPinError("Invalid data pin number: " + std::to_string(dataPin) + 
+                             ". Valid range is 0-27.");
+    }
+    if (clockPin < 0 || clockPin > 27) {
+        throw InvalidPinError("Invalid clock pin number: " + std::to_string(clockPin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     // Verify dataPin is INPUT and clockPin is OUTPUT. Don't auto-configure with
     // pinMode() here, as that would acquire globalPinsMutex while it is already
     // held, causing a deadlock. (pinMode() locks globalPinsMutex internally.)
@@ -488,6 +513,12 @@ unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 // Tone generation - uses PWM with 50% duty cycle
 void tone(int pin, unsigned int frequency, unsigned long duration)
 {
+    // Validate pin number first (before any other checks)
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     if (frequency == 0 || frequency > 65535) {
         throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
     }

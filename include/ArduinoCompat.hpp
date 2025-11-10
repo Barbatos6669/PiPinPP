@@ -708,6 +708,9 @@ inline unsigned long pulseInLong(int pin, bool state, unsigned long timeout = 10
  * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
  * @param value Byte value to shift out (0-255)
  * 
+ * @throws PinError if pins are not configured as OUTPUT via pinMode()
+ * @throws InvalidPinError if pin numbers are out of range (0-27)
+ * 
  * @note Call pinMode(pin, OUTPUT) for both pins before using this function
  * @note Clock idles LOW, pulses HIGH to shift each bit
  * @note No separate latch pin - use digitalWrite() to control latch separately
@@ -735,6 +738,9 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value);
  * @param clockPin GPIO pin for clock signal output (must be configured as OUTPUT)
  * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
  * @return unsigned char Byte value read (0-255)
+ * 
+ * @throws PinError if pins are not configured correctly via pinMode()
+ * @throws InvalidPinError if pin numbers are out of range (0-27)
  * 
  * @note Call pinMode(dataPin, INPUT) and pinMode(clockPin, OUTPUT) before using this function
  * @note Clock idles LOW, pulses HIGH to shift each bit
@@ -770,6 +776,10 @@ constexpr int MSBFIRST = 1;  ///< Most Significant Bit First
  * @param pin GPIO pin number (must be configured as OUTPUT before calling)
  * @param frequency Frequency in Hertz (31Hz - 65535Hz)
  * @param duration Optional duration in milliseconds (0 = continuous)
+ * 
+ * @throws PinError if pin is not configured as OUTPUT via pinMode()
+ * @throws InvalidPinError if pin number is out of range (0-27)
+ * @throws std::invalid_argument if frequency is 0 or > 65535
  * 
  * @note Call pinMode(pin, OUTPUT) before using this function
  * @note Uses software PWM (50% duty cycle square wave)
