@@ -492,16 +492,17 @@ void tone(int pin, unsigned int frequency, unsigned long duration)
         throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
     }
     
-    // Check if pin is already configured as something other than OUTPUT
-    // If pin is held by pinMode(), we need to release it first for PWM to work
+    // Check if pin is already configured - must be OUTPUT mode.
+    // If pin is held by pinMode(), release it so PWM can create its own Pin object.
+    // Note: pinMode() must be called first to configure pin as OUTPUT before calling tone().
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
         if (it != globalPins.end()) {
             if (it->second.mode != ArduinoPinMode::OUTPUT) {
-                throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone()");
+                throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone(). Call pinMode(pin, OUTPUT) first.");
             }
-            // Release the pin so PWM can take control
+            // Release the pin so PWM can take control (creates its own Pin object)
             globalPins.erase(it);
         }
     }
@@ -532,7 +533,7 @@ void noTone(int pin)
     // PWMManager's stopPWM() will set pin LOW and clean up the PWM channel
     PWMManager::getInstance().stopPWM(pin);
     
-    // Note: Pin won't be in globalPins after tone() erases it (line 500).
+    // Note: Pin won't be in globalPins after tone() erases it from the registry.
     // This is intentional - PWM needs exclusive control. The pin is left
     // in OUTPUT mode at LOW state by PWMManager.
     

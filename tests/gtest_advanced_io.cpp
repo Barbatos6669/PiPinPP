@@ -305,8 +305,7 @@ TEST_F(AdvancedIOTest, ShiftInMSBFIRSTBasic)
         }
     );
 
-    // Result is valid (0-255)
-    EXPECT_GE(result, 0);
+    // Result is valid (0-255) - unsigned char is always >= 0
     EXPECT_LE(result, 255);
 }
 
@@ -331,7 +330,7 @@ TEST_F(AdvancedIOTest, ShiftInLSBFIRSTBasic)
         }
     );
 
-    EXPECT_GE(result, 0);
+    // Result is valid (0-255) - unsigned char is always >= 0
     EXPECT_LE(result, 255);
 }
 
