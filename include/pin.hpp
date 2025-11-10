@@ -176,4 +176,19 @@ private:
      * @warning Pins 0,1 are typically I2C, pins 14,15 are typically UART
      */
     static void validatePinNumber(int pin);
+    
+    /**
+     * @brief Initialize GPIO hardware with specified configuration
+     * @param chipname The name of the GPIO chip to open
+     * @param direction The GPIO line direction (input or output)
+     * @param bias The bias setting for pull resistors (GPIOD_LINE_BIAS_AS_IS, PULL_UP, PULL_DOWN)
+     * @param initial_value Initial output value (only used for OUTPUT direction)
+     * @throws GpioAccessError if GPIO hardware access fails
+     * 
+     * @note This helper method eliminates code duplication between constructors
+     */
+    void initializeGpio(const std::string& chipname, 
+                        gpiod_line_direction direction,
+                        gpiod_line_bias bias,
+                        gpiod_line_value initial_value = GPIOD_LINE_VALUE_INACTIVE);
 };
