@@ -402,16 +402,18 @@ unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 
 void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 {
-    // Ensure pins are OUTPUT
+    // Verify pins are OUTPUT (don't auto-configure to avoid deadlock)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         if (globalPins.find(dataPin) == globalPins.end() || 
             globalPins[dataPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(dataPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " must be OUTPUT for shiftOut(). Call pinMode() first.");
         }
         if (globalPins.find(clockPin) == globalPins.end() || 
             globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(clockPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(clockPin) + 
+                          " must be OUTPUT for shiftOut(). Call pinMode() first.");
         }
     }
     
@@ -433,16 +435,27 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 
 unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 {
-    // Ensure dataPin is INPUT and clockPin is OUTPUT
+    // Verify dataPin is INPUT and clockPin is OUTPUT (don't auto-configure to avoid deadlock)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
-        if (globalPins.find(dataPin) == globalPins.end() || 
-            !isInput(dataPin)) {
-            pinMode(dataPin, INPUT);
+        auto dataIt = globalPins.find(dataPin);
+        if (dataIt == globalPins.end()) {
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " not initialized. Call pinMode() first.");
         }
+        ArduinoPinMode dataMode = dataIt->second.mode;
+        bool isInputMode = (dataMode == ArduinoPinMode::INPUT || 
+                           dataMode == ArduinoPinMode::INPUT_PULLUP || 
+                           dataMode == ArduinoPinMode::INPUT_PULLDOWN);
+        if (!isInputMode) {
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " must be INPUT for shiftIn(). Call pinMode() first.");
+        }
+        
         if (globalPins.find(clockPin) == globalPins.end() || 
             globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(clockPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(clockPin) + 
+                          " must be OUTPUT for shiftIn(). Call pinMode() first.");
         }
     }
     
@@ -474,18 +487,22 @@ void tone(int pin, unsigned int frequency, unsigned long duration)
         throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
     }
     
-    // Ensure pin is OUTPUT
+    // Check if pin is already configured as something other than OUTPUT
+    // If pin is held by pinMode(), we need to release it first for PWM to work
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
-        if (it == globalPins.end()) {
-            pinMode(pin, OUTPUT);
-        } else if (it->second.mode != ArduinoPinMode::OUTPUT) {
-            throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone()");
+        if (it != globalPins.end()) {
+            if (it->second.mode != ArduinoPinMode::OUTPUT) {
+                throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone()");
+            }
+            // Release the pin so PWM can take control
+            globalPins.erase(it);
         }
     }
     
     // Start PWM at 50% duty cycle with specified frequency
+    // PWMManager will create its own Pin object
     PWMManager::getInstance().startPWM(pin, 128, frequency);  // 128 = 50% of 255
     
     // If duration specified, wait and then stop
@@ -500,6 +517,12 @@ void tone(int pin, unsigned int frequency, unsigned long duration)
 
 void noTone(int pin)
 {
+    // Validate pin number
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     // Stop PWM (which stops the tone)
     PWMManager::getInstance().stopPWM(pin);
     
