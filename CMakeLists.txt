@@ -23,6 +23,7 @@ option(BUILD_TESTS "Build test executables" ON)
 option(BUILD_EXAMPLES "Build example programs" ON)
 option(PIPINPP_ENABLE_LOGGING "Enable logging output for debugging" OFF)
 option(PIPINPP_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(PIPINPP_ENABLE_COVERAGE "Enable code coverage reporting (gcov/lcov)" OFF)
 
 # Logging configuration
 if(PIPINPP_ENABLE_LOGGING)
@@ -49,6 +50,17 @@ endif()
 # Compiler-specific options
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
+# Code coverage options
+if(PIPINPP_ENABLE_COVERAGE)
+    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(--coverage -fprofile-arcs -ftest-coverage)
+        add_link_options(--coverage)
+        message(STATUS "Code coverage enabled (use 'make coverage' to generate report)")
+    else()
+        message(WARNING "Code coverage requested but compiler doesn't support gcov")
+    endif()
+endif()
 
 # Find required packages
 find_package(PkgConfig REQUIRED)
@@ -247,6 +259,51 @@ install(FILES ${CMAKE_BINARY_DIR}/pipinpp.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
+# Code coverage targets
+if(PIPINPP_ENABLE_COVERAGE AND BUILD_TESTS)
+    # Find lcov for coverage report generation
+    find_program(LCOV_PATH lcov)
+    find_program(GENHTML_PATH genhtml)
+    
+    if(LCOV_PATH AND GENHTML_PATH)
+        # Custom target to generate coverage report
+        add_custom_target(coverage
+            COMMAND ${CMAKE_COMMAND} -E echo "Running tests to collect coverage data..."
+            COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+            COMMAND ${CMAKE_COMMAND} -E echo "Generating coverage report..."
+            
+            # Capture coverage data (ignore inconsistent errors from gcov)
+            COMMAND ${LCOV_PATH} --directory . --capture --output-file coverage.info --ignore-errors inconsistent
+            
+            # Filter out system headers and test code
+            COMMAND ${LCOV_PATH} --remove coverage.info '/usr/*' '*/tests/*' '*/examples/*' '*/build/*' '*/_deps/*' --output-file coverage.info.cleaned --ignore-errors unused
+            
+            # Generate HTML report
+            COMMAND ${GENHTML_PATH} coverage.info.cleaned --output-directory coverage_html
+            
+            # Print summary
+            COMMAND ${LCOV_PATH} --list coverage.info.cleaned
+            COMMAND ${CMAKE_COMMAND} -E echo "Coverage report generated: coverage_html/index.html"
+            
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generating code coverage report"
+        )
+        
+        # Custom target to clean coverage data
+        add_custom_target(coverage-clean
+            COMMAND ${LCOV_PATH} --directory . --zerocounters
+            COMMAND ${CMAKE_COMMAND} -E remove -f coverage.info coverage.info.cleaned
+            COMMAND ${CMAKE_COMMAND} -E remove_directory coverage_html
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Cleaning coverage data"
+        )
+        
+        message(STATUS "Coverage targets available: 'make coverage' and 'make coverage-clean'")
+    else()
+        message(WARNING "lcov/genhtml not found - coverage target disabled (install with: sudo apt install lcov)")
+    endif()
+endif()
+
 # Print configuration summary
 message(STATUS "")
 message(STATUS "Configuration Summary:")
@@ -258,5 +315,6 @@ message(STATUS "  Build tests: ${BUILD_TESTS}")
 message(STATUS "  Build examples: ${BUILD_EXAMPLES}")
 message(STATUS "  Logging enabled: ${PIPINPP_ENABLE_LOGGING}")
 message(STATUS "  Warnings as errors: ${PIPINPP_WARNINGS_AS_ERRORS}")
+message(STATUS "  Code coverage: ${PIPINPP_ENABLE_COVERAGE}")
 message(STATUS "  libgpiod found: ${GPIOD_FOUND}")
 message(STATUS "")

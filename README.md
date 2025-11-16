@@ -8,6 +8,7 @@
 </div>
 
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-52.2%25-orange)](build/coverage_html/index.html)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![CodeFactor](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP/badge)](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

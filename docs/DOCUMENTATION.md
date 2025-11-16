@@ -29,6 +29,28 @@ xdg-open docs/html/index.html
 - **Classes:** Complete API reference for all classes
 - **Files:** Source file documentation
 - **Examples:** Code samples and usage patterns
+- **Coverage:** Test coverage reports and metrics
+
+## 🧪 Test Coverage
+
+PiPinPP uses lcov for code coverage analysis.
+
+### View Coverage Report
+```bash
+# Generate coverage report
+./coverage.sh
+
+# Open in browser
+./coverage.sh --view
+
+# Clean coverage data
+./coverage.sh --clean
+```
+
+**Current Coverage:** 52.2% line coverage, 73.1% function coverage  
+**Target:** ≥80% line coverage
+
+See [TESTING.md](TESTING.md) for detailed coverage analysis and improvement plans
 - **Modules:** Grouped functionality (GPIO, timing, Arduino-inspired API)
 
 ## 🔄 Auto-Update
