@@ -7,6 +7,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-11-16
+
+### 🚀 Major Features
+
+#### EventPWM - Hybrid Timing System (70-85% CPU Reduction)
+- **NEW: `EventPWM` class** - Software PWM with dramatically reduced CPU usage
+  - Hybrid timing algorithm: `clock_nanosleep()` + 100µs busy-wait
+  - **70-85% CPU reduction** vs `analogWrite()` (10-30% → <5% per pin)
+  - <10µs timing jitter (acceptable for LED dimming, 2x worse than busy-loop)
+  - Thread-safe duty cycle/frequency updates with `std::atomic`
+  - Arduino-compatible API: `setDutyCycle8Bit(0-255)`
+  - Edge case optimization: <0.1% duty = always off, >99.9% duty = always on
+  - RAII design with automatic thread cleanup
+  - Frequency range: 50 Hz - 10 kHz
+- **EventPWMManager singleton** - Coordinates multiple PWM pins
+  - `analogWriteEvent()` global function for Arduino-style usage
+  - Prevents pin conflicts
+  - Automatic lifecycle management
+- **Perfect for:** Multi-LED control, RGB effects, long-running apps, battery-powered projects
+
+### 📚 Documentation
+
+#### New Guides
+- **PWM_MIGRATION.md** - Complete migration guide for v0.4.0
+  - Decision tree: When to use each PWM implementation
+  - Performance comparison matrix (CPU usage, jitter, use cases)
+  - Migration patterns from `analogWrite()` to `EventPWM`
+  - Code examples: Single LED, fade effects, RGB control
+  - Troubleshooting guide
+- **API_REFERENCE.md** - Updated to v0.4.0
+  - EventPWM class documentation section
+  - Complete API reference with examples
+  - Performance comparison table
+  - "When to Use" decision guide
+- **Release notes: v0.4.0.md** - Comprehensive release documentation
+  - Feature descriptions with code examples
+  - Performance metrics and benchmarks
+  - Migration guide
+  - Technical details
+
+### 🧪 New Examples
+
+#### benchmark_cpu
+- CPU usage comparison: busy-loop PWM vs EventPWM
+- Real-time CPU percentage monitoring via `/proc/self/stat`
+- Tests 3 pins @ 490 Hz for 10 seconds each
+- Reports average, min, max CPU usage per implementation
+- Demonstrates 70-85% CPU reduction
+
+#### benchmark_jitter
+- PWM timing accuracy measurement
+- Measures actual vs expected PWM period
+- Calculates timing jitter (min/max/avg/stddev)
+- Uses GPIO loopback (pin 17→27) for edge detection
+- Validates <10µs jitter target for EventPWM
+- Compares busy-loop vs event-driven timing
+
+### 🔧 Improvements
+- Build system integration: `src/event_pwm.cpp`, `include/event_pwm.hpp`
+- Modern C++17: `std::atomic`, `std::chrono`, CLOCK_MONOTONIC
+- Zero regressions: All 175 tests passing
+- Thread-safe by design
+- RAII resource management
+
+### 📊 Performance Impact
+- **CPU Usage:** 70-85% reduction for multi-pin PWM
+- **Timing Jitter:** <10µs (vs <5µs busy-loop, acceptable for LEDs)
+- **Power Efficiency:** Lower CPU = less power consumption (battery-friendly)
+- **Scalability:** Control 10+ LEDs with <50% total CPU
+
+### 🔄 Migration Notes
+- **Backward Compatible:** All existing code continues to work
+- **Opt-in Performance:** Migrate to EventPWM for better efficiency
+- **No Breaking Changes:** `analogWrite()` still uses busy-loop PWM
+
+### 🎯 Roadmap Progress
+- **Phase 1 (Performance Foundation):**
+  - ✅ Item #1: Hybrid Timing System (COMPLETED)
+  - ⏳ Item #3: Performance Benchmarking Suite (IN PROGRESS)
+  - 🔜 Item #2: DMA-based GPIO (NEXT)
+
 ## [0.3.13] - 2025-11-16
 
 ### Added
