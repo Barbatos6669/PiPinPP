@@ -155,6 +155,9 @@ if(BUILD_TESTS)
     add_executable(gtest_interrupts tests/gtest_interrupts.cpp)
     target_link_libraries(gtest_interrupts pipinpp GTest::gtest_main)
     
+    add_executable(gtest_arduino_compat_extended tests/gtest_arduino_compat_extended.cpp)
+    target_link_libraries(gtest_arduino_compat_extended pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -167,6 +170,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_hardware_pwm COMMAND gtest_hardware_pwm)
     add_test(NAME gtest_platform COMMAND gtest_platform)
     add_test(NAME gtest_interrupts COMMAND gtest_interrupts)
+    add_test(NAME gtest_arduino_compat_extended COMMAND gtest_arduino_compat_extended)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -180,6 +184,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_hardware_pwm)
     gtest_discover_tests(gtest_platform)
     gtest_discover_tests(gtest_interrupts)
+    gtest_discover_tests(gtest_arduino_compat_extended)
 endif()
 
 if(BUILD_EXAMPLES)
