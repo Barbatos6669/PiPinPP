@@ -68,6 +68,7 @@ set(PIPINPP_SOURCES
     src/Wire.cpp
     src/SPI.cpp
     src/Serial.cpp
+    src/platform.cpp
 )
 
 # Create the library (STATIC or SHARED based on BUILD_SHARED_LIBS)
@@ -90,7 +91,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/event_pwm.hpp;include/HardwarePWM.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/event_pwm.hpp;include/HardwarePWM.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp;include/platform.hpp"
 )
 
 if(BUILD_TESTS)
@@ -136,6 +137,9 @@ if(BUILD_TESTS)
     add_executable(gtest_hardware_pwm tests/gtest_hardware_pwm.cpp)
     target_link_libraries(gtest_hardware_pwm pipinpp GTest::gtest_main)
     
+    add_executable(gtest_platform tests/gtest_platform.cpp)
+    target_link_libraries(gtest_platform pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -146,6 +150,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_advanced_io COMMAND gtest_advanced_io)
     add_test(NAME gtest_serial COMMAND gtest_serial)
     add_test(NAME gtest_hardware_pwm COMMAND gtest_hardware_pwm)
+    add_test(NAME gtest_platform COMMAND gtest_platform)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -157,6 +162,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_advanced_io)
     gtest_discover_tests(gtest_serial)
     gtest_discover_tests(gtest_hardware_pwm)
+    gtest_discover_tests(gtest_platform)
 endif()
 
 if(BUILD_EXAMPLES)
