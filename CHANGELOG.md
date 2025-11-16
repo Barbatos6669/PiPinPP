@@ -7,6 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13] - 2025-11-16
+
+### Added
+- **Hardware PWM Support** - Jitter-free PWM via Linux `/sys/class/pwm` sysfs interface
+  - `HardwarePWM` class for precise servo control and motor timing
+  - Support for GPIO pins 12, 13, 18, 19 (PWM0/PWM1 channels)
+  - Frequency range: 1 Hz to 25 MHz
+  - Duty cycle control: percentage (0-100), 8-bit (0-255), or nanoseconds
+  - `begin(frequencyHz, dutyCycle)` - Initialize with frequency/duty
+  - `setFrequency()`, `setDutyCycle()`, `setDutyCycle8Bit()` - Runtime adjustments
+  - `setPeriodNs()`, `setDutyCycleNs()` - Nanosecond precision control
+  - `setPolarity()` - Normal or inversed output
+  - `enable()`, `disable()` - PWM output control
+  - `gpioToPWM()` - Helper to map GPIO pin to chip/channel
+  - Thread-safe with mutex protection
+  - Perfect for servo motors, ESCs, precise timing applications
+
+- **Example: pwm_servo** - Servo motor control demonstration
+  - Angle-to-pulse-width conversion (0-180° → 1-2ms)
+  - Smooth sweep functions
+  - Position control (0°, 45°, 90°, 135°, 180°)
+  - Speed control examples
+  - Includes servo wiring instructions
+
+- **Example: pwm_led_hardware** - Hardware PWM LED dimming
+  - Linear fade effects
+  - Breathing effect (sine wave modulation)
+  - Pulse effects
+  - Frequency comparison tests (100Hz vs 1kHz vs 10kHz)
+  - Demonstrates flicker-free operation
+
+- **Unit Tests: gtest_hardware_pwm.cpp** - Hardware PWM test coverage
+  - API compliance tests (27 tests)
+  - Thread safety verification
+  - GPIO-to-PWM mapping validation
+  - Hardware tests (skipped without sysfs access)
+  - 8-bit conversion tests
+  - Nanosecond calculation tests
+
+### Documentation
+- Updated `docs/API_REFERENCE.md` with complete Hardware PWM documentation
+- Added servo control patterns and examples
+- Documented hardware vs software PWM trade-offs
+- Included GPIO pin mapping reference
+
+### Testing
+- Test suite expanded from 148 to 175 tests (+27 Hardware PWM tests)
+- All tests passing with hardware tests properly skipped
+- CI integration validated
+
 ## [0.3.12] - 2025-11-16
 
 ### Added
