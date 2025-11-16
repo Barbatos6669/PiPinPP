@@ -18,11 +18,13 @@
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Tests](https://img.shields.io/badge/tests-175%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
+🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
 
 ---
 
 > **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.13/install.sh | sudo bash`
+
+> **🗺️ NEW: [2026 Roadmap](docs/ROADMAP.md)** - See our path to becoming the #1 GPIO library! **[Vote on features →](https://github.com/Barbatos6669/PiPinPP/issues/new?template=roadmap_feature.md)**
 
 ---
 
@@ -186,11 +188,30 @@ target_link_libraries(your_app PiPinPP::pipinpp)
 
 ---
 
+## 🗺️ Roadmap to "Super Champ" Status
+
+**PiPinPP is on a mission to become the #1 GPIO library for Raspberry Pi!**
+
+We have a comprehensive [2026 Roadmap](docs/ROADMAP.md) with exciting plans:
+
+- **🏎️ Phase 1 (v0.4.0)**: Performance optimization - Reduce software PWM CPU usage by 70%
+- **🌍 Phase 2 (v0.5.0)**: Multi-platform support - Orange Pi, BeagleBone, Jetson
+- **🧰 Phase 3 (v0.6.0)**: Developer tools - CLI utilities, GPIO monitor, package managers
+- **🤝 Phase 4 (v0.7.0)**: Ecosystem growth - Python bindings, plugin system
+- **📚 Phase 5 (Ongoing)**: World-class documentation and tutorials
+
+**Want to influence the roadmap?**
+- 🗳️ [Vote on features](https://github.com/Barbatos6669/PiPinPP/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)
+- 💡 [Propose new ideas](https://github.com/Barbatos6669/PiPinPP/issues/new?template=roadmap_feature.md)
+- 🖥️ [Report platform testing](https://github.com/Barbatos6669/PiPinPP/issues/new?template=platform_support.md)
+
+**Read the full roadmap**: [docs/ROADMAP.md](docs/ROADMAP.md)
+
+---
+
 ## Contributing
 
 **We're just getting started and welcome your ideas, feedback, and contributions!**
-
-📋 **Check our [ROADMAP.md](docs/planning/ROADMAP.md) to see what we're working on next**
 
 ## 💬 Community & Support
 
