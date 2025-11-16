@@ -203,6 +203,16 @@ if(BUILD_TESTS)
     target_link_libraries(gtest_interrupts_extended pipinpp GTest::gtest_main)
     add_test(NAME gtest_interrupts_extended COMMAND gtest_interrupts_extended)
     
+    # Final comprehensive tests for 80% coverage push
+    add_executable(gtest_arduino_final tests/gtest_arduino_final.cpp)
+    target_link_libraries(gtest_arduino_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_arduino_final COMMAND gtest_arduino_final)
+    
+    # Serial final tests
+    add_executable(gtest_serial_final tests/gtest_serial_final.cpp)
+    target_link_libraries(gtest_serial_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_serial_final COMMAND gtest_serial_final)
+    
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
     gtest_discover_tests(gtest_timing)
@@ -223,6 +233,8 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_event_pwm)
     gtest_discover_tests(gtest_hardware_pwm_extended)
     gtest_discover_tests(gtest_interrupts_extended)
+    gtest_discover_tests(gtest_arduino_final)
+    gtest_discover_tests(gtest_serial_final)
 endif()
 
 if(BUILD_EXAMPLES)
