@@ -201,6 +201,22 @@ if(BUILD_EXAMPLES)
     endforeach()
 endif()
 
+# Build CLI tool
+option(BUILD_CLI "Build pipinpp command-line tool" ON)
+if(BUILD_CLI)
+    add_executable(pipinpp_cli tools/pipinpp.cpp)
+    target_link_libraries(pipinpp_cli pipinpp)
+    set_target_properties(pipinpp_cli PROPERTIES
+        OUTPUT_NAME pipinpp
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
+    
+    # Install CLI tool to /usr/local/bin
+    install(TARGETS pipinpp_cli
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+endif()
+
 # Installation
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
