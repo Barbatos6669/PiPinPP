@@ -472,3 +472,265 @@ TEST_F(ArduinoCompatExtendedTest, MultiplePinsInRegistry) {
         GTEST_SKIP() << "GPIO access not available: " << e.what();
     }
 }
+
+// ============================================================================
+// ADVANCED FUNCTIONS: shiftOut, pulseIn, tone/noTone
+// ============================================================================
+
+// Test: shiftOut basic functionality
+TEST_F(ArduinoCompatExtendedTest, ShiftOutMSBFirst) {
+    try {
+        pinMode(17, OUTPUT);  // Data pin
+        pinMode(18, OUTPUT);  // Clock pin
+        
+        // Shift out value MSB first
+        EXPECT_NO_THROW({
+            shiftOut(17, 18, MSBFIRST, 0xAA);
+            shiftOut(17, 18, MSBFIRST, 0x55);
+        });
+        
+        SUCCEED();
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: shiftOut LSB first
+TEST_F(ArduinoCompatExtendedTest, ShiftOutLSBFirst) {
+    try {
+        pinMode(17, OUTPUT);
+        pinMode(18, OUTPUT);
+        
+        EXPECT_NO_THROW({
+            shiftOut(17, 18, LSBFIRST, 0xFF);
+            shiftOut(17, 18, LSBFIRST, 0x00);
+        });
+        
+        SUCCEED();
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: shiftOut without pinMode
+TEST_F(ArduinoCompatExtendedTest, ShiftOutWithoutPinMode) {
+    // Don't set pinMode - should throw or handle gracefully
+    EXPECT_ANY_THROW({
+        shiftOut(17, 18, MSBFIRST, 0x42);
+    });
+}
+
+// Test: shiftOut with invalid bit order
+TEST_F(ArduinoCompatExtendedTest, ShiftOutInvalidBitOrder) {
+    try {
+        pinMode(17, OUTPUT);
+        pinMode(18, OUTPUT);
+        
+        // Invalid bit order (not MSBFIRST or LSBFIRST)
+        // Should default to LSBFIRST or handle gracefully
+        EXPECT_NO_THROW({
+            shiftOut(17, 18, 99, 0x42);
+        });
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: pulseIn timeout
+TEST_F(ArduinoCompatExtendedTest, PulseInTimeout) {
+    try {
+        pinMode(17, INPUT);
+        
+        // Timeout with no pulse (should return 0)
+        unsigned long duration = pulseIn(17, HIGH, 1000);  // 1ms timeout
+        EXPECT_EQ(duration, 0);
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: pulseIn on output pin (should throw)
+TEST_F(ArduinoCompatExtendedTest, PulseInOnOutputPin) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // pulseIn requires INPUT mode
+        EXPECT_ANY_THROW({
+            pulseIn(17, HIGH, 1000);
+        });
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: pulseIn both states
+TEST_F(ArduinoCompatExtendedTest, PulseInBothStates) {
+    try {
+        pinMode(17, INPUT);
+        
+        // Test HIGH and LOW states (both timeout)
+        unsigned long high_pulse = pulseIn(17, HIGH, 100);
+        unsigned long low_pulse = pulseIn(17, LOW, 100);
+        
+        // Both should timeout to 0
+        EXPECT_EQ(high_pulse, 0);
+        EXPECT_EQ(low_pulse, 0);
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: tone basic functionality
+TEST_F(ArduinoCompatExtendedTest, ToneBasicFunctionality) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // Start tone
+        EXPECT_NO_THROW({
+            tone(17, 1000);  // 1kHz tone
+        });
+        
+        std::this_thread::sleep_for(10ms);
+        
+        // Stop tone
+        EXPECT_NO_THROW({
+            noTone(17);
+        });
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: tone with duration
+TEST_F(ArduinoCompatExtendedTest, ToneWithDuration) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // Tone with automatic stop after 100ms
+        EXPECT_NO_THROW({
+            tone(17, 2000, 100);  // 2kHz for 100ms
+        });
+        
+        std::this_thread::sleep_for(150ms);  // Wait for tone to finish
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: tone without pinMode
+TEST_F(ArduinoCompatExtendedTest, ToneWithoutPinMode) {
+    // Don't call pinMode - should throw
+    EXPECT_ANY_THROW({
+        tone(17, 1000);
+    });
+}
+
+// Test: tone frequency limits
+TEST_F(ArduinoCompatExtendedTest, ToneFrequencyLimits) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // Very low frequency
+        EXPECT_NO_THROW({
+            tone(17, 20);  // 20 Hz
+            noTone(17);
+        });
+        
+        // Very high frequency
+        EXPECT_NO_THROW({
+            tone(17, 20000);  // 20 kHz
+            noTone(17);
+        });
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: noTone without tone
+TEST_F(ArduinoCompatExtendedTest, NoToneWithoutTone) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // Call noTone without calling tone first
+        EXPECT_NO_THROW({
+            noTone(17);
+        });
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: Multiple tone calls on same pin
+TEST_F(ArduinoCompatExtendedTest, MultipleToneSamePin) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // First tone
+        tone(17, 1000);
+        std::this_thread::sleep_for(20ms);
+        
+        // Stop first tone
+        noTone(17);
+        
+        // Reinitialize for second tone
+        pinMode(17, OUTPUT);
+        
+        // Second tone with different frequency
+        tone(17, 2000);
+        std::this_thread::sleep_for(20ms);
+        
+        noTone(17);
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: tone on multiple pins
+TEST_F(ArduinoCompatExtendedTest, ToneMultiplePins) {
+    try {
+        pinMode(17, OUTPUT);
+        pinMode(18, OUTPUT);
+        
+        // Two tones simultaneously
+        tone(17, 1000);
+        tone(18, 2000);
+        
+        std::this_thread::sleep_for(50ms);
+        
+        noTone(17);
+        noTone(18);
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
+
+// Test: Pin reuse after tone
+TEST_F(ArduinoCompatExtendedTest, PinReuseAfterTone) {
+    try {
+        pinMode(17, OUTPUT);
+        
+        // Use as tone
+        tone(17, 1000);
+        std::this_thread::sleep_for(20ms);
+        noTone(17);
+        
+        // Reuse as digital output
+        digitalWrite(17, HIGH);
+        digitalWrite(17, LOW);
+        
+        SUCCEED();
+        
+    } catch (const GpioAccessError& e) {
+        GTEST_SKIP() << "GPIO access not available: " << e.what();
+    }
+}
