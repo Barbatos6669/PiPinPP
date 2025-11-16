@@ -326,6 +326,7 @@ TEST_F(PlatformExtendedTest, PlatformNameConversion) {
 // Test: Print info doesn't crash
 TEST_F(PlatformExtendedTest, PrintInfoDoesNotCrash) {
     auto& platform = PlatformInfo::instance();
+    (void)platform;  // Suppress unused variable warning
     
     EXPECT_NO_THROW({
         // Note: printInfo() writes to stdout, we just check it doesn't crash
@@ -520,6 +521,7 @@ TEST_F(PlatformExtendedTest, PlatformInfoCompleteness) {
     // All info methods should work
     EXPECT_NO_THROW({
         Platform p = platform.getPlatform();
+        (void)p;  // Suppress unused variable warning
         std::string name = platform.getPlatformName();
         std::string kernel = platform.getKernelVersion();
         std::string libgpiod = platform.getLibgpiodVersion();
@@ -549,6 +551,7 @@ TEST_F(PlatformExtendedTest, NoExceptionsInDetection) {
 // Test: Print info method
 TEST_F(PlatformExtendedTest, PrintInfoMethod) {
     auto& platform = PlatformInfo::instance();
+    (void)platform;  // Suppress unused variable warning
     
     // printInfo() writes to stdout, just verify it doesn't crash
     EXPECT_NO_THROW({

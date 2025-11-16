@@ -87,7 +87,7 @@ TEST_F(SPIExtendedTest, CommonClockSpeeds) {
 TEST_F(SPIExtendedTest, VerySlowClockSpeed) {
     SPI.begin();
     EXPECT_NO_THROW({
-        SPI.setClockDivider(1000);  // 1 kHz
+        SPI.setClockDivider(SPI_CLOCK_DIV128);  // Slowest predefined divider
     });
     SPI.end();
 }
@@ -96,7 +96,7 @@ TEST_F(SPIExtendedTest, VerySlowClockSpeed) {
 TEST_F(SPIExtendedTest, MaximumClockSpeed) {
     SPI.begin();
     EXPECT_NO_THROW({
-        SPI.setClockDivider(125000000);  // 125 MHz (Pi max)
+        SPI.setClockDivider(SPI_CLOCK_DIV2);  // Fastest predefined divider
     });
     SPI.end();
 }
@@ -245,7 +245,7 @@ TEST_F(SPIExtendedTest, OperationsBeforeBegin) {
     // These should not crash
     EXPECT_NO_THROW({
         SPI.setDataMode(SPI_MODE0);
-        SPI.setClockDivider(1000000);
+        SPI.setClockDivider(SPI_CLOCK_DIV64);
         SPI.setBitOrder(MSBFIRST);
     });
 }
@@ -259,7 +259,7 @@ TEST_F(SPIExtendedTest, FullConfigurationSequence) {
     SPI.begin();
     
     EXPECT_NO_THROW({
-        SPI.setClockDivider(1000000);
+        SPI.setClockDivider(SPI_CLOCK_DIV16);
         SPI.setDataMode(SPI_MODE1);
         SPI.setBitOrder(LSBFIRST);
     });
@@ -273,13 +273,13 @@ TEST_F(SPIExtendedTest, ConfigurationDifferentOrders) {
     
     // Order 1: mode -> clock -> bit order
     SPI.setDataMode(SPI_MODE2);
-    SPI.setClockDivider(2000000);
+    SPI.setClockDivider(SPI_CLOCK_DIV32);
     SPI.setBitOrder(MSBFIRST);
     
     // Order 2: bit order -> mode -> clock
     SPI.setBitOrder(LSBFIRST);
     SPI.setDataMode(SPI_MODE3);
-    SPI.setClockDivider(4000000);
+    SPI.setClockDivider(SPI_CLOCK_DIV64);
     
     SPI.end();
     SUCCEED();
@@ -296,7 +296,7 @@ TEST_F(SPIExtendedTest, ReconfigureBetweenTransfers) {
         SPI.setDataMode(SPI_MODE1);
         SPI.transfer(0x02);
         
-        SPI.setClockDivider(500000);
+        SPI.setClockDivider(SPI_CLOCK_DIV8);
         SPI.transfer(0x03);
         
         SPI.end();
@@ -349,7 +349,7 @@ TEST_F(SPIExtendedTest, ConcurrentConfigurationChanges) {
     
     std::thread t2([&]() {
         for (int i = 0; i < 10; i++) {
-            SPI.setClockDivider(1000000);
+            SPI.setClockDivider(SPI_CLOCK_DIV16);
         }
     });
     
@@ -597,8 +597,8 @@ TEST_F(SPIExtendedTest, ClockDividerEdgeCases) {
     // Divider of 1 (max speed)
     EXPECT_NO_THROW(SPI.setClockDivider(1));
     
-    // Very large divider (very slow)
-    EXPECT_NO_THROW(SPI.setClockDivider(65535));
+    // Maximum uint8_t divider value
+    EXPECT_NO_THROW(SPI.setClockDivider(255));
     
     // Check getClock returns valid value
     uint32_t clock = SPI.getClock();
