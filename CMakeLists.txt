@@ -198,6 +198,11 @@ if(BUILD_TESTS)
     target_link_libraries(gtest_hardware_pwm_extended pipinpp GTest::gtest_main)
     add_test(NAME gtest_hardware_pwm_extended COMMAND gtest_hardware_pwm_extended)
     
+    # Interrupt extended tests
+    add_executable(gtest_interrupts_extended tests/gtest_interrupts_extended.cpp)
+    target_link_libraries(gtest_interrupts_extended pipinpp GTest::gtest_main)
+    add_test(NAME gtest_interrupts_extended COMMAND gtest_interrupts_extended)
+    
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
     gtest_discover_tests(gtest_timing)
@@ -217,6 +222,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_pwm_extended)
     gtest_discover_tests(gtest_event_pwm)
     gtest_discover_tests(gtest_hardware_pwm_extended)
+    gtest_discover_tests(gtest_interrupts_extended)
 endif()
 
 if(BUILD_EXAMPLES)
