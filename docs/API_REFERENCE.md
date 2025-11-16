@@ -1,6 +1,6 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.13  
+**Version**: 0.4.0  
 **Date**: November 16, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
@@ -16,7 +16,10 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
    - [Pin State Query Functions](#pin-state-query-functions)
    - [Interrupt Functions](#interrupt-functions)
    - [PWM Functions](#pwm-functions)
-4. [Hardware PWM](#hardware-pwm)
+4. [Event-Driven PWM (NEW v0.4.0)](#event-driven-pwm)
+   - [EventPWM Class](#eventpwm-class)
+   - [When to Use EventPWM](#when-to-use-eventpwm)
+5. [Hardware PWM](#hardware-pwm)
    - [HardwarePWM Class](#hardwarepwm-class)
    - [Hardware PWM Examples](#hardware-pwm-examples)
 5. [Timing Functions](#timing-functions)
@@ -345,6 +348,190 @@ Stop PWM output on a pin and clean up resources.
 analogWrite(17, 128);  // 50% brightness
 delay(5000);           // Run for 5 seconds
 stopPWM(17);           // Stop PWM, free resources
+```
+
+---
+
+## Event-Driven PWM
+
+**NEW in v0.4.0** - The `EventPWM` class provides software PWM with **70-85% lower CPU usage** compared to `analogWrite()`. It uses a hybrid timing algorithm (clock_nanosleep + busy-wait) that reduces CPU consumption from 10-30% to <5% per pin while maintaining acceptable timing accuracy for LED control.
+
+### EventPWM Class
+
+#### `EventPWM(int pin, const std::string& chipname = "gpiochip0")`
+Constructor for event-driven PWM on a GPIO pin.
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27 for Raspberry Pi)
+- `chipname`: GPIO chip name (default: "gpiochip0")
+
+**Throws:**
+- `InvalidPinError`: Invalid pin number
+- `GpioAccessError`: GPIO access failure
+
+**Example:**
+```cpp
+#include "event_pwm.hpp"
+
+pipinpp::EventPWM led(17);  // Create EventPWM on GPIO17
+```
+
+#### `bool begin(double frequencyHz, double dutyCycle)`
+Start EventPWM with specified frequency and duty cycle.
+
+**Parameters:**
+- `frequencyHz`: PWM frequency in Hz (50 - 10,000)
+  - Recommended: 50-2000 Hz for LED control
+  - Higher frequencies have proportionally higher CPU usage
+- `dutyCycle`: Initial duty cycle percentage (0.0 - 100.0)
+  - 0.0 = Always LOW (LED off)
+  - 50.0 = 50% duty cycle (half brightness)
+  - 100.0 = Always HIGH (LED fully on)
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Notes:**
+- **CPU Usage**: <5% per pin (70-85% reduction vs `analogWrite()`)
+- **Timing Accuracy**: <10 µs jitter (2x worse than busy-loop, but acceptable for LEDs)
+- **Hybrid Algorithm**: Sleeps for (period - 100µs), then busy-waits final 100µs for precision
+- Edge cases optimized: <0.1% duty = always off, >99.9% duty = always on (no PWM overhead)
+
+**Example:**
+```cpp
+pipinpp::EventPWM led(17);
+if (!led.begin(1000, 50.0)) {  // 1kHz, 50% duty
+    std::cerr << "Failed to start PWM" << std::endl;
+    return 1;
+}
+```
+
+#### `void end()`
+Stop EventPWM and release resources.
+
+**Example:**
+```cpp
+led.end();  // Stop PWM, clean up thread
+```
+
+#### `void setDutyCycle(double dutyCycle)`
+Change duty cycle while PWM is running.
+
+**Parameters:**
+- `dutyCycle`: New duty cycle percentage (0.0 - 100.0)
+
+**Notes:**
+- Thread-safe: can be called from any thread
+- Change takes effect on next PWM cycle
+- Use for smooth LED fading
+
+**Example:**
+```cpp
+// Smooth fade from 0% to 100%
+for (double brightness = 0.0; brightness <= 100.0; brightness += 0.5) {
+    led.setDutyCycle(brightness);
+    delay(10);
+}
+```
+
+#### `void setDutyCycle8Bit(uint8_t value)`
+Arduino-compatible duty cycle setting (0-255 scale).
+
+**Parameters:**
+- `value`: Duty cycle (0-255)
+  - 0 = 0% duty (LED off)
+  - 127 = ~50% duty (half brightness)
+  - 255 = 100% duty (LED fully on)
+
+**Example:**
+```cpp
+// Arduino-style LED fade
+for (int brightness = 0; brightness <= 255; brightness++) {
+    led.setDutyCycle8Bit(brightness);
+    delay(10);
+}
+```
+
+#### `void setFrequency(double frequencyHz)`
+Change PWM frequency while running.
+
+**Parameters:**
+- `frequencyHz`: New frequency in Hz (50 - 10,000)
+
+**Notes:**
+- Frequency change takes effect on next cycle
+- Duty cycle percentage is preserved
+- Higher frequencies increase CPU usage slightly
+
+**Example:**
+```cpp
+led.setFrequency(2000);  // Change to 2kHz
+```
+
+### When to Use EventPWM
+
+**Choose EventPWM when:**
+- ✅ Controlling multiple LEDs (3+ pins)
+- ✅ Long-running applications where CPU usage matters
+- ✅ Battery-powered projects (lower CPU = less power)
+- ✅ LED dimming, fade effects, RGB color mixing
+- ✅ Any application where <10µs jitter is acceptable
+
+**Choose `analogWrite()` (busy-loop PWM) when:**
+- ⚠️ Simple quick demos (1-2 pins, short duration)
+- ⚠️ You need the absolute lowest jitter (<5µs)
+- ⚠️ Legacy code compatibility
+
+**Choose `HardwarePWM` when:**
+- 🚀 Servo motor control (requires zero jitter)
+- 🚀 Precise timing applications
+- 🚀 High frequencies (>10 kHz)
+- 🚀 Zero CPU usage required
+
+### EventPWM Manager (Global Functions)
+
+For Arduino-style usage without explicit object creation:
+
+#### `void analogWriteEvent(int pin, int value)`
+Start EventPWM using Arduino-compatible API.
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27)
+- `value`: Duty cycle (0-255)
+
+**Notes:**
+- Automatically manages EventPWM objects internally
+- First call creates EventPWM, subsequent calls update duty cycle
+- Default frequency: 490 Hz (matches Arduino)
+
+**Example:**
+```cpp
+#include "event_pwm.hpp"
+
+// Arduino-style: no object creation needed
+pipinpp::analogWriteEvent(17, 128);  // 50% brightness
+delay(5000);
+pipinpp::analogWriteEvent(17, 0);    // Turn off
+```
+
+### Performance Comparison
+
+| Implementation | CPU Usage/Pin | Jitter | Servo Control | Multi-Pin | Power Efficient |
+|---------------|---------------|--------|---------------|-----------|-----------------|
+| `analogWrite()` | 10-30% | <5µs | ❌ No | Limited (2-3 pins) | ❌ No |
+| `EventPWM` | <5% | <10µs | ❌ No | ✅ Yes (10+ pins) | ✅ Yes |
+| `HardwarePWM` | 0% | 0µs | ✅ Yes | Limited (2-4 pins) | ✅ Yes |
+
+**Migration Example:**
+```cpp
+// OLD: High CPU usage
+analogWrite(17, 128);  // ~10-30% CPU per pin
+
+// NEW: Low CPU usage (recommended for v0.4.0+)
+pipinpp::EventPWM led(17);
+led.begin(490, 50.0);  // <5% CPU per pin
+led.setDutyCycle8Bit(128);  // Arduino-compatible API
 ```
 
 ---
