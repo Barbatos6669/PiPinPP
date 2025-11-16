@@ -703,12 +703,15 @@ inline unsigned long pulseInLong(int pin, bool state, unsigned long timeout = 10
  * Shifts out a byte of data using bit-banging. Commonly used with shift
  * registers (74HC595) to expand the number of outputs.
  * 
- * @param dataPin GPIO pin for serial data
- * @param clockPin GPIO pin for clock signal
+ * @param dataPin GPIO pin for serial data (must be configured as OUTPUT)
+ * @param clockPin GPIO pin for clock signal (must be configured as OUTPUT)
  * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
  * @param value Byte value to shift out (0-255)
  * 
- * @note Pins are automatically configured as OUTPUT
+ * @throws PinError if pins are not configured as OUTPUT via pinMode()
+ * @throws InvalidPinError if pin numbers are out of range (0-27)
+ * 
+ * @note Call pinMode(pin, OUTPUT) for both pins before using this function
  * @note Clock idles LOW, pulses HIGH to shift each bit
  * @note No separate latch pin - use digitalWrite() to control latch separately
  * 
@@ -731,12 +734,15 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value);
  * Shifts in a byte of data using bit-banging. Commonly used with shift
  * registers (74HC165) to expand the number of inputs.
  * 
- * @param dataPin GPIO pin for serial data input
- * @param clockPin GPIO pin for clock signal output
+ * @param dataPin GPIO pin for serial data input (must be configured as INPUT)
+ * @param clockPin GPIO pin for clock signal output (must be configured as OUTPUT)
  * @param bitOrder Bit order: MSBFIRST (most significant bit first) or LSBFIRST
  * @return unsigned char Byte value read (0-255)
  * 
- * @note dataPin configured as INPUT, clockPin as OUTPUT
+ * @throws PinError if pins are not configured correctly via pinMode()
+ * @throws InvalidPinError if pin numbers are out of range (0-27)
+ * 
+ * @note Call pinMode(dataPin, INPUT) and pinMode(clockPin, OUTPUT) before using this function
  * @note Clock idles LOW, pulses HIGH to shift each bit
  * 
  * @example
@@ -767,12 +773,16 @@ constexpr int MSBFIRST = 1;  ///< Most Significant Bit First
  * Generates a square wave of the specified frequency on a pin. Useful for
  * making beeps, alarms, or simple music with a piezo buzzer or speaker.
  * 
- * @param pin GPIO pin number (must support PWM)
+ * @param pin GPIO pin number (must be configured as OUTPUT before calling)
  * @param frequency Frequency in Hertz (31Hz - 65535Hz)
  * @param duration Optional duration in milliseconds (0 = continuous)
  * 
- * @note Pin is automatically configured as OUTPUT
- * @note Uses hardware or software PWM depending on pin capability
+ * @throws PinError if pin is not configured as OUTPUT via pinMode()
+ * @throws InvalidPinError if pin number is out of range (0-27)
+ * @throws std::invalid_argument if frequency is 0 or > 65535
+ * 
+ * @note Call pinMode(pin, OUTPUT) before using this function
+ * @note Uses software PWM (50% duty cycle square wave)
  * @note Only one tone can play per pin at a time
  * @note Call noTone() to stop continuous tones
  * @note Frequency range: 31Hz to 65535Hz (human hearing: ~20Hz-20kHz)

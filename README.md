@@ -12,7 +12,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP/badge)](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![Version](https://img.shields.io/badge/version-0.3.11-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.11)
+[![Version](https://img.shields.io/badge/version-0.3.12-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.12)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
@@ -22,7 +22,7 @@
 
 ---
 
-> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.11/install.sh | sudo bash`
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.12/install.sh | sudo bash`
 
 ---
 
@@ -89,7 +89,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 
 ## Features
 
-**v0.3.7 RELEASED!** 🎉 SPI communication support and comprehensive example documentation!
+**v0.3.12 RELEASED!** 🎉 Serial/UART communication support for Arduino-Pi integration!
 
 ### Core GPIO (v0.1.0-v0.2.0)
 - ✅ **Digital I/O**: Arduino-style pin control (`pinMode`, `digitalWrite`, `digitalRead`)
@@ -97,7 +97,7 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **Pull resistors**: Built-in `INPUT_PULLUP` and `INPUT_PULLDOWN` support
 - ✅ **Arduino API**: Easy transition from Arduino sketches
 
-### Advanced Features (v0.3.0-v0.3.7)
+### Advanced Features (v0.3.0-v0.3.12)
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
 - ✅ **PWM**: Software PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
@@ -107,20 +107,20 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **Advanced I/O**: `pulseIn()`, `shiftOut()`, `shiftIn()`, `tone()`, `noTone()` (v0.3.6)
 - ✅ **I2C/Wire**: Full Arduino Wire library compatibility for I2C communication (v0.3.6)
 - ✅ **SPI**: Hardware SPI master with full Arduino compatibility (v0.3.7)
+- ✅ **Serial/UART**: Arduino Serial API for communication with Arduino boards and sensors (v0.3.12)
 
 ### Quality & Testing (v0.3.0+)
-- ✅ **GoogleTest framework**: 88 comprehensive automated tests
+- ✅ **GoogleTest framework**: 94 comprehensive automated tests
 - ✅ **GitHub Actions CI/CD**: Multi-platform builds, automated testing, CodeQL security analysis
 - ✅ **Modern CMake**: find_package() support, shared/static library options, pkg-config compatibility
-- ✅ **19 Examples with Full Documentation**: Every example includes comprehensive README with wiring diagrams, troubleshooting, and extension ideas
+- ✅ **20 Examples with Full Documentation**: Every example includes comprehensive README with wiring diagrams, troubleshooting, and extension ideas
 - ✅ **Clean project structure**: Organized documentation, no root clutter
 
-**v0.3.7 is production-ready with full Arduino API compatibility!**
+**v0.3.12 is production-ready with full Arduino API compatibility!**
 
 ### Longer-Term Goals (v0.4.0+)
 
 - [ ] **Hardware PWM**: Interface with `/sys/class/pwm` for jitter-free PWM
-- [ ] **UART/Serial**: Arduino Serial API compatibility
 - [ ] **Multi-platform support**: Orange Pi and other ARM SBCs
 - [ ] **Advanced features**: Analog input, GPIO monitoring tools
 - [ ] **Development tools**: VS Code extensions and debugging utilities
@@ -132,14 +132,14 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 ### 🚀 One-Line Install (Recommended)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.12/install.sh | sudo bash
 ```
 
-This installs all dependencies, builds PiPinPP v0.3.7, and configures GPIO permissions automatically.
+This installs all dependencies, builds PiPinPP v0.3.12, and configures GPIO permissions automatically.
 
 **Trust but verify?** Review the script first:
 ```bash
-wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.7/install.sh
+wget https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.12/install.sh
 less install.sh
 sudo bash install.sh
 ```
@@ -154,7 +154,7 @@ sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
 # 2. Build and install
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.7
+git checkout v0.3.12
 ./build.sh
 cd build
 sudo make install

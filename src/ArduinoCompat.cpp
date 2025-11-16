@@ -356,15 +356,20 @@ long random(long min, long max)
 
 unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 {
-    // Ensure pin is INPUT
+    // Validate pin number first (before acquiring mutex)
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
+    // Verify pin is INPUT (don't auto-configure to avoid deadlock)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
         if (it == globalPins.end()) {
-            // Pin not initialized, set as INPUT
-            pinMode(pin, INPUT);
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " not initialized. Call pinMode(pin, INPUT) first.");
         } else if (it->second.mode == ArduinoPinMode::OUTPUT) {
-            // Don't change OUTPUT pins
             throw PinError("Pin " + std::to_string(pin) + " is configured as OUTPUT. "
                           "Cannot use pulseIn() on output pins.");
         }
@@ -402,16 +407,30 @@ unsigned long pulseIn(int pin, bool state, unsigned long timeout)
 
 void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 {
-    // Ensure pins are OUTPUT
+    // Validate pin numbers first (before acquiring mutex)
+    if (dataPin < 0 || dataPin > 27) {
+        throw InvalidPinError("Invalid data pin number: " + std::to_string(dataPin) + 
+                             ". Valid range is 0-27.");
+    }
+    if (clockPin < 0 || clockPin > 27) {
+        throw InvalidPinError("Invalid clock pin number: " + std::to_string(clockPin) + 
+                             ". Valid range is 0-27.");
+    }
+    
+    // Verify pins are OUTPUT. Don't auto-configure with pinMode() here, as that
+    // would acquire globalPinsMutex while it is already held, causing a deadlock.
+    // (pinMode() locks globalPinsMutex internally.)
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         if (globalPins.find(dataPin) == globalPins.end() || 
             globalPins[dataPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(dataPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " must be OUTPUT for shiftOut(). Call pinMode() first.");
         }
         if (globalPins.find(clockPin) == globalPins.end() || 
             globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(clockPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(clockPin) + 
+                          " must be OUTPUT for shiftOut(). Call pinMode() first.");
         }
     }
     
@@ -433,16 +452,40 @@ void shiftOut(int dataPin, int clockPin, int bitOrder, unsigned char value)
 
 unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 {
-    // Ensure dataPin is INPUT and clockPin is OUTPUT
+    // Validate pin numbers first (before acquiring mutex)
+    if (dataPin < 0 || dataPin > 27) {
+        throw InvalidPinError("Invalid data pin number: " + std::to_string(dataPin) + 
+                             ". Valid range is 0-27.");
+    }
+    if (clockPin < 0 || clockPin > 27) {
+        throw InvalidPinError("Invalid clock pin number: " + std::to_string(clockPin) + 
+                             ". Valid range is 0-27.");
+    }
+    
+    // Verify dataPin is INPUT and clockPin is OUTPUT. Don't auto-configure with
+    // pinMode() here, as that would acquire globalPinsMutex while it is already
+    // held, causing a deadlock. (pinMode() locks globalPinsMutex internally.)
+    // Also can't call isInput() helper as it also locks the mutex.
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
-        if (globalPins.find(dataPin) == globalPins.end() || 
-            !isInput(dataPin)) {
-            pinMode(dataPin, INPUT);
+        auto dataIt = globalPins.find(dataPin);
+        if (dataIt == globalPins.end()) {
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " not initialized. Call pinMode() first.");
         }
+        ArduinoPinMode dataMode = dataIt->second.mode;
+        bool isInputMode = (dataMode == ArduinoPinMode::INPUT || 
+                           dataMode == ArduinoPinMode::INPUT_PULLUP || 
+                           dataMode == ArduinoPinMode::INPUT_PULLDOWN);
+        if (!isInputMode) {
+            throw PinError("Pin " + std::to_string(dataPin) + 
+                          " must be INPUT for shiftIn(). Call pinMode() first.");
+        }
+        
         if (globalPins.find(clockPin) == globalPins.end() || 
             globalPins[clockPin].mode != ArduinoPinMode::OUTPUT) {
-            pinMode(clockPin, OUTPUT);
+            throw PinError("Pin " + std::to_string(clockPin) + 
+                          " must be OUTPUT for shiftIn(). Call pinMode() first.");
         }
     }
     
@@ -470,22 +513,35 @@ unsigned char shiftIn(int dataPin, int clockPin, int bitOrder)
 // Tone generation - uses PWM with 50% duty cycle
 void tone(int pin, unsigned int frequency, unsigned long duration)
 {
+    // Validate pin number first (before any other checks)
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     if (frequency == 0 || frequency > 65535) {
         throw std::invalid_argument("Frequency must be between 1 and 65535 Hz");
     }
     
-    // Ensure pin is OUTPUT
+    // Verify pin is configured as OUTPUT. pinMode() must be called first.
+    // If pin is held by pinMode(), release it so PWM can create its own Pin object.
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
         auto it = globalPins.find(pin);
         if (it == globalPins.end()) {
-            pinMode(pin, OUTPUT);
-        } else if (it->second.mode != ArduinoPinMode::OUTPUT) {
-            throw PinError("Pin " + std::to_string(pin) + " must be OUTPUT for tone()");
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " must be configured with pinMode(pin, OUTPUT) before calling tone().");
         }
+        if (it->second.mode != ArduinoPinMode::OUTPUT) {
+            throw PinError("Pin " + std::to_string(pin) + 
+                          " must be OUTPUT for tone(). Call pinMode(pin, OUTPUT) first.");
+        }
+        // Release the pin so PWM can take control (creates its own Pin object)
+        globalPins.erase(it);
     }
     
     // Start PWM at 50% duty cycle with specified frequency
+    // PWMManager will create its own Pin object
     PWMManager::getInstance().startPWM(pin, 128, frequency);  // 128 = 50% of 255
     
     // If duration specified, wait and then stop
@@ -500,16 +556,27 @@ void tone(int pin, unsigned int frequency, unsigned long duration)
 
 void noTone(int pin)
 {
+    // Validate pin number
+    if (pin < 0 || pin > 27) {
+        throw InvalidPinError("Invalid pin number: " + std::to_string(pin) + 
+                             ". Valid range is 0-27.");
+    }
+    
     // Stop PWM (which stops the tone)
+    // PWMManager's stopPWM() will set pin LOW and clean up the PWM channel
     PWMManager::getInstance().stopPWM(pin);
     
-    // Set pin LOW
+    // Re-add pin to globalPins so it can be used again with tone() or digitalWrite()
+    // Note: tone() erased it from globalPins to let PWM have exclusive control
     {
         std::lock_guard<std::mutex> lock(globalPinsMutex);
-        auto it = globalPins.find(pin);
-        if (it != globalPins.end() && it->second.mode == ArduinoPinMode::OUTPUT) {
-            it->second.pin->write(false);
-            it->second.lastValue = false;
+        if (globalPins.find(pin) == globalPins.end()) {
+            // Pin was erased by tone(), recreate it as OUTPUT
+            PinInfo pinInfo;
+            pinInfo.pin = std::make_unique<Pin>(pin, PinDirection::OUTPUT);
+            pinInfo.mode = ArduinoPinMode::OUTPUT;
+            pinInfo.lastValue = false;
+            globalPins[pin] = std::move(pinInfo);
         }
     }
     
