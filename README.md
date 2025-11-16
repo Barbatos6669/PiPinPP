@@ -100,8 +100,8 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 ### Advanced Features (v0.3.0-v0.3.12)
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
-- ✅ **Software PWM**: Thread-based PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
-- ✅ **Hardware PWM**: Jitter-free PWM via `/sys/class/pwm` for servo control (GPIO12/13/18/19) (v0.3.13)
+- ✅ **Software PWM**: Thread-based PWM with `analogWrite()` (LED dimming, ~10-30% CPU per pin)
+- ✅ **Hardware PWM**: Jitter-free PWM via `/sys/class/pwm` for servo control (GPIO12/13/18/19, zero CPU usage) (v0.3.13)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
 - ✅ **Math functions**: Arduino-inspired math functions (`sq()`, `constrain()`, `map()`, trigonometry constants)

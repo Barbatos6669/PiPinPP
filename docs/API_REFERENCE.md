@@ -301,7 +301,10 @@ Generate PWM output on a GPIO pin (Arduino-inspired).
 - Pin is automatically configured as OUTPUT
 - Multiple pins can have independent PWM outputs
 - Timing has jitter (not suitable for precise applications like servos)
-- CPU usage increases with number of active PWM pins
+- **⚠️ CPU Usage**: Each active PWM pin runs a busy-loop thread consuming ~10-30% CPU per pin
+  - Uses `std::this_thread::yield()` to share CPU, but still busy-waits for timing accuracy
+  - For servo control or precise timing, use `HardwarePWM` class instead (zero CPU usage)
+  - Software PWM is best for LED dimming and non-critical applications
 - Edge cases optimized: 0 and 255 avoid PWM overhead
 
 **Example:**
@@ -349,6 +352,18 @@ stopPWM(17);           // Stop PWM, free resources
 ## Hardware PWM
 
 For applications requiring jitter-free PWM (servo control, precise timing), use the `HardwarePWM` class which interfaces with the Raspberry Pi hardware PWM controller via Linux sysfs.
+
+**🚀 Why Use Hardware PWM?**
+- **Zero CPU usage** - Timing handled by hardware peripheral, not software threads
+- **Perfect timing accuracy** - No jitter or timing drift (critical for servo motors)
+- **High frequencies** - Supports up to 25 MHz (software PWM limited to ~10 kHz)
+- **System load immune** - Unaffected by CPU load, context switches, or other processes
+
+**⚠️ Software PWM (`analogWrite()`) Limitations:**
+- Busy-loop threads consume ~10-30% CPU per pin
+- Timing jitter: ~1-10 µs (unsuitable for servos)
+- Frequency range: 50 Hz - 10 kHz practical limit
+- Use software PWM only for LED dimming or non-critical applications
 
 **Supported Pins:**
 - GPIO12 (PWM0 channel 0)
@@ -1025,7 +1040,10 @@ if (duration > 0) {
 
 **Notes:**
 - Requires pin to be configured with `pinMode(pin, INPUT)`
-- Blocks execution until pulse completes or timeout occurs
+- **⚠️ Blocks execution** until pulse completes or timeout occurs
+- **⚠️ CPU Usage**: Uses busy-waiting loop for microsecond timing accuracy
+  - Consumes 100% of one CPU core while waiting for pulse
+  - For non-blocking pulse measurement, consider using interrupts with timestamps
 - Resolution: ~1-2 microseconds
 - Maximum reliable pulse: ~5-10 seconds (implementation dependent)
 
@@ -1046,7 +1064,7 @@ Extended pulse measurement with better precision for longer pulses.
 **Differences from `pulseIn()`:**
 - Better accuracy for pulses > 1 second
 - Uses 64-bit timer internally for overflow protection
-- Slightly more CPU overhead
+- **⚠️ CPU Usage**: Same busy-wait behavior as `pulseIn()` (100% CPU during measurement)
 
 **Example:**
 ```cpp
@@ -1188,6 +1206,9 @@ for (int i = 0; i < 4; i++) {
 **Notes:**
 - Software-generated tone, not hardware PWM
 - Frequency accuracy: ±1-2% (depends on system load)
+- **⚠️ CPU Usage**: Runs busy-loop thread consuming ~10-30% CPU while tone is active
+  - Similar to `analogWrite()` - uses software PWM for square wave generation
+  - For continuous tones or music, consider hardware PWM or external audio module
 - Multiple simultaneous tones not supported (last call wins)
 - For precise audio, consider hardware PWM or external audio hardware
 
