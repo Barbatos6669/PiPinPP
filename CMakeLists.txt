@@ -63,6 +63,7 @@ set(PIPINPP_SOURCES
     src/ArduinoCompat.cpp
     src/interrupts.cpp
     src/pwm.cpp
+    src/event_pwm.cpp
     src/HardwarePWM.cpp
     src/Wire.cpp
     src/SPI.cpp
@@ -89,7 +90,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/event_pwm.hpp;include/HardwarePWM.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp"
 )
 
 if(BUILD_TESTS)
