@@ -135,21 +135,20 @@ TEST_F(ArduinoCompatExtendedTest, AnalogWriteExtremeValues) {
         pinMode(17, OUTPUT);
         
         // Test boundary values
-        EXPECT_NO_THROW({
-            analogWrite(17, 0);      // 0% duty cycle
-            delay(10);
-            analogWrite(17, 255);    // 100% duty cycle
-            delay(10);
-            analogWrite(17, 128);    // 50% duty cycle
-            delay(10);
-            analogWrite(17, 1);      // Minimum non-zero
-            delay(10);
-            analogWrite(17, 254);    // Maximum before 100%
-            delay(10);
-        });
+        analogWrite(17, 0);      // 0% duty cycle
+        delay(10);
+        analogWrite(17, 255);    // 100% duty cycle
+        delay(10);
+        analogWrite(17, 128);    // 50% duty cycle
+        delay(10);
+        analogWrite(17, 1);      // Minimum non-zero
+        delay(10);
+        analogWrite(17, 254);    // Maximum before 100%
+        delay(10);
         
         // Clean up
         analogWrite(17, 0);
+        SUCCEED();
         
     } catch (const GpioAccessError& e) {
         GTEST_SKIP() << "GPIO access not available: " << e.what();
