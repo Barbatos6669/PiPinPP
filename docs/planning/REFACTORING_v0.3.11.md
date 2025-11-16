@@ -269,8 +269,8 @@ This guide explains how to set up GPIO permissions on Raspberry Pi...
 **Solution Option 2**: Remove all references
 ```markdown
 # In FAQ.md:
--Alternatively, see [PERMISSIONS.md](PERMISSIONS.md) for detailed setup.
-+See the [Installation Guide](INSTALL.md#permissions-setup) for detailed setup.
+-Alternatively, see PERMISSIONS.md for detailed setup.
++See the Installation Guide (INSTALL.md#permissions-setup) for detailed setup.
 ```
 
 **Recommendation**: Option 2 (consolidate in INSTALL.md, update links)
@@ -370,7 +370,7 @@ enum ArduinoPinMode {
 
 **Action**:
 ```bash
-# Extract all Markdown links
+# Extract all Markdown links (pattern matches [text](file.md) format)
 grep -roh '\[.*\](.*\.md)' docs/ | sort -u
 
 # Manually verify each exists

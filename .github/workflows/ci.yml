@@ -274,3 +274,22 @@ jobs:
         uses: github/codeql-action/analyze@v3
         # Results appear in GitHub's Security tab
         # You'll get alerts if any security issues are found
+
+  # Job 4: Documentation link validation
+  check-docs:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Check markdown links
+        run: |
+          python3 scripts/check_markdown_links.py
+          echo "✓ All internal documentation links are valid"
