@@ -19,7 +19,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-PIPINPP_VERSION="v0.3.11"
+PIPINPP_VERSION="v0.3.12"
 INSTALL_PREFIX="/usr/local"
 BUILD_DIR="/tmp/pipinpp-build"
 REPO_URL="https://github.com/Barbatos6669/PiPinPP.git"

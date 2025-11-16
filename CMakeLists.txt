@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Project definition
 project(PiPinPP
-    VERSION 0.3.11
+    VERSION 0.3.12
     DESCRIPTION "A modern C++ GPIO library for Raspberry Pi with an Arduino-inspired API"
     LANGUAGES CXX
 )
@@ -65,6 +65,7 @@ set(PIPINPP_SOURCES
     src/pwm.cpp
     src/Wire.cpp
     src/SPI.cpp
+    src/Serial.cpp
 )
 
 # Create the library (STATIC or SHARED based on BUILD_SHARED_LIBS)
@@ -87,7 +88,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/Wire.hpp;include/SPI.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp"
 )
 
 if(BUILD_TESTS)
@@ -127,6 +128,9 @@ if(BUILD_TESTS)
     add_executable(gtest_advanced_io tests/gtest_advanced_io.cpp)
     target_link_libraries(gtest_advanced_io pipinpp GTest::gtest_main)
     
+    add_executable(gtest_serial tests/gtest_serial.cpp)
+    target_link_libraries(gtest_serial pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -135,6 +139,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_wire COMMAND gtest_wire)
     add_test(NAME gtest_spi COMMAND gtest_spi)
     add_test(NAME gtest_advanced_io COMMAND gtest_advanced_io)
+    add_test(NAME gtest_serial COMMAND gtest_serial)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -144,6 +149,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_wire)
     gtest_discover_tests(gtest_spi)
     gtest_discover_tests(gtest_advanced_io)
+    gtest_discover_tests(gtest_serial)
 endif()
 
 if(BUILD_EXAMPLES)

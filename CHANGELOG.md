@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.12] - 2025-11-16
+
+### Added
+- **Serial/UART Communication** - Full Arduino-compatible Serial API
+  - `Serial.begin(baudRate, device)` - Open serial port (9600-4000000 baud)
+  - `Serial.end()`, `Serial.available()`, `Serial.read()`, `Serial.peek()`
+  - `Serial.write()` - Send bytes, buffers, or strings
+  - `Serial.print()` / `Serial.println()` - Formatted output (strings, integers, floats)
+  - `Serial.readString()` / `Serial.readStringUntil()` - Read string data
+  - `Serial.setTimeout()`, `Serial.flush()`, `Serial.getBaudRate()`
+  - Thread-safe with internal mutex protection
+  - Support for `/dev/ttyUSB*`, `/dev/ttyACM*`, `/dev/ttyAMA*` devices
+  - Uses Linux termios for hardware UART (8N1 configuration)
+  - Perfect for Arduino-Pi hybrid robots and sensor communication
+
+- **Example: serial_arduino** - Demonstrates Arduino-Pi communication
+  - Bidirectional command/response protocol
+  - LED control, movement commands, sensor queries
+  - Includes test Arduino sketch for upload
+  - Integration notes for mecanum robot projects
+
+- **Unit Tests: gtest_serial.cpp** - Serial API test coverage
+  - Initialization, connection, thread safety tests
+  - API compliance verification
+  - Integrated into CMake test suite
+
+### Documentation
+- Updated `docs/API_REFERENCE.md` with complete Serial API documentation
+- Added hardware setup instructions and wiring notes
+- Included mecanum robot integration patterns
+
+### Testing
+- Validated on Arduino Mega 2560 via `/dev/ttyACM0`
+- Bidirectional communication verified at 9600 baud
+- Command/response protocol working correctly
+- Arduino sketch upload and testing via Arduino CLI
+
 ## [0.3.11] - 2025-11-10
 
 ### Internal Improvements
