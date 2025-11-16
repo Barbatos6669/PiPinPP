@@ -218,6 +218,11 @@ if(BUILD_TESTS)
     target_link_libraries(gtest_pwm_spi_final pipinpp GTest::gtest_main)
     add_test(NAME gtest_pwm_spi_final COMMAND gtest_pwm_spi_final)
     
+    # Ultra-focused final tests for 80% push
+    add_executable(gtest_ultra_final tests/gtest_ultra_final.cpp)
+    target_link_libraries(gtest_ultra_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_ultra_final COMMAND gtest_ultra_final)
+    
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
     gtest_discover_tests(gtest_timing)
@@ -241,6 +246,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_arduino_final)
     gtest_discover_tests(gtest_serial_final)
     gtest_discover_tests(gtest_pwm_spi_final)
+    gtest_discover_tests(gtest_ultra_final)
 endif()
 
 if(BUILD_EXAMPLES)
