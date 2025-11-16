@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Project definition
 project(PiPinPP
-    VERSION 0.3.12
+    VERSION 0.3.13
     DESCRIPTION "A modern C++ GPIO library for Raspberry Pi with an Arduino-inspired API"
     LANGUAGES CXX
 )
@@ -63,6 +63,7 @@ set(PIPINPP_SOURCES
     src/ArduinoCompat.cpp
     src/interrupts.cpp
     src/pwm.cpp
+    src/HardwarePWM.cpp
     src/Wire.cpp
     src/SPI.cpp
     src/Serial.cpp
@@ -131,6 +132,9 @@ if(BUILD_TESTS)
     add_executable(gtest_serial tests/gtest_serial.cpp)
     target_link_libraries(gtest_serial pipinpp GTest::gtest_main)
     
+    add_executable(gtest_hardware_pwm tests/gtest_hardware_pwm.cpp)
+    target_link_libraries(gtest_hardware_pwm pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -140,6 +144,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_spi COMMAND gtest_spi)
     add_test(NAME gtest_advanced_io COMMAND gtest_advanced_io)
     add_test(NAME gtest_serial COMMAND gtest_serial)
+    add_test(NAME gtest_hardware_pwm COMMAND gtest_hardware_pwm)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -150,6 +155,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_spi)
     gtest_discover_tests(gtest_advanced_io)
     gtest_discover_tests(gtest_serial)
+    gtest_discover_tests(gtest_hardware_pwm)
 endif()
 
 if(BUILD_EXAMPLES)

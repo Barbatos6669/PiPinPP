@@ -1,6 +1,6 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.12  
+**Version**: 0.3.13  
 **Date**: November 16, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
@@ -16,16 +16,19 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
    - [Pin State Query Functions](#pin-state-query-functions)
    - [Interrupt Functions](#interrupt-functions)
    - [PWM Functions](#pwm-functions)
-   - [Timing Functions](#timing-functions)
+4. [Hardware PWM](#hardware-pwm)
+   - [HardwarePWM Class](#hardwarepwm-class)
+   - [Hardware PWM Examples](#hardware-pwm-examples)
+5. [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
    - [Trigonometry Constants](#trigonometry-constants)
    - [Advanced I/O Functions](#advanced-io-functions)
-4. [Communication Protocols](#communication-protocols)
+6. [Communication Protocols](#communication-protocols)
    - [Wire (I²C)](#wire-i2c)
    - [SPI](#spi)
-5. [Examples](#examples)
-6. [Error Handling](#error-handling)
-7. [Hardware Notes](#hardware-notes)
+7. [Examples](#examples)
+8. [Error Handling](#error-handling)
+9. [Hardware Notes](#hardware-notes)
 
 ---
 
@@ -340,6 +343,276 @@ analogWrite(17, 128);  // 50% brightness
 delay(5000);           // Run for 5 seconds
 stopPWM(17);           // Stop PWM, free resources
 ```
+
+---
+
+## Hardware PWM
+
+For applications requiring jitter-free PWM (servo control, precise timing), use the `HardwarePWM` class which interfaces with the Raspberry Pi hardware PWM controller via Linux sysfs.
+
+**Supported Pins:**
+- GPIO12 (PWM0 channel 0)
+- GPIO13 (PWM0 channel 1)
+- GPIO18 (PWM0 channel 0)
+- GPIO19 (PWM0 channel 1)
+
+**Note:** Only one pin per PWM channel can be active at a time (e.g., GPIO12 and GPIO18 share PWM0 channel 0).
+
+### HardwarePWM Class
+
+#### `HardwarePWM(int chip, int channel)`
+Constructor for hardware PWM control.
+
+**Parameters:**
+- `chip`: PWM chip number (0 or 1, typically 0 for Raspberry Pi)
+- `channel`: PWM channel (0 or 1)
+
+**Example:**
+```cpp
+#include "HardwarePWM.hpp"
+
+// GPIO18 uses PWM chip 0, channel 0
+HardwarePWM servo(0, 0);
+```
+
+**Helper Function:**
+```cpp
+// Get chip and channel from GPIO number
+int chip, channel;
+if (HardwarePWM::gpioToPWM(18, chip, channel)) {
+    HardwarePWM pwm(chip, channel);
+}
+```
+
+#### `bool begin(double frequencyHz, double dutyCycle = 0.0)`
+Initialize hardware PWM with specified frequency.
+
+**Parameters:**
+- `frequencyHz`: Frequency in Hz (1 - 25,000,000)
+- `dutyCycle`: Initial duty cycle percentage (0.0 - 100.0)
+
+**Returns:**
+- `true` on success
+- `false` on failure (check logs with `PIPINPP_ENABLE_LOGGING=ON`)
+
+**Example:**
+```cpp
+HardwarePWM servo(0, 0);
+if (!servo.begin(50, 7.5)) {  // 50Hz, 7.5% duty (servo center)
+    std::cerr << "Failed to initialize PWM" << std::endl;
+    return 1;
+}
+```
+
+#### `void end()`
+Disable hardware PWM and release resources.
+
+**Example:**
+```cpp
+servo.end();  // Clean shutdown
+```
+
+#### `bool setFrequency(double frequencyHz)`
+Change PWM frequency while preserving duty cycle.
+
+**Parameters:**
+- `frequencyHz`: New frequency in Hz (1 - 25,000,000)
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Notes:**
+- Automatically disables PWM, updates period, re-enables
+- Duty cycle is recalculated to maintain the same pulse width
+- Critical for servo control (requires 50Hz)
+
+**Example:**
+```cpp
+servo.setFrequency(50);    // Standard servo frequency
+servo.setFrequency(1000);  // 1kHz for LED control
+```
+
+#### `bool setDutyCycle(double dutyCycle)`
+Set duty cycle as percentage.
+
+**Parameters:**
+- `dutyCycle`: Percentage (0.0 - 100.0)
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+servo.setDutyCycle(5.0);   // Servo 0°
+servo.setDutyCycle(7.5);   // Servo 90°
+servo.setDutyCycle(10.0);  // Servo 180°
+```
+
+#### `bool setDutyCycle8Bit(uint8_t value)`
+Set duty cycle using Arduino-style 0-255 range.
+
+**Parameters:**
+- `value`: Duty cycle (0 - 255)
+  - `0` = 0% (always LOW)
+  - `127` = 50%
+  - `255` = 100% (always HIGH)
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+HardwarePWM led(0, 0);
+led.begin(1000);  // 1kHz
+
+// Fade LED
+for (int i = 0; i <= 255; i++) {
+    led.setDutyCycle8Bit(i);
+    delay(10);
+}
+```
+
+#### `bool setPeriodNs(uint64_t periodNs)`
+Set PWM period in nanoseconds (advanced).
+
+**Parameters:**
+- `periodNs`: Period in nanoseconds
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+// 50Hz = 20ms = 20,000,000 ns
+servo.setPeriodNs(20000000);
+```
+
+#### `bool setDutyCycleNs(uint64_t dutyCycleNs)`
+Set duty cycle in nanoseconds (advanced).
+
+**Parameters:**
+- `dutyCycleNs`: Duty cycle in nanoseconds
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+// 1.5ms pulse at 50Hz (servo center)
+servo.setDutyCycleNs(1500000);
+```
+
+#### `bool setPolarity(PWMPolarity polarity)`
+Set PWM output polarity.
+
+**Parameters:**
+- `polarity`: `PWMPolarity::NORMAL` or `PWMPolarity::INVERSED`
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+servo.setPolarity(PWMPolarity::INVERSED);  // Invert output
+```
+
+#### `bool enable()` / `bool disable()`
+Enable or disable PWM output.
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Example:**
+```cpp
+servo.enable();   // Start PWM
+servo.disable();  // Stop PWM (output goes LOW)
+```
+
+#### Getters
+
+```cpp
+double getFrequency() const;      // Get current frequency (Hz)
+double getDutyCycle() const;      // Get duty cycle (0.0-100.0)
+uint64_t getPeriodNs() const;     // Get period (ns)
+uint64_t getDutyCycleNs() const;  // Get duty cycle (ns)
+bool isEnabled() const;            // Check if PWM is running
+```
+
+### Hardware PWM Examples
+
+#### Servo Control
+```cpp
+#include "HardwarePWM.hpp"
+#include "ArduinoCompat.hpp"
+
+// Convert angle (0-180°) to pulse width (1-2ms)
+double angleToPulseWidth(int angle) {
+    return 1.0 + (angle / 180.0);  // 1ms at 0°, 2ms at 180°
+}
+
+// Convert pulse width to duty cycle at 50Hz
+double pulseWidthToDutyCycle(double pulseMs) {
+    return (pulseMs / 20.0) * 100.0;  // 20ms period
+}
+
+int main() {
+    HardwarePWM servo(0, 0);  // GPIO18
+    
+    if (!servo.begin(50, 7.5)) {  // 50Hz, center position
+        return 1;
+    }
+    
+    // Move servo through positions
+    for (int angle = 0; angle <= 180; angle += 10) {
+        double pulseMs = angleToPulseWidth(angle);
+        double duty = pulseWidthToDutyCycle(pulseMs);
+        servo.setDutyCycle(duty);
+        delay(100);
+    }
+    
+    servo.end();
+    return 0;
+}
+```
+
+#### LED Fading with Hardware PWM
+```cpp
+#include "HardwarePWM.hpp"
+#include "ArduinoCompat.hpp"
+#include <cmath>
+
+int main() {
+    HardwarePWM led(0, 0);  // GPIO18
+    
+    if (!led.begin(1000)) {  // 1kHz frequency
+        return 1;
+    }
+    
+    // Breathing effect (sine wave)
+    while (true) {
+        for (int i = 0; i < 360; i++) {
+            double radians = i * M_PI / 180.0;
+            double brightness = (sin(radians) + 1.0) / 2.0;  // 0.0-1.0
+            led.setDutyCycle(brightness * 100.0);
+            delay(10);
+        }
+    }
+    
+    led.end();
+    return 0;
+}
+```
+
+**When to Use Hardware vs Software PWM:**
+- **Hardware PWM**: Servos, motor control, precise timing, high frequencies (>1kHz)
+- **Software PWM**: Multiple LED dimming, non-critical applications, pins without hardware PWM
 
 ### Timing Functions
 
