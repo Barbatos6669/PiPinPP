@@ -167,6 +167,9 @@ if(BUILD_TESTS)
     add_executable(gtest_platform_extended tests/gtest_platform_extended.cpp)
     target_link_libraries(gtest_platform_extended pipinpp GTest::gtest_main)
     
+    add_executable(gtest_pwm_extended tests/gtest_pwm_extended.cpp)
+    target_link_libraries(gtest_pwm_extended pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -183,6 +186,7 @@ if(BUILD_TESTS)
     add_test(NAME gtest_spi_extended COMMAND gtest_spi_extended)
     add_test(NAME gtest_serial_extended COMMAND gtest_serial_extended)
     add_test(NAME gtest_platform_extended COMMAND gtest_platform_extended)
+    add_test(NAME gtest_pwm_extended COMMAND gtest_pwm_extended)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -200,6 +204,7 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_spi_extended)
     gtest_discover_tests(gtest_serial_extended)
     gtest_discover_tests(gtest_platform_extended)
+    gtest_discover_tests(gtest_pwm_extended)
 endif()
 
 if(BUILD_EXAMPLES)
