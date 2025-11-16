@@ -10,28 +10,31 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Core Pin Class](#core-pin-class)
-3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
+2. [Platform Detection (NEW v0.4.0)](#platform-detection)
+   - [PlatformInfo Class](#platforminfo-class)
+   - [Platform-Aware Code](#platform-aware-code)
+3. [Core Pin Class](#core-pin-class)
+4. [Arduino Compatibility Layer](#arduino-compatibility-layer)
    - [Digital I/O Functions](#digital-io-functions)
    - [Pin State Query Functions](#pin-state-query-functions)
    - [Interrupt Functions](#interrupt-functions)
    - [PWM Functions](#pwm-functions)
-4. [Event-Driven PWM (NEW v0.4.0)](#event-driven-pwm)
+5. [Event-Driven PWM (v0.4.0)](#event-driven-pwm)
    - [EventPWM Class](#eventpwm-class)
    - [When to Use EventPWM](#when-to-use-eventpwm)
-5. [Hardware PWM](#hardware-pwm)
+6. [Hardware PWM](#hardware-pwm)
    - [HardwarePWM Class](#hardwarepwm-class)
    - [Hardware PWM Examples](#hardware-pwm-examples)
-5. [Timing Functions](#timing-functions)
+7. [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
    - [Trigonometry Constants](#trigonometry-constants)
    - [Advanced I/O Functions](#advanced-io-functions)
-6. [Communication Protocols](#communication-protocols)
+8. [Communication Protocols](#communication-protocols)
    - [Wire (I²C)](#wire-i2c)
    - [SPI](#spi)
-7. [Examples](#examples)
-8. [Error Handling](#error-handling)
-9. [Hardware Notes](#hardware-notes)
+9. [Examples](#examples)
+10. [Error Handling](#error-handling)
+11. [Hardware Notes](#hardware-notes)
 
 ---
 
@@ -52,6 +55,290 @@ led.write(false);  // LED off
 #include "ArduinoCompat.hpp"
 pinMode(17, OUTPUT);
 digitalWrite(17, HIGH);
+```
+
+---
+
+## Platform Detection
+
+**New in v0.4.0**: Automatic hardware platform detection for cross-platform support.
+
+### PlatformInfo Class
+
+The `PlatformInfo` class provides runtime detection of the hardware platform and available capabilities. It uses a singleton pattern - one instance per process.
+
+```cpp
+#include "platform.hpp"
+
+auto& platform = pipinpp::PlatformInfo::instance();
+```
+
+### Platform Enum
+
+```cpp
+enum class Platform {
+    UNKNOWN,
+    RASPBERRY_PI_3,      // BCM2837
+    RASPBERRY_PI_4,      // BCM2711
+    RASPBERRY_PI_5,      // BCM2712 with RP1 I/O
+    RASPBERRY_PI_CM4,    // Compute Module 4
+    RASPBERRY_PI_ZERO,   // BCM2835
+    RASPBERRY_PI_ZERO2,  // BCM2837
+    ORANGE_PI,           // Allwinner H3/H5/H6
+    BEAGLEBONE,          // TI AM335x
+    JETSON_NANO          // NVIDIA Tegra X1
+};
+```
+
+### Core Methods
+
+#### `getPlatform()`
+Get detected platform.
+```cpp
+Platform detected = platform.getPlatform();
+if (detected == Platform::RASPBERRY_PI_4) {
+    std::cout << "Running on Pi 4\n";
+}
+```
+
+#### `getPlatformName()`
+Get human-readable platform name.
+```cpp
+std::string name = platform.getPlatformName();
+// Returns: "Raspberry Pi 4", "Orange Pi", etc.
+```
+
+#### `isRaspberryPi()`
+Check if running on any Raspberry Pi variant.
+```cpp
+if (platform.isRaspberryPi()) {
+    // Platform-specific Raspberry Pi code
+}
+```
+
+#### `isSupported()`
+Check if platform is recognized.
+```cpp
+if (!platform.isSupported()) {
+    std::cerr << "Warning: Unknown platform, using defaults\n";
+}
+```
+
+### Capability Detection
+
+#### `getCapabilities()`
+Get detailed hardware capabilities.
+```cpp
+const auto& caps = platform.getCapabilities();
+
+// GPIO chips
+for (const auto& chip : caps.gpioChips) {
+    std::cout << chip.name << ": " << chip.numLines << " lines\n";
+}
+
+// I2C buses
+for (const auto& bus : caps.i2cBuses) {
+    std::cout << bus.devicePath << " available: " << bus.available << "\n";
+}
+
+// PWM channels
+for (const auto& pwm : caps.pwmChannels) {
+    if (pwm.gpioPin >= 0) {
+        std::cout << "PWM on GPIO " << pwm.gpioPin << "\n";
+    }
+}
+
+// DMA support
+if (caps.hasDMASupport) {
+    std::cout << "DMA available at 0x" << std::hex << caps.peripheralBase << "\n";
+}
+```
+
+#### `getDefaultGPIOChip()`
+Get recommended GPIO chip name.
+```cpp
+std::string chip = platform.getDefaultGPIOChip();
+// Returns: "gpiochip0" (most platforms)
+```
+
+#### `getDefaultI2CBus()`
+Get recommended I2C bus number.
+```cpp
+int bus = platform.getDefaultI2CBus();
+// Returns: 1 for Pi 3/4, 20 for Pi 5
+Wire.begin(bus);  // Works across platforms!
+```
+
+### Version Detection
+
+#### `getKernelVersion()`
+Get Linux kernel version.
+```cpp
+std::string kernel = platform.getKernelVersion();
+// Returns: "6.1.21-v8+", etc.
+```
+
+#### `getLibgpiodVersion()`
+Get libgpiod version.
+```cpp
+std::string libgpiod = platform.getLibgpiodVersion();
+// Returns: "2.2.1", etc.
+```
+
+### Diagnostic Output
+
+#### `printInfo()`
+Print comprehensive platform information.
+```cpp
+platform.printInfo();
+```
+
+Output:
+```
+╔════════════════════════════════════════════════════════════════╗
+║               PiPin++ Platform Information                     ║
+╚════════════════════════════════════════════════════════════════╝
+
+Platform:      Raspberry Pi 4
+Kernel:        6.1.21-v8+
+libgpiod:      2.2.1
+
+GPIO Chips:    1
+  • gpiochip0 (pinctrl-bcm2711): 58 lines ✓
+
+I2C Buses:     2
+  • /dev/i2c-1 (bus 1) ✓
+  • /dev/i2c-20 (bus 20) ✗
+
+PWM Channels:  2
+  • chip0/channel0 (GPIO 18) ✓
+  • chip0/channel1 (GPIO 19) ✓
+
+DMA Support:   Available ✓
+  Peripheral Base: 0xfe000000
+
+Total GPIO:    58 pins
+```
+
+### Platform-Aware Code
+
+#### Cross-Platform I2C
+```cpp
+// Automatically uses correct I2C bus (1 for Pi 4, 20 for Pi 5)
+auto& platform = PlatformInfo::instance();
+Wire.begin(platform.getDefaultI2CBus());
+
+// Read from I2C sensor (works on all platforms)
+Wire.beginTransmission(0x76);  // BMP280 address
+Wire.write(0xD0);              // ID register
+Wire.endTransmission();
+Wire.requestFrom(0x76, 1);
+uint8_t chipId = Wire.read();
+```
+
+#### Feature Detection
+```cpp
+// Choose best PWM backend
+auto& platform = PlatformInfo::instance();
+const auto& caps = platform.getCapabilities();
+
+std::unique_ptr<PWMBackend> pwm;
+
+if (caps.hasDMASupport && geteuid() == 0) {
+    // Use DMA (zero CPU, requires root)
+    std::cout << "Using DMA PWM (0% CPU)\n";
+    pwm = std::make_unique<DMAPWM>(18, 1000);
+} else if (!caps.pwmChannels.empty()) {
+    // Use hardware PWM
+    std::cout << "Using Hardware PWM\n";
+    pwm = std::make_unique<HardwarePWM>(18);
+    pwm->begin(1000, 50.0);
+} else {
+    // Use software PWM (EventPWM)
+    std::cout << "Using EventPWM (<5% CPU)\n";
+    pwm = std::make_unique<EventPWM>(18, 1000);
+}
+
+pwm->setDutyCycle(50.0);
+```
+
+#### Platform-Specific Logic
+```cpp
+auto& platform = PlatformInfo::instance();
+
+switch (platform.getPlatform()) {
+    case Platform::RASPBERRY_PI_5:
+        std::cout << "Pi 5 detected: Using RP1 I/O controller\n";
+        std::cout << "Note: DMA GPIO not yet supported on Pi 5\n";
+        break;
+        
+    case Platform::RASPBERRY_PI_4:
+    case Platform::RASPBERRY_PI_CM4:
+        std::cout << "Pi 4 detected: Full DMA support available\n";
+        if (caps.hasDMASupport) {
+            // Enable DMA features
+        }
+        break;
+        
+    case Platform::RASPBERRY_PI_3:
+        std::cout << "Pi 3 detected: DMA at 0x3F000000\n";
+        break;
+        
+    default:
+        std::cout << "Generic platform: Using software-based I/O\n";
+        break;
+}
+```
+
+### Platform Support Matrix
+
+| Platform | Detection | GPIO | I2C | PWM | DMA |
+|----------|-----------|------|-----|-----|-----|
+| **Raspberry Pi 5** | ✅ Full | ✅ | ✅ (bus 20) | ⚠️ Limited | ❌ (RP1) |
+| **Raspberry Pi 4** | ✅ Full | ✅ | ✅ (bus 1) | ✅ | ✅ |
+| **Raspberry Pi CM4** | ✅ Full | ✅ | ✅ | ✅ | ✅ |
+| **Raspberry Pi 3** | ✅ Full | ✅ | ✅ | ✅ | ⚠️ Untested |
+| **Raspberry Pi Zero 2** | ✅ Full | ✅ | ✅ | ✅ | ⚠️ Untested |
+| **Raspberry Pi Zero** | ✅ Full | ✅ | ✅ | ✅ | ❌ |
+| **Orange Pi** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+| **BeagleBone** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+| **Jetson Nano** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+
+**Legend:**
+- ✅ Full support, tested
+- ⚠️ Partial support or untested
+- ❌ Not supported
+
+### Example: Complete Platform Detection
+
+See `examples/platform_detection/` for a comprehensive demonstration.
+
+```cpp
+#include "platform.hpp"
+#include <iostream>
+
+int main() {
+    auto& platform = pipinpp::PlatformInfo::instance();
+    
+    // Print detailed platform info
+    platform.printInfo();
+    
+    // Check capabilities
+    if (!platform.isSupported()) {
+        std::cerr << "Warning: Platform not recognized\n";
+        return 1;
+    }
+    
+    // Use platform-aware defaults
+    std::cout << "Default GPIO chip: " << platform.getDefaultGPIOChip() << "\n";
+    std::cout << "Default I2C bus: " << platform.getDefaultI2CBus() << "\n";
+    
+    // Feature availability
+    const auto& caps = platform.getCapabilities();
+    std::cout << "DMA available: " << (caps.hasDMASupport ? "Yes" : "No") << "\n";
+    
+    return 0;
+}
 ```
 
 ---
