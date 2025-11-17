@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Project definition
 project(PiPinPP
-    VERSION 0.3.13
+    VERSION 0.4.0
     DESCRIPTION "A modern C++ GPIO library for Raspberry Pi with an Arduino-inspired API"
     LANGUAGES CXX
 )
@@ -23,6 +23,7 @@ option(BUILD_TESTS "Build test executables" ON)
 option(BUILD_EXAMPLES "Build example programs" ON)
 option(PIPINPP_ENABLE_LOGGING "Enable logging output for debugging" OFF)
 option(PIPINPP_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(PIPINPP_ENABLE_COVERAGE "Enable code coverage reporting (gcov/lcov)" OFF)
 
 # Logging configuration
 if(PIPINPP_ENABLE_LOGGING)
@@ -50,6 +51,17 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
+# Code coverage options
+if(PIPINPP_ENABLE_COVERAGE)
+    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(--coverage -fprofile-arcs -ftest-coverage)
+        add_link_options(--coverage)
+        message(STATUS "Code coverage enabled (use 'make coverage' to generate report)")
+    else()
+        message(WARNING "Code coverage requested but compiler doesn't support gcov")
+    endif()
+endif()
+
 # Find required packages
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GPIOD REQUIRED libgpiod)
@@ -63,10 +75,12 @@ set(PIPINPP_SOURCES
     src/ArduinoCompat.cpp
     src/interrupts.cpp
     src/pwm.cpp
+    src/event_pwm.cpp
     src/HardwarePWM.cpp
     src/Wire.cpp
     src/SPI.cpp
     src/Serial.cpp
+    src/platform.cpp
 )
 
 # Create the library (STATIC or SHARED based on BUILD_SHARED_LIBS)
@@ -89,7 +103,7 @@ target_include_directories(pipinpp PUBLIC
 set_target_properties(pipinpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
-    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp"
+    PUBLIC_HEADER "include/pin.hpp;include/ArduinoCompat.hpp;include/log.hpp;include/exceptions.hpp;include/interrupts.hpp;include/pwm.hpp;include/event_pwm.hpp;include/HardwarePWM.hpp;include/Wire.hpp;include/SPI.hpp;include/Serial.hpp;include/platform.hpp"
 )
 
 if(BUILD_TESTS)
@@ -135,6 +149,27 @@ if(BUILD_TESTS)
     add_executable(gtest_hardware_pwm tests/gtest_hardware_pwm.cpp)
     target_link_libraries(gtest_hardware_pwm pipinpp GTest::gtest_main)
     
+    add_executable(gtest_platform tests/gtest_platform.cpp)
+    target_link_libraries(gtest_platform pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_interrupts tests/gtest_interrupts.cpp)
+    target_link_libraries(gtest_interrupts pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_arduino_compat_extended tests/gtest_arduino_compat_extended.cpp)
+    target_link_libraries(gtest_arduino_compat_extended pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_spi_extended tests/gtest_spi_extended.cpp)
+    target_link_libraries(gtest_spi_extended pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_serial_extended tests/gtest_serial_extended.cpp)
+    target_link_libraries(gtest_serial_extended pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_platform_extended tests/gtest_platform_extended.cpp)
+    target_link_libraries(gtest_platform_extended pipinpp GTest::gtest_main)
+    
+    add_executable(gtest_pwm_extended tests/gtest_pwm_extended.cpp)
+    target_link_libraries(gtest_pwm_extended pipinpp GTest::gtest_main)
+    
     # Add tests
     add_test(NAME basic_test COMMAND test_pipinpp)
     add_test(NAME gtest_timing COMMAND gtest_timing)
@@ -145,6 +180,48 @@ if(BUILD_TESTS)
     add_test(NAME gtest_advanced_io COMMAND gtest_advanced_io)
     add_test(NAME gtest_serial COMMAND gtest_serial)
     add_test(NAME gtest_hardware_pwm COMMAND gtest_hardware_pwm)
+    add_test(NAME gtest_platform COMMAND gtest_platform)
+    add_test(NAME gtest_interrupts COMMAND gtest_interrupts)
+    add_test(NAME gtest_arduino_compat_extended COMMAND gtest_arduino_compat_extended)
+    add_test(NAME gtest_spi_extended COMMAND gtest_spi_extended)
+    add_test(NAME gtest_serial_extended COMMAND gtest_serial_extended)
+    add_test(NAME gtest_platform_extended COMMAND gtest_platform_extended)
+    add_test(NAME gtest_pwm_extended COMMAND gtest_pwm_extended)
+    
+    # Event PWM tests
+    add_executable(gtest_event_pwm tests/gtest_event_pwm.cpp)
+    target_link_libraries(gtest_event_pwm pipinpp GTest::gtest_main)
+    add_test(NAME gtest_event_pwm COMMAND gtest_event_pwm)
+    
+    # Hardware PWM extended tests
+    add_executable(gtest_hardware_pwm_extended tests/gtest_hardware_pwm_extended.cpp)
+    target_link_libraries(gtest_hardware_pwm_extended pipinpp GTest::gtest_main)
+    add_test(NAME gtest_hardware_pwm_extended COMMAND gtest_hardware_pwm_extended)
+    
+    # Interrupt extended tests
+    add_executable(gtest_interrupts_extended tests/gtest_interrupts_extended.cpp)
+    target_link_libraries(gtest_interrupts_extended pipinpp GTest::gtest_main)
+    add_test(NAME gtest_interrupts_extended COMMAND gtest_interrupts_extended)
+    
+    # Final comprehensive tests for 80% coverage push
+    add_executable(gtest_arduino_final tests/gtest_arduino_final.cpp)
+    target_link_libraries(gtest_arduino_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_arduino_final COMMAND gtest_arduino_final)
+    
+    # Serial final tests
+    add_executable(gtest_serial_final tests/gtest_serial_final.cpp)
+    target_link_libraries(gtest_serial_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_serial_final COMMAND gtest_serial_final)
+    
+    # PWM and SPI final tests
+    add_executable(gtest_pwm_spi_final tests/gtest_pwm_spi_final.cpp)
+    target_link_libraries(gtest_pwm_spi_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_pwm_spi_final COMMAND gtest_pwm_spi_final)
+    
+    # Ultra-focused final tests for 80% push
+    add_executable(gtest_ultra_final tests/gtest_ultra_final.cpp)
+    target_link_libraries(gtest_ultra_final pipinpp GTest::gtest_main)
+    add_test(NAME gtest_ultra_final COMMAND gtest_ultra_final)
     
     # Enable GoogleTest discovery (finds all TEST() macros automatically)
     include(GoogleTest)
@@ -156,6 +233,20 @@ if(BUILD_TESTS)
     gtest_discover_tests(gtest_advanced_io)
     gtest_discover_tests(gtest_serial)
     gtest_discover_tests(gtest_hardware_pwm)
+    gtest_discover_tests(gtest_platform)
+    gtest_discover_tests(gtest_interrupts)
+    gtest_discover_tests(gtest_arduino_compat_extended)
+    gtest_discover_tests(gtest_spi_extended)
+    gtest_discover_tests(gtest_serial_extended)
+    gtest_discover_tests(gtest_platform_extended)
+    gtest_discover_tests(gtest_pwm_extended)
+    gtest_discover_tests(gtest_event_pwm)
+    gtest_discover_tests(gtest_hardware_pwm_extended)
+    gtest_discover_tests(gtest_interrupts_extended)
+    gtest_discover_tests(gtest_arduino_final)
+    gtest_discover_tests(gtest_serial_final)
+    gtest_discover_tests(gtest_pwm_spi_final)
+    gtest_discover_tests(gtest_ultra_final)
 endif()
 
 if(BUILD_EXAMPLES)
@@ -180,6 +271,22 @@ if(BUILD_EXAMPLES)
             endif()
         endif()
     endforeach()
+endif()
+
+# Build CLI tool
+option(BUILD_CLI "Build pipinpp command-line tool" ON)
+if(BUILD_CLI)
+    add_executable(pipinpp_cli tools/pipinpp.cpp)
+    target_link_libraries(pipinpp_cli pipinpp)
+    set_target_properties(pipinpp_cli PROPERTIES
+        OUTPUT_NAME pipinpp
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
+    
+    # Install CLI tool to /usr/local/bin
+    install(TARGETS pipinpp_cli
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
 endif()
 
 # Installation
@@ -240,6 +347,51 @@ install(FILES ${CMAKE_BINARY_DIR}/pipinpp.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
+# Code coverage targets
+if(PIPINPP_ENABLE_COVERAGE AND BUILD_TESTS)
+    # Find lcov for coverage report generation
+    find_program(LCOV_PATH lcov)
+    find_program(GENHTML_PATH genhtml)
+    
+    if(LCOV_PATH AND GENHTML_PATH)
+        # Custom target to generate coverage report
+        add_custom_target(coverage
+            COMMAND ${CMAKE_COMMAND} -E echo "Running tests to collect coverage data..."
+            COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+            COMMAND ${CMAKE_COMMAND} -E echo "Generating coverage report..."
+            
+            # Capture coverage data (ignore inconsistent errors from gcov)
+            COMMAND ${LCOV_PATH} --directory . --capture --output-file coverage.info --ignore-errors inconsistent
+            
+            # Filter out system headers and test code
+            COMMAND ${LCOV_PATH} --remove coverage.info '/usr/*' '*/tests/*' '*/examples/*' '*/build/*' '*/_deps/*' --output-file coverage.info.cleaned --ignore-errors unused
+            
+            # Generate HTML report
+            COMMAND ${GENHTML_PATH} coverage.info.cleaned --output-directory coverage_html
+            
+            # Print summary
+            COMMAND ${LCOV_PATH} --list coverage.info.cleaned
+            COMMAND ${CMAKE_COMMAND} -E echo "Coverage report generated: coverage_html/index.html"
+            
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generating code coverage report"
+        )
+        
+        # Custom target to clean coverage data
+        add_custom_target(coverage-clean
+            COMMAND ${LCOV_PATH} --directory . --zerocounters
+            COMMAND ${CMAKE_COMMAND} -E remove -f coverage.info coverage.info.cleaned
+            COMMAND ${CMAKE_COMMAND} -E remove_directory coverage_html
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Cleaning coverage data"
+        )
+        
+        message(STATUS "Coverage targets available: 'make coverage' and 'make coverage-clean'")
+    else()
+        message(WARNING "lcov/genhtml not found - coverage target disabled (install with: sudo apt install lcov)")
+    endif()
+endif()
+
 # Print configuration summary
 message(STATUS "")
 message(STATUS "Configuration Summary:")
@@ -251,5 +403,6 @@ message(STATUS "  Build tests: ${BUILD_TESTS}")
 message(STATUS "  Build examples: ${BUILD_EXAMPLES}")
 message(STATUS "  Logging enabled: ${PIPINPP_ENABLE_LOGGING}")
 message(STATUS "  Warnings as errors: ${PIPINPP_WARNINGS_AS_ERRORS}")
+message(STATUS "  Code coverage: ${PIPINPP_ENABLE_COVERAGE}")
 message(STATUS "  libgpiod found: ${GPIOD_FOUND}")
 message(STATUS "")

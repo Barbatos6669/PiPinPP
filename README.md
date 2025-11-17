@@ -8,21 +8,24 @@
 </div>
 
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-52.2%25-orange)](build/coverage_html/index.html)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![CodeFactor](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP/badge)](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![Version](https://img.shields.io/badge/version-0.3.13-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.13)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](https://github.com/Barbatos6669/PiPinPP/releases/tag/v0.3.13)
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi-red.svg)](https://www.raspberrypi.org/)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Tests](https://img.shields.io/badge/tests-175%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
 
-🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
+🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
 
 ---
 
 > **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.3.13/install.sh | sudo bash`
+
+> **🗺️ NEW: [2026 Roadmap](docs/ROADMAP.md)** - See our path to becoming the #1 GPIO library! **[Vote on features →](https://github.com/Barbatos6669/PiPinPP/issues/new?template=roadmap_feature.md)**
 
 ---
 
@@ -100,8 +103,8 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 ### Advanced Features (v0.3.0-v0.3.12)
 - ✅ **Timing functions**: `millis()`, `micros()`, `delay()`, `delayMicroseconds()` for precise timing
 - ✅ **Interrupts**: Edge detection with callbacks (`attachInterrupt`, `detachInterrupt`)
-- ✅ **Software PWM**: Thread-based PWM with `analogWrite()` (0-255 duty cycle, configurable frequency)
-- ✅ **Hardware PWM**: Jitter-free PWM via `/sys/class/pwm` for servo control (GPIO12/13/18/19) (v0.3.13)
+- ✅ **Software PWM**: Thread-based PWM with `analogWrite()` (LED dimming, ~10-30% CPU per pin)
+- ✅ **Hardware PWM**: Jitter-free PWM via `/sys/class/pwm` for servo control (GPIO12/13/18/19, zero CPU usage) (v0.3.13)
 - ✅ **Pin queries**: Check pin state with `isOutput()`, `isInput()`, `getMode()`, `digitalToggle()`
 - ✅ **Custom exceptions**: Type-safe error handling (`InvalidPinError`, `GpioAccessError`)
 - ✅ **Math functions**: Arduino-inspired math functions (`sq()`, `constrain()`, `map()`, trigonometry constants)
@@ -186,11 +189,30 @@ target_link_libraries(your_app PiPinPP::pipinpp)
 
 ---
 
+## 🗺️ Roadmap to "Super Champ" Status
+
+**PiPinPP is on a mission to become the #1 GPIO library for Raspberry Pi!**
+
+We have a comprehensive [2026 Roadmap](docs/ROADMAP.md) with exciting plans:
+
+- **🏎️ Phase 1 (v0.4.0)**: Performance optimization - Reduce software PWM CPU usage by 70%
+- **🌍 Phase 2 (v0.5.0)**: Multi-platform support - Orange Pi, BeagleBone, Jetson
+- **🧰 Phase 3 (v0.6.0)**: Developer tools - CLI utilities, GPIO monitor, package managers
+- **🤝 Phase 4 (v0.7.0)**: Ecosystem growth - Python bindings, plugin system
+- **📚 Phase 5 (Ongoing)**: World-class documentation and tutorials
+
+**Want to influence the roadmap?**
+- 🗳️ [Vote on features](https://github.com/Barbatos6669/PiPinPP/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)
+- 💡 [Propose new ideas](https://github.com/Barbatos6669/PiPinPP/issues/new?template=roadmap_feature.md)
+- 🖥️ [Report platform testing](https://github.com/Barbatos6669/PiPinPP/issues/new?template=platform_support.md)
+
+**Read the full roadmap**: [docs/ROADMAP.md](docs/ROADMAP.md)
+
+---
+
 ## Contributing
 
 **We're just getting started and welcome your ideas, feedback, and contributions!**
-
-📋 **Check our [ROADMAP.md](docs/planning/ROADMAP.md) to see what we're working on next**
 
 ## 💬 Community & Support
 

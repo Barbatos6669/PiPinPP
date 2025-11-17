@@ -189,6 +189,31 @@ size_t SerialPort::print(int num)
     return write(std::to_string(num));
 }
 
+size_t SerialPort::print(int num, PrintFormat format)
+{
+    return write(formatNumber(num, format));
+}
+
+size_t SerialPort::print(long num)
+{
+    return write(std::to_string(num));
+}
+
+size_t SerialPort::print(long num, PrintFormat format)
+{
+    return write(formatNumber(num, format));
+}
+
+size_t SerialPort::print(unsigned int num)
+{
+    return write(std::to_string(num));
+}
+
+size_t SerialPort::print(unsigned int num, PrintFormat format)
+{
+    return write(formatNumber(static_cast<long>(num), format));
+}
+
 size_t SerialPort::print(double num, int decimals)
 {
     std::ostringstream oss;
@@ -204,6 +229,31 @@ size_t SerialPort::println(const std::string& data)
 size_t SerialPort::println(int num)
 {
     return write(std::to_string(num) + "\r\n");
+}
+
+size_t SerialPort::println(int num, PrintFormat format)
+{
+    return write(formatNumber(num, format) + "\r\n");
+}
+
+size_t SerialPort::println(long num)
+{
+    return write(std::to_string(num) + "\r\n");
+}
+
+size_t SerialPort::println(long num, PrintFormat format)
+{
+    return write(formatNumber(num, format) + "\r\n");
+}
+
+size_t SerialPort::println(unsigned int num)
+{
+    return write(std::to_string(num) + "\r\n");
+}
+
+size_t SerialPort::println(unsigned int num, PrintFormat format)
+{
+    return write(formatNumber(static_cast<long>(num), format) + "\r\n");
 }
 
 size_t SerialPort::println(double num, int decimals)
@@ -362,6 +412,42 @@ speed_t SerialPort::getBaudRateConstant(unsigned long baudRate) const
         default:
             return 0;  // Invalid baud rate
     }
+}
+
+std::string SerialPort::formatNumber(long num, int base) const
+{
+    // Handle negative numbers
+    bool negative = (num < 0);
+    unsigned long absNum = negative ? -num : num;
+    
+    if (base == DEC) {
+        return std::to_string(num);
+    }
+    
+    // For HEX, OCT, BIN - convert unsigned value
+    std::string result;
+    const char* digits = "0123456789ABCDEF";
+    
+    if (absNum == 0) {
+        return "0";
+    }
+    
+    while (absNum > 0) {
+        result = digits[absNum % base] + result;
+        absNum /= base;
+    }
+    
+    // Add prefix for HEX, OCT, BIN (optional, Arduino doesn't do this)
+    // Commenting out for Arduino compatibility
+    // if (base == HEX) result = "0x" + result;
+    // if (base == OCT) result = "0" + result;
+    // if (base == BIN) result = "0b" + result;
+    
+    if (negative && base == DEC) {
+        result = "-" + result;
+    }
+    
+    return result;
 }
 
 } // namespace pipinpp

@@ -276,12 +276,14 @@ void detachInterrupt(int pin);
  * 
  * @note Pin is automatically configured as OUTPUT
  * @note PWM frequency is 490Hz by default (matches Arduino UNO)
- * @note This is software PWM and has timing jitter
- * @note Not suitable for servo control (use hardware PWM for servos)
- * @note Each PWM pin uses a dedicated thread
+ * @note This is software PWM and has timing jitter (~1-10 µs)
+ * @note Each PWM pin uses a dedicated busy-loop thread
  * 
- * @warning Software PWM is CPU-intensive. Avoid using too many PWM outputs.
- * @warning PWM accuracy decreases under high system load
+ * @warning ⚠️ CPU USAGE: Each PWM pin consumes ~10-30% CPU in busy-wait loop
+ * @warning Uses std::this_thread::yield() but still busy-waits for timing accuracy
+ * @warning Multiple PWM pins can cause significant CPU load
+ * @warning ❌ NOT suitable for servo control - use HardwarePWM class (zero CPU usage)
+ * @warning Software PWM best for LED dimming only, not precision timing
  * 
  * @example
  * // Fade an LED from off to full brightness
@@ -661,6 +663,10 @@ inline unsigned char lowByte(unsigned int x) {
  * @note This is a blocking function - will wait up to timeout microseconds
  * @note Accuracy depends on system load (typical accuracy ±10µs)
  * 
+ * @warning ⚠️ CPU USAGE: Uses busy-waiting loop consuming 100% of one CPU core
+ * @warning Blocks execution and consumes full CPU until pulse completes or timeout
+ * @warning For non-blocking pulse measurement, consider using interrupts with timestamps
+ * 
  * @example
  * // Read ultrasonic sensor (HC-SR04)
  * pinMode(TRIG_PIN, OUTPUT);
@@ -786,6 +792,10 @@ constexpr int MSBFIRST = 1;  ///< Most Significant Bit First
  * @note Only one tone can play per pin at a time
  * @note Call noTone() to stop continuous tones
  * @note Frequency range: 31Hz to 65535Hz (human hearing: ~20Hz-20kHz)
+ * 
+ * @warning ⚠️ CPU USAGE: Runs busy-loop thread consuming ~10-30% CPU while tone plays
+ * @warning Same as analogWrite() - uses software PWM for square wave generation
+ * @warning For continuous tones or music, consider hardware PWM or external audio module
  * 
  * @example
  * // Simple beep

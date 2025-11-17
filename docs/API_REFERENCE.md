@@ -1,6 +1,6 @@
 # PiPinPP API Reference
 
-**Version**: 0.3.13  
+**Version**: 0.4.0  
 **Date**: November 16, 2025
 
 Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry Pi with full Arduino-inspired API, interrupts, PWM, and professional tooling.
@@ -10,25 +10,31 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Core Pin Class](#core-pin-class)
-3. [Arduino Compatibility Layer](#arduino-compatibility-layer)
+2. [Platform Detection (NEW v0.4.0)](#platform-detection)
+   - [PlatformInfo Class](#platforminfo-class)
+   - [Platform-Aware Code](#platform-aware-code)
+3. [Core Pin Class](#core-pin-class)
+4. [Arduino Compatibility Layer](#arduino-compatibility-layer)
    - [Digital I/O Functions](#digital-io-functions)
    - [Pin State Query Functions](#pin-state-query-functions)
    - [Interrupt Functions](#interrupt-functions)
    - [PWM Functions](#pwm-functions)
-4. [Hardware PWM](#hardware-pwm)
+5. [Event-Driven PWM (v0.4.0)](#event-driven-pwm)
+   - [EventPWM Class](#eventpwm-class)
+   - [When to Use EventPWM](#when-to-use-eventpwm)
+6. [Hardware PWM](#hardware-pwm)
    - [HardwarePWM Class](#hardwarepwm-class)
    - [Hardware PWM Examples](#hardware-pwm-examples)
-5. [Timing Functions](#timing-functions)
+7. [Timing Functions](#timing-functions)
    - [Math Functions](#math-functions)
    - [Trigonometry Constants](#trigonometry-constants)
    - [Advanced I/O Functions](#advanced-io-functions)
-6. [Communication Protocols](#communication-protocols)
+8. [Communication Protocols](#communication-protocols)
    - [Wire (I²C)](#wire-i2c)
    - [SPI](#spi)
-7. [Examples](#examples)
-8. [Error Handling](#error-handling)
-9. [Hardware Notes](#hardware-notes)
+9. [Examples](#examples)
+10. [Error Handling](#error-handling)
+11. [Hardware Notes](#hardware-notes)
 
 ---
 
@@ -49,6 +55,290 @@ led.write(false);  // LED off
 #include "ArduinoCompat.hpp"
 pinMode(17, OUTPUT);
 digitalWrite(17, HIGH);
+```
+
+---
+
+## Platform Detection
+
+**New in v0.4.0**: Automatic hardware platform detection for cross-platform support.
+
+### PlatformInfo Class
+
+The `PlatformInfo` class provides runtime detection of the hardware platform and available capabilities. It uses a singleton pattern - one instance per process.
+
+```cpp
+#include "platform.hpp"
+
+auto& platform = pipinpp::PlatformInfo::instance();
+```
+
+### Platform Enum
+
+```cpp
+enum class Platform {
+    UNKNOWN,
+    RASPBERRY_PI_3,      // BCM2837
+    RASPBERRY_PI_4,      // BCM2711
+    RASPBERRY_PI_5,      // BCM2712 with RP1 I/O
+    RASPBERRY_PI_CM4,    // Compute Module 4
+    RASPBERRY_PI_ZERO,   // BCM2835
+    RASPBERRY_PI_ZERO2,  // BCM2837
+    ORANGE_PI,           // Allwinner H3/H5/H6
+    BEAGLEBONE,          // TI AM335x
+    JETSON_NANO          // NVIDIA Tegra X1
+};
+```
+
+### Core Methods
+
+#### `getPlatform()`
+Get detected platform.
+```cpp
+Platform detected = platform.getPlatform();
+if (detected == Platform::RASPBERRY_PI_4) {
+    std::cout << "Running on Pi 4\n";
+}
+```
+
+#### `getPlatformName()`
+Get human-readable platform name.
+```cpp
+std::string name = platform.getPlatformName();
+// Returns: "Raspberry Pi 4", "Orange Pi", etc.
+```
+
+#### `isRaspberryPi()`
+Check if running on any Raspberry Pi variant.
+```cpp
+if (platform.isRaspberryPi()) {
+    // Platform-specific Raspberry Pi code
+}
+```
+
+#### `isSupported()`
+Check if platform is recognized.
+```cpp
+if (!platform.isSupported()) {
+    std::cerr << "Warning: Unknown platform, using defaults\n";
+}
+```
+
+### Capability Detection
+
+#### `getCapabilities()`
+Get detailed hardware capabilities.
+```cpp
+const auto& caps = platform.getCapabilities();
+
+// GPIO chips
+for (const auto& chip : caps.gpioChips) {
+    std::cout << chip.name << ": " << chip.numLines << " lines\n";
+}
+
+// I2C buses
+for (const auto& bus : caps.i2cBuses) {
+    std::cout << bus.devicePath << " available: " << bus.available << "\n";
+}
+
+// PWM channels
+for (const auto& pwm : caps.pwmChannels) {
+    if (pwm.gpioPin >= 0) {
+        std::cout << "PWM on GPIO " << pwm.gpioPin << "\n";
+    }
+}
+
+// DMA support
+if (caps.hasDMASupport) {
+    std::cout << "DMA available at 0x" << std::hex << caps.peripheralBase << "\n";
+}
+```
+
+#### `getDefaultGPIOChip()`
+Get recommended GPIO chip name.
+```cpp
+std::string chip = platform.getDefaultGPIOChip();
+// Returns: "gpiochip0" (most platforms)
+```
+
+#### `getDefaultI2CBus()`
+Get recommended I2C bus number.
+```cpp
+int bus = platform.getDefaultI2CBus();
+// Returns: 1 for Pi 3/4, 20 for Pi 5
+Wire.begin(bus);  // Works across platforms!
+```
+
+### Version Detection
+
+#### `getKernelVersion()`
+Get Linux kernel version.
+```cpp
+std::string kernel = platform.getKernelVersion();
+// Returns: "6.1.21-v8+", etc.
+```
+
+#### `getLibgpiodVersion()`
+Get libgpiod version.
+```cpp
+std::string libgpiod = platform.getLibgpiodVersion();
+// Returns: "2.2.1", etc.
+```
+
+### Diagnostic Output
+
+#### `printInfo()`
+Print comprehensive platform information.
+```cpp
+platform.printInfo();
+```
+
+Output:
+```
+╔════════════════════════════════════════════════════════════════╗
+║               PiPin++ Platform Information                     ║
+╚════════════════════════════════════════════════════════════════╝
+
+Platform:      Raspberry Pi 4
+Kernel:        6.1.21-v8+
+libgpiod:      2.2.1
+
+GPIO Chips:    1
+  • gpiochip0 (pinctrl-bcm2711): 58 lines ✓
+
+I2C Buses:     2
+  • /dev/i2c-1 (bus 1) ✓
+  • /dev/i2c-20 (bus 20) ✗
+
+PWM Channels:  2
+  • chip0/channel0 (GPIO 18) ✓
+  • chip0/channel1 (GPIO 19) ✓
+
+DMA Support:   Available ✓
+  Peripheral Base: 0xfe000000
+
+Total GPIO:    58 pins
+```
+
+### Platform-Aware Code
+
+#### Cross-Platform I2C
+```cpp
+// Automatically uses correct I2C bus (1 for Pi 4, 20 for Pi 5)
+auto& platform = PlatformInfo::instance();
+Wire.begin(platform.getDefaultI2CBus());
+
+// Read from I2C sensor (works on all platforms)
+Wire.beginTransmission(0x76);  // BMP280 address
+Wire.write(0xD0);              // ID register
+Wire.endTransmission();
+Wire.requestFrom(0x76, 1);
+uint8_t chipId = Wire.read();
+```
+
+#### Feature Detection
+```cpp
+// Choose best PWM backend
+auto& platform = PlatformInfo::instance();
+const auto& caps = platform.getCapabilities();
+
+std::unique_ptr<PWMBackend> pwm;
+
+if (caps.hasDMASupport && geteuid() == 0) {
+    // Use DMA (zero CPU, requires root)
+    std::cout << "Using DMA PWM (0% CPU)\n";
+    pwm = std::make_unique<DMAPWM>(18, 1000);
+} else if (!caps.pwmChannels.empty()) {
+    // Use hardware PWM
+    std::cout << "Using Hardware PWM\n";
+    pwm = std::make_unique<HardwarePWM>(18);
+    pwm->begin(1000, 50.0);
+} else {
+    // Use software PWM (EventPWM)
+    std::cout << "Using EventPWM (<5% CPU)\n";
+    pwm = std::make_unique<EventPWM>(18, 1000);
+}
+
+pwm->setDutyCycle(50.0);
+```
+
+#### Platform-Specific Logic
+```cpp
+auto& platform = PlatformInfo::instance();
+
+switch (platform.getPlatform()) {
+    case Platform::RASPBERRY_PI_5:
+        std::cout << "Pi 5 detected: Using RP1 I/O controller\n";
+        std::cout << "Note: DMA GPIO not yet supported on Pi 5\n";
+        break;
+        
+    case Platform::RASPBERRY_PI_4:
+    case Platform::RASPBERRY_PI_CM4:
+        std::cout << "Pi 4 detected: Full DMA support available\n";
+        if (caps.hasDMASupport) {
+            // Enable DMA features
+        }
+        break;
+        
+    case Platform::RASPBERRY_PI_3:
+        std::cout << "Pi 3 detected: DMA at 0x3F000000\n";
+        break;
+        
+    default:
+        std::cout << "Generic platform: Using software-based I/O\n";
+        break;
+}
+```
+
+### Platform Support Matrix
+
+| Platform | Detection | GPIO | I2C | PWM | DMA |
+|----------|-----------|------|-----|-----|-----|
+| **Raspberry Pi 5** | ✅ Full | ✅ | ✅ (bus 20) | ⚠️ Limited | ❌ (RP1) |
+| **Raspberry Pi 4** | ✅ Full | ✅ | ✅ (bus 1) | ✅ | ✅ |
+| **Raspberry Pi CM4** | ✅ Full | ✅ | ✅ | ✅ | ✅ |
+| **Raspberry Pi 3** | ✅ Full | ✅ | ✅ | ✅ | ⚠️ Untested |
+| **Raspberry Pi Zero 2** | ✅ Full | ✅ | ✅ | ✅ | ⚠️ Untested |
+| **Raspberry Pi Zero** | ✅ Full | ✅ | ✅ | ✅ | ❌ |
+| **Orange Pi** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+| **BeagleBone** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+| **Jetson Nano** | ⚠️ Basic | ⚠️ | ⚠️ | ❌ | ❌ |
+
+**Legend:**
+- ✅ Full support, tested
+- ⚠️ Partial support or untested
+- ❌ Not supported
+
+### Example: Complete Platform Detection
+
+See `examples/platform_detection/` for a comprehensive demonstration.
+
+```cpp
+#include "platform.hpp"
+#include <iostream>
+
+int main() {
+    auto& platform = pipinpp::PlatformInfo::instance();
+    
+    // Print detailed platform info
+    platform.printInfo();
+    
+    // Check capabilities
+    if (!platform.isSupported()) {
+        std::cerr << "Warning: Platform not recognized\n";
+        return 1;
+    }
+    
+    // Use platform-aware defaults
+    std::cout << "Default GPIO chip: " << platform.getDefaultGPIOChip() << "\n";
+    std::cout << "Default I2C bus: " << platform.getDefaultI2CBus() << "\n";
+    
+    // Feature availability
+    const auto& caps = platform.getCapabilities();
+    std::cout << "DMA available: " << (caps.hasDMASupport ? "Yes" : "No") << "\n";
+    
+    return 0;
+}
 ```
 
 ---
@@ -301,7 +591,10 @@ Generate PWM output on a GPIO pin (Arduino-inspired).
 - Pin is automatically configured as OUTPUT
 - Multiple pins can have independent PWM outputs
 - Timing has jitter (not suitable for precise applications like servos)
-- CPU usage increases with number of active PWM pins
+- **⚠️ CPU Usage**: Each active PWM pin runs a busy-loop thread consuming ~10-30% CPU per pin
+  - Uses `std::this_thread::yield()` to share CPU, but still busy-waits for timing accuracy
+  - For servo control or precise timing, use `HardwarePWM` class instead (zero CPU usage)
+  - Software PWM is best for LED dimming and non-critical applications
 - Edge cases optimized: 0 and 255 avoid PWM overhead
 
 **Example:**
@@ -346,9 +639,205 @@ stopPWM(17);           // Stop PWM, free resources
 
 ---
 
+## Event-Driven PWM
+
+**NEW in v0.4.0** - The `EventPWM` class provides software PWM with **70-85% lower CPU usage** compared to `analogWrite()`. It uses a hybrid timing algorithm (clock_nanosleep + busy-wait) that reduces CPU consumption from 10-30% to <5% per pin while maintaining acceptable timing accuracy for LED control.
+
+### EventPWM Class
+
+#### `EventPWM(int pin, const std::string& chipname = "gpiochip0")`
+Constructor for event-driven PWM on a GPIO pin.
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27 for Raspberry Pi)
+- `chipname`: GPIO chip name (default: "gpiochip0")
+
+**Throws:**
+- `InvalidPinError`: Invalid pin number
+- `GpioAccessError`: GPIO access failure
+
+**Example:**
+```cpp
+#include "event_pwm.hpp"
+
+pipinpp::EventPWM led(17);  // Create EventPWM on GPIO17
+```
+
+#### `bool begin(double frequencyHz, double dutyCycle)`
+Start EventPWM with specified frequency and duty cycle.
+
+**Parameters:**
+- `frequencyHz`: PWM frequency in Hz (50 - 10,000)
+  - Recommended: 50-2000 Hz for LED control
+  - Higher frequencies have proportionally higher CPU usage
+- `dutyCycle`: Initial duty cycle percentage (0.0 - 100.0)
+  - 0.0 = Always LOW (LED off)
+  - 50.0 = 50% duty cycle (half brightness)
+  - 100.0 = Always HIGH (LED fully on)
+
+**Returns:**
+- `true` on success
+- `false` on failure
+
+**Notes:**
+- **CPU Usage**: <5% per pin (70-85% reduction vs `analogWrite()`)
+- **Timing Accuracy**: <10 µs jitter (2x worse than busy-loop, but acceptable for LEDs)
+- **Hybrid Algorithm**: Sleeps for (period - 100µs), then busy-waits final 100µs for precision
+- Edge cases optimized: <0.1% duty = always off, >99.9% duty = always on (no PWM overhead)
+
+**Example:**
+```cpp
+pipinpp::EventPWM led(17);
+if (!led.begin(1000, 50.0)) {  // 1kHz, 50% duty
+    std::cerr << "Failed to start PWM" << std::endl;
+    return 1;
+}
+```
+
+#### `void end()`
+Stop EventPWM and release resources.
+
+**Example:**
+```cpp
+led.end();  // Stop PWM, clean up thread
+```
+
+#### `void setDutyCycle(double dutyCycle)`
+Change duty cycle while PWM is running.
+
+**Parameters:**
+- `dutyCycle`: New duty cycle percentage (0.0 - 100.0)
+
+**Notes:**
+- Thread-safe: can be called from any thread
+- Change takes effect on next PWM cycle
+- Use for smooth LED fading
+
+**Example:**
+```cpp
+// Smooth fade from 0% to 100%
+for (double brightness = 0.0; brightness <= 100.0; brightness += 0.5) {
+    led.setDutyCycle(brightness);
+    delay(10);
+}
+```
+
+#### `void setDutyCycle8Bit(uint8_t value)`
+Arduino-compatible duty cycle setting (0-255 scale).
+
+**Parameters:**
+- `value`: Duty cycle (0-255)
+  - 0 = 0% duty (LED off)
+  - 127 = ~50% duty (half brightness)
+  - 255 = 100% duty (LED fully on)
+
+**Example:**
+```cpp
+// Arduino-style LED fade
+for (int brightness = 0; brightness <= 255; brightness++) {
+    led.setDutyCycle8Bit(brightness);
+    delay(10);
+}
+```
+
+#### `void setFrequency(double frequencyHz)`
+Change PWM frequency while running.
+
+**Parameters:**
+- `frequencyHz`: New frequency in Hz (50 - 10,000)
+
+**Notes:**
+- Frequency change takes effect on next cycle
+- Duty cycle percentage is preserved
+- Higher frequencies increase CPU usage slightly
+
+**Example:**
+```cpp
+led.setFrequency(2000);  // Change to 2kHz
+```
+
+### When to Use EventPWM
+
+**Choose EventPWM when:**
+- ✅ Controlling multiple LEDs (3+ pins)
+- ✅ Long-running applications where CPU usage matters
+- ✅ Battery-powered projects (lower CPU = less power)
+- ✅ LED dimming, fade effects, RGB color mixing
+- ✅ Any application where <10µs jitter is acceptable
+
+**Choose `analogWrite()` (busy-loop PWM) when:**
+- ⚠️ Simple quick demos (1-2 pins, short duration)
+- ⚠️ You need the absolute lowest jitter (<5µs)
+- ⚠️ Legacy code compatibility
+
+**Choose `HardwarePWM` when:**
+- 🚀 Servo motor control (requires zero jitter)
+- 🚀 Precise timing applications
+- 🚀 High frequencies (>10 kHz)
+- 🚀 Zero CPU usage required
+
+### EventPWM Manager (Global Functions)
+
+For Arduino-style usage without explicit object creation:
+
+#### `void analogWriteEvent(int pin, int value)`
+Start EventPWM using Arduino-compatible API.
+
+**Parameters:**
+- `pin`: GPIO pin number (0-27)
+- `value`: Duty cycle (0-255)
+
+**Notes:**
+- Automatically manages EventPWM objects internally
+- First call creates EventPWM, subsequent calls update duty cycle
+- Default frequency: 490 Hz (matches Arduino)
+
+**Example:**
+```cpp
+#include "event_pwm.hpp"
+
+// Arduino-style: no object creation needed
+pipinpp::analogWriteEvent(17, 128);  // 50% brightness
+delay(5000);
+pipinpp::analogWriteEvent(17, 0);    // Turn off
+```
+
+### Performance Comparison
+
+| Implementation | CPU Usage/Pin | Jitter | Servo Control | Multi-Pin | Power Efficient |
+|---------------|---------------|--------|---------------|-----------|-----------------|
+| `analogWrite()` | 10-30% | <5µs | ❌ No | Limited (2-3 pins) | ❌ No |
+| `EventPWM` | <5% | <10µs | ❌ No | ✅ Yes (10+ pins) | ✅ Yes |
+| `HardwarePWM` | 0% | 0µs | ✅ Yes | Limited (2-4 pins) | ✅ Yes |
+
+**Migration Example:**
+```cpp
+// OLD: High CPU usage
+analogWrite(17, 128);  // ~10-30% CPU per pin
+
+// NEW: Low CPU usage (recommended for v0.4.0+)
+pipinpp::EventPWM led(17);
+led.begin(490, 50.0);  // <5% CPU per pin
+led.setDutyCycle8Bit(128);  // Arduino-compatible API
+```
+
+---
+
 ## Hardware PWM
 
 For applications requiring jitter-free PWM (servo control, precise timing), use the `HardwarePWM` class which interfaces with the Raspberry Pi hardware PWM controller via Linux sysfs.
+
+**🚀 Why Use Hardware PWM?**
+- **Zero CPU usage** - Timing handled by hardware peripheral, not software threads
+- **Perfect timing accuracy** - No jitter or timing drift (critical for servo motors)
+- **High frequencies** - Supports up to 25 MHz (software PWM limited to ~10 kHz)
+- **System load immune** - Unaffected by CPU load, context switches, or other processes
+
+**⚠️ Software PWM (`analogWrite()`) Limitations:**
+- Busy-loop threads consume ~10-30% CPU per pin
+- Timing jitter: ~1-10 µs (unsuitable for servos)
+- Frequency range: 50 Hz - 10 kHz practical limit
+- Use software PWM only for LED dimming or non-critical applications
 
 **Supported Pins:**
 - GPIO12 (PWM0 channel 0)
@@ -1025,7 +1514,10 @@ if (duration > 0) {
 
 **Notes:**
 - Requires pin to be configured with `pinMode(pin, INPUT)`
-- Blocks execution until pulse completes or timeout occurs
+- **⚠️ Blocks execution** until pulse completes or timeout occurs
+- **⚠️ CPU Usage**: Uses busy-waiting loop for microsecond timing accuracy
+  - Consumes 100% of one CPU core while waiting for pulse
+  - For non-blocking pulse measurement, consider using interrupts with timestamps
 - Resolution: ~1-2 microseconds
 - Maximum reliable pulse: ~5-10 seconds (implementation dependent)
 
@@ -1046,7 +1538,7 @@ Extended pulse measurement with better precision for longer pulses.
 **Differences from `pulseIn()`:**
 - Better accuracy for pulses > 1 second
 - Uses 64-bit timer internally for overflow protection
-- Slightly more CPU overhead
+- **⚠️ CPU Usage**: Same busy-wait behavior as `pulseIn()` (100% CPU during measurement)
 
 **Example:**
 ```cpp
@@ -1188,6 +1680,9 @@ for (int i = 0; i < 4; i++) {
 **Notes:**
 - Software-generated tone, not hardware PWM
 - Frequency accuracy: ±1-2% (depends on system load)
+- **⚠️ CPU Usage**: Runs busy-loop thread consuming ~10-30% CPU while tone is active
+  - Similar to `analogWrite()` - uses software PWM for square wave generation
+  - For continuous tones or music, consider hardware PWM or external audio module
 - Multiple simultaneous tones not supported (last call wins)
 - For precise audio, consider hardware PWM or external audio hardware
 

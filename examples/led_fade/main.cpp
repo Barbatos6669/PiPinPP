@@ -1,8 +1,13 @@
 /*
- * PiPin++ PWM LED Fade Example
+ * PiPin++ PWM LED Fade Example (Software PWM)
  * 
- * Demonstrates PWM (Pulse Width Modulation) for smooth LED brightness control.
+ * Demonstrates software PWM (Pulse Width Modulation) for smooth LED brightness control.
  * This example shows how to use analogWrite() to create fading effects.
+ * 
+ * ⚠️ CPU USAGE WARNING:
+ * This example uses SOFTWARE PWM which consumes ~10-30% CPU per pin in busy-wait loops.
+ * For LED dimming, this is acceptable. For servo control or precise timing, use HardwarePWM
+ * class instead (see examples/pwm_servo or examples/pwm_led_hardware).
  * 
  * Hardware Setup:
  * - Connect an LED with current-limiting resistor (220Ω-1kΩ) to GPIO 17
@@ -10,7 +15,7 @@
  * - LED cathode (short leg) to resistor, then to GND
  * 
  * Features Demonstrated:
- * - analogWrite() - Set PWM duty cycle for analog-like output
+ * - analogWrite() - Set PWM duty cycle for analog-like output (SOFTWARE PWM)
  * - Smooth LED fading (0-255 brightness range)
  * - Multiple fade patterns
  * - PWM frequency control

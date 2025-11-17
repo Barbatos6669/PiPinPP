@@ -38,11 +38,16 @@
  * - Per-pin dedicated threads for accurate timing
  * - Smooth transitions and glitch-free operation
  *
+ * ⚠️ CPU Usage Warning:
+ * - Each PWM pin runs a busy-loop thread consuming ~10-30% CPU
+ * - Uses std::this_thread::yield() to share CPU, but still busy-waits for accuracy
+ * - Multiple PWM pins can cause significant CPU load
+ * 
  * Limitations:
- * - Software PWM has timing jitter (not suitable for precise applications)
+ * - Software PWM has timing jitter (~1-10 µs, unsuitable for servo motors)
  * - CPU usage increases with number of active PWM pins
  * - Frequency and accuracy affected by system load
- * - Not suitable for servo control (use hardware PWM for servos)
+ * - ❌ NOT suitable for servo control - use HardwarePWM class instead (zero CPU usage)
  *
  * Example usage:
  * @code

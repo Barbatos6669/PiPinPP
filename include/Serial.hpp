@@ -39,6 +39,16 @@
 
 namespace pipinpp {
 
+// Print format constants (Arduino-compatible)
+enum PrintFormat {
+    DEC = 10,   ///< Decimal format (base 10)
+    HEX = 16,   ///< Hexadecimal format (base 16)
+    OCT = 8,    ///< Octal format (base 8)
+    BIN = 2     ///< Binary format (base 2)
+};
+
+
+
 /**
  * @class SerialPort
  * @brief Arduino-compatible Serial communication class for Raspberry Pi
@@ -176,6 +186,50 @@ public:
     size_t print(int num);
     
     /**
+     * @brief Print integer to serial port with format (no newline)
+     * @param num Integer to print
+     * @param format Format: DEC (decimal), HEX (hexadecimal), OCT (octal), BIN (binary)
+     * @return Number of bytes written
+     * 
+     * Example:
+     * @code
+     * Serial.print(255, HEX);  // Prints "FF"
+     * Serial.print(255, BIN);  // Prints "11111111"
+     * @endcode
+     */
+    size_t print(int num, PrintFormat format);
+    
+    /**
+     * @brief Print long integer to serial port (no newline)
+     * @param num Long integer to print
+     * @return Number of bytes written
+     */
+    size_t print(long num);
+    
+    /**
+     * @brief Print long integer to serial port with format (no newline)
+     * @param num Long integer to print
+     * @param format Format: DEC, HEX, OCT, BIN
+     * @return Number of bytes written
+     */
+    size_t print(long num, PrintFormat format);
+    
+    /**
+     * @brief Print unsigned integer to serial port (no newline)
+     * @param num Unsigned integer to print
+     * @return Number of bytes written
+     */
+    size_t print(unsigned int num);
+    
+    /**
+     * @brief Print unsigned integer to serial port with format (no newline)
+     * @param num Unsigned integer to print
+     * @param format Format: DEC, HEX, OCT, BIN
+     * @return Number of bytes written
+     */
+    size_t print(unsigned int num, PrintFormat format);
+    
+    /**
      * @brief Print floating-point number to serial port (no newline)
      * @param num Number to print
      * @param decimals Number of decimal places (default: 2)
@@ -196,6 +250,44 @@ public:
      * @return Number of bytes written
      */
     size_t println(int num);
+    
+    /**
+     * @brief Print integer to serial port with format and newline
+     * @param num Integer to print
+     * @param format Format: DEC, HEX, OCT, BIN
+     * @return Number of bytes written
+     */
+    size_t println(int num, PrintFormat format);
+    
+    /**
+     * @brief Print long integer to serial port with newline
+     * @param num Long integer to print
+     * @return Number of bytes written
+     */
+    size_t println(long num);
+    
+    /**
+     * @brief Print long integer to serial port with format and newline
+     * @param num Long integer to print
+     * @param format Format: DEC, HEX, OCT, BIN
+     * @return Number of bytes written
+     */
+    size_t println(long num, PrintFormat format);
+    
+    /**
+     * @brief Print unsigned integer to serial port with newline
+     * @param num Unsigned integer to print
+     * @return Number of bytes written
+     */
+    size_t println(unsigned int num);
+    
+    /**
+     * @brief Print unsigned integer to serial port with format and newline
+     * @param num Unsigned integer to print
+     * @param format Format: DEC, HEX, OCT, BIN
+     * @return Number of bytes written
+     */
+    size_t println(unsigned int num, PrintFormat format);
     
     /**
      * @brief Print floating-point number to serial port with newline
@@ -265,6 +357,14 @@ private:
      * @return termios speed_t constant, or 0 if invalid
      */
     speed_t getBaudRateConstant(unsigned long baudRate) const;
+    
+    /**
+     * @brief Format number as string in specified base
+     * @param num Number to format
+     * @param base Base for conversion (2, 8, 10, 16)
+     * @return Formatted string
+     */
+    std::string formatNumber(long num, int base) const;
 };
 
 } // namespace pipinpp
