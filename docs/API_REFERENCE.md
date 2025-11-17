@@ -32,6 +32,7 @@ Complete API documentation for PiPinPP - A modern C++ GPIO library for Raspberry
 8. [Communication Protocols](#communication-protocols)
    - [Wire (I²C)](#wire-i2c)
    - [SPI](#spi)
+   - [Serial (UART)](#serial-uart)
 9. [Examples](#examples)
 10. [Error Handling](#error-handling)
 11. [Hardware Notes](#hardware-notes)
@@ -2437,6 +2438,393 @@ void loop() {
 | **shiftOut()** | ~200-300 kHz | Any GPIO pins, flexible |
 
 See `examples/spi_74hc595/` for performance comparison demonstration.
+
+---
+
+### Serial (UART)
+
+**New in v0.3.12**: Arduino-compatible Serial/UART communication for Raspberry Pi.
+
+#### Include
+```cpp
+#include "Serial.hpp"
+using namespace pipinpp;
+```
+
+#### UART Pin Connections
+
+**Raspberry Pi Hardware UART (GPIO 14/15):**
+- TX: GPIO 14 (Physical Pin 8)
+- RX: GPIO 15 (Physical Pin 10)
+- Device: `/dev/ttyAMA0` (or `/dev/ttyS0` on older models)
+
+**USB-to-Serial Adapters:**
+- Device: `/dev/ttyUSB0`, `/dev/ttyUSB1`, etc.
+- Common chips: FTDI FT232, CH340, CP2102
+
+**Arduino via USB:**
+- Device: `/dev/ttyACM0`, `/dev/ttyACM1`, etc.
+- Arduino Uno, Mega, Leonardo (native USB)
+
+#### Enable Hardware UART
+```bash
+# Disable console on serial (if using GPIO 14/15)
+sudo raspi-config
+# Navigate to: Interface Options → Serial Port
+# Disable "Would you like a login shell accessible over serial?" → No
+# Enable "Would you like the serial port hardware enabled?" → Yes
+
+# Add user to dialout group (required for /dev/tty* access)
+sudo usermod -a -G dialout $USER
+# Log out and back in for group change to take effect
+
+# Verify access
+ls -l /dev/ttyUSB0  # or ttyACM0, ttyAMA0
+```
+
+#### Serial Functions
+
+##### `Serial.begin(baudRate, device)`
+Open serial port at specified baud rate.
+
+**Parameters:**
+- `baudRate`: Communication speed (9600, 19200, 38400, 57600, 115200, 230400, etc.)
+- `device`: Serial device path (default: "/dev/ttyUSB0")
+
+**Returns:** `true` on success, `false` on error
+
+**Common Baud Rates:**
+- **9600**: Standard Arduino default, sensors
+- **19200**: Faster sensors, GPS modules
+- **38400**: High-speed sensors
+- **57600**: Fast Arduino communication
+- **115200**: High-speed communication (most common)
+- **230400**: Very high-speed (check cable quality)
+
+**Example:**
+```cpp
+// Arduino via USB
+if (!Serial.begin(9600, "/dev/ttyACM0")) {
+    std::cerr << "Failed to open Arduino\n";
+    return 1;
+}
+
+// FTDI USB adapter
+if (!Serial.begin(115200, "/dev/ttyUSB0")) {
+    std::cerr << "Failed to open USB-to-serial\n";
+    return 1;
+}
+
+// Hardware UART (GPIO 14/15)
+if (!Serial.begin(9600, "/dev/ttyAMA0")) {
+    std::cerr << "Failed to open hardware UART\n";
+    return 1;
+}
+```
+
+##### `Serial.end()`
+Close serial port and release resources.
+
+**Example:**
+```cpp
+Serial.end();  // Always close when done
+```
+
+##### `Serial.isOpen()`
+Check if serial port is open.
+
+**Returns:** `true` if open, `false` otherwise
+
+**Example:**
+```cpp
+if (!Serial.isOpen()) {
+    Serial.begin(9600, "/dev/ttyUSB0");
+}
+```
+
+##### `Serial.available()`
+Get number of bytes available in receive buffer.
+
+**Returns:** Number of bytes ready to read (0 if none)
+
+**Example:**
+```cpp
+if (Serial.available() > 0) {
+    int data = Serial.read();
+}
+```
+
+##### `Serial.read()`
+Read single byte from serial port.
+
+**Returns:** Byte value (0-255), or -1 if no data or timeout
+
+**Example:**
+```cpp
+int incomingByte = Serial.read();
+if (incomingByte != -1) {
+    std::cout << "Received: " << incomingByte << "\n";
+}
+```
+
+##### `Serial.peek()`
+Look at next byte without removing from buffer.
+
+**Returns:** Byte value (0-255), or -1 if no data
+
+**Example:**
+```cpp
+int nextByte = Serial.peek();
+if (nextByte == 'S') {  // Start of command
+    Serial.read();  // Now consume it
+}
+```
+
+##### `Serial.write(byte)`
+Send single byte.
+
+**Parameters:**
+- `byte`: Byte to send (0-255)
+
+**Returns:** Number of bytes written (1 on success, 0 on failure)
+
+**Example:**
+```cpp
+Serial.write(0x42);  // Send 'B'
+Serial.write('\n');  // Send newline
+```
+
+##### `Serial.write(buffer, size)`
+Send buffer of bytes.
+
+**Parameters:**
+- `buffer`: Pointer to data
+- `size`: Number of bytes to send
+
+**Returns:** Number of bytes actually written
+
+**Example:**
+```cpp
+uint8_t data[] = {0x01, 0x02, 0x03, 0x04};
+Serial.write(data, 4);
+```
+
+##### `Serial.print(data)`
+Print data without newline.
+
+**Overloads:**
+- `print(string)` - Print string
+- `print(int)` - Print integer (decimal)
+- `print(int, format)` - Print integer with format (DEC, HEX, OCT, BIN)
+- `print(long)` - Print long integer
+- `print(unsigned)` - Print unsigned integer
+- `print(double, decimals)` - Print floating-point with precision
+
+**Example:**
+```cpp
+Serial.print("Temperature: ");
+Serial.print(23.5);
+Serial.print(" C\n");
+
+Serial.print(255, HEX);  // Prints "FF"
+Serial.print(255, BIN);  // Prints "11111111"
+```
+
+##### `Serial.println(data)`
+Print data with newline.
+
+**Overloads:** Same as `print()` but adds `\n` at end
+
+**Example:**
+```cpp
+Serial.println("Hello Arduino!");
+Serial.println(42);
+Serial.println(3.14159, 4);  // 4 decimal places: "3.1416"
+```
+
+##### `Serial.readString()`
+Read all available data as string.
+
+**Returns:** String with all available bytes
+
+**Example:**
+```cpp
+delay(100);  // Wait for data
+if (Serial.available()) {
+    String response = Serial.readString();
+    std::cout << "Received: " << response << "\n";
+}
+```
+
+##### `Serial.readStringUntil(terminator)`
+Read until terminator character.
+
+**Parameters:**
+- `terminator`: Stop character (e.g., '\n', '\r', ';')
+
+**Returns:** String up to (but not including) terminator
+
+**Example:**
+```cpp
+// Arduino sends "TEMP:25.3\n"
+String response = Serial.readStringUntil('\n');
+std::cout << "Got: " << response << "\n";  // "TEMP:25.3"
+```
+
+##### `Serial.setTimeout(milliseconds)`
+Set read timeout.
+
+**Parameters:**
+- `milliseconds`: Timeout in ms (default: 1000)
+
+**Example:**
+```cpp
+Serial.setTimeout(500);  // 0.5 second timeout
+```
+
+##### `Serial.flush()`
+Wait until all outgoing data is transmitted.
+
+**Example:**
+```cpp
+Serial.println("Critical command");
+Serial.flush();  // Ensure it's sent before proceeding
+```
+
+#### Print Format Constants
+
+```cpp
+DEC  // Decimal (base 10) - default
+HEX  // Hexadecimal (base 16)
+OCT  // Octal (base 8)
+BIN  // Binary (base 2)
+```
+
+#### Complete Serial Example
+
+```cpp
+#include "Serial.hpp"
+#include "ArduinoCompat.hpp"
+using namespace pipinpp;
+
+int main() {
+    // Open connection to Arduino at 9600 baud
+    if (!Serial.begin(9600, "/dev/ttyACM0")) {
+        std::cerr << "Failed to open Arduino\n";
+        return 1;
+    }
+    
+    std::cout << "Connected to Arduino. Sending commands...\n";
+    
+    // Send command every second
+    for (int i = 0; i < 10; i++) {
+        // Send command with parameters
+        Serial.print("SET_LED:");
+        Serial.println(i % 2);  // 0 or 1
+        
+        delay(100);  // Wait for Arduino to process
+        
+        // Read response
+        if (Serial.available()) {
+            String response = Serial.readStringUntil('\n');
+            std::cout << "Arduino: " << response << "\n";
+        }
+        
+        delay(900);  // Wait 1 second between commands
+    }
+    
+    Serial.println("DONE");
+    Serial.flush();
+    Serial.end();
+    
+    return 0;
+}
+```
+
+#### Arduino-to-Raspberry Pi Communication
+
+**Arduino Code (upload this to Arduino):**
+```cpp
+void setup() {
+    Serial.begin(9600);
+    pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+    if (Serial.available()) {
+        String command = Serial.readStringUntil('\n');
+        
+        if (command.startsWith("SET_LED:")) {
+            int state = command.substring(8).toInt();
+            digitalWrite(LED_BUILTIN, state);
+            Serial.println(state ? "LED ON" : "LED OFF");
+        }
+        else if (command == "DONE") {
+            Serial.println("BYE");
+        }
+    }
+}
+```
+
+**Raspberry Pi Code (PiPinPP):**
+```cpp
+#include "Serial.hpp"
+using namespace pipinpp;
+
+int main() {
+    Serial.begin(9600, "/dev/ttyACM0");
+    delay(2000);  // Wait for Arduino reset after serial connection
+    
+    // Send command
+    Serial.println("SET_LED:1");
+    
+    // Wait for response
+    delay(100);
+    if (Serial.available()) {
+        String response = Serial.readStringUntil('\n');
+        std::cout << "Arduino says: " << response << "\n";  // "LED ON"
+    }
+    
+    Serial.end();
+}
+```
+
+#### Troubleshooting Serial
+
+**Permission Denied:**
+```bash
+# Add user to dialout group
+sudo usermod -a -G dialout $USER
+# Log out and back in
+
+# Verify
+groups  # Should show "dialout"
+```
+
+**Device Not Found:**
+```bash
+# List available serial devices
+ls -l /dev/tty*
+
+# Check USB devices
+dmesg | grep tty  # Look for "USB Serial" messages
+lsusb  # Shows connected USB devices
+```
+
+**No Data Received:**
+- Check baud rate matches on both sides
+- Verify TX/RX connections (TX→RX, RX→TX)
+- Add delay after `begin()` for Arduino to reset
+- Check Arduino Serial Monitor isn't open (conflicts with /dev/ttyACM0)
+- Try different USB cable (data vs power-only)
+
+**Garbled Data:**
+- Baud rate mismatch - verify both use same rate
+- Check cable length (keep under 3m for high speeds)
+- Lower baud rate (115200 → 57600 → 9600)
+
+**Thread Safety:**
+All Serial operations are thread-safe (protected by internal mutex). Multiple threads can safely call Serial methods concurrently.
 
 ---
 

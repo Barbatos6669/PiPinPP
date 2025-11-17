@@ -128,6 +128,21 @@ sudo usermod -a -G gpio $USER
 
 **Note:** You'll need to log out and log back in for group changes to take effect.
 
+### Serial/UART Access Rights
+
+If you plan to use Serial/UART communication (for Arduino, sensors, GPS modules, etc.), you also need the dialout group:
+
+```bash
+sudo usermod -a -G dialout $USER
+```
+
+This grants access to `/dev/ttyUSB*`, `/dev/ttyACM*`, `/dev/ttyAMA*`, and other serial devices.
+
+**Important:** Log out and back in after adding groups for changes to take effect. Verify with:
+```bash
+groups  # Should show "gpio" and "dialout"
+```
+
 ### Alternative: udev Rules
 
 Create a udev rule for GPIO access:

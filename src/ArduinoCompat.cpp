@@ -30,7 +30,6 @@
 #include "log.hpp"
 #include <unordered_map>
 #include <memory>
-#include <iostream>
 #include <chrono>
 #include <thread>
 #include <mutex>

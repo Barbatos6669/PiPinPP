@@ -83,9 +83,15 @@ This installs all dependencies, builds PiPin++, and configures GPIO permissions 
 pkg-config --modversion pipinpp
 ```
 
-✅ Should show: `0.3.7`
+✅ Should show: `0.4.0`
 
 💡 **Note:** The installer automatically adds you to the `gpio` group and configures permissions. You'll need to log out and back in for permission changes to take effect.
+
+**If you plan to use Serial/UART communication** (e.g., connecting to Arduino), you also need the `dialout` group:
+```bash
+sudo usermod -a -G dialout $USER
+# Log out and back in for changes to take effect
+```
 
 📖 **For manual installation or troubleshooting, see [INSTALL.md](INSTALL.md)**
 

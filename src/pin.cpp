@@ -30,7 +30,6 @@
 #include "exceptions.hpp"
 #include <stdexcept>
 #include <gpiod.h>
-#include <iostream>
 
 Pin::Pin(int pin, PinDirection direction, const std::string& chipname) 
 : chip(nullptr), request(nullptr), currentDirection(direction), pinNumber(pin)
