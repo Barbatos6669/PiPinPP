@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "pybind11>=2.6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pypipinpp"
+version = "0.4.0"
+description = "Arduino-compatible GPIO library for Raspberry Pi (Python bindings)"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+keywords = ["raspberry-pi", "gpio", "arduino", "embedded", "iot", "maker", "hardware", "sbc"]
+authors = [
+    {name = "Barbatos6669"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Hardware",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    "pybind11>=2.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Barbatos6669/PiPinPP"
+Documentation = "https://github.com/Barbatos6669/PiPinPP/blob/main/docs/API_REFERENCE.md"
+Repository = "https://github.com/Barbatos6669/PiPinPP"
+Issues = "https://github.com/Barbatos6669/PiPinPP/issues"
