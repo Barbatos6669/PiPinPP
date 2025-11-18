@@ -21,7 +21,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build doxygen graphviz lcov
+          sudo apt-get install -y cmake ninja-build doxygen graphviz lcov autoconf-archive pkg-config autoconf libtool
+
+      - name: Build libgpiod v2
+        run: |
+          git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /tmp/libgpiod
+          cd /tmp/libgpiod
+          ./autogen.sh --enable-tools=yes --enable-bindings-cxx --prefix=/usr/local
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
 
       - name: Configure (coverage build)
         run: cmake -S . -B build -G Ninja -DBUILD_TESTS=ON -DBUILD_EXAMPLES=OFF -DENABLE_COVERAGE=ON -DPIPINPP_ENABLE_LOGGING=OFF
