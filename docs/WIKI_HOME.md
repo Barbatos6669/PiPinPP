@@ -65,14 +65,32 @@ sudo ./examples/example_arduino_style
 
 ## 📚 Documentation
 
-| Page | Description |
-|------|-------------|
-| **Installation Guide** | Complete setup instructions |
-| **Arduino Migration** | Switch from Arduino to Pi easily |
-| **API Reference** | Complete function documentation |
-| **Hardware Setup** | GPIO pinouts and wiring |
-| **Examples & Tutorials** | Step-by-step projects |
-| **Troubleshooting** | Common issues and solutions |
+### Getting Started
+- **[Installation Guide](INSTALL.md)** - Complete setup instructions (one-line install script!)
+- **[Getting Started Tutorial](GETTING_STARTED.md)** - Your first LED in 10 minutes
+- **[Build Instructions](BUILD.md)** - Building from source
+- **[Developer Guide](DEVELOPER.md)** - Contributing to PiPin++
+
+### API & Reference
+- **[API Reference](API_REFERENCE.md)** - Complete function documentation with examples
+- **[CLI Usage](CLI_USAGE.md)** - `pipinpp` command-line tool reference
+- **[Pin Numbering](PIN_NUMBERING.md)** - GPIO pin mapping and physical layout
+- **[Platform Support](PLATFORMS.md)** - Tested boards, OS compatibility, containers
+
+### Tutorials (Step-by-Step)
+- **[LED Blink Tutorial](tutorials/LED_BLINK.md)** - Your first GPIO project (⭐ Easy)
+- **[Button Input Tutorial](tutorials/BUTTON_INPUT.md)** - Reading buttons with pull-ups (⭐ Easy)
+- **[Traffic Light Tutorial](tutorials/TRAFFIC_LIGHT.md)** - Control multiple LEDs (⭐ Easy)
+- **[PWM Basics Tutorial](tutorials/PWM_BASICS.md)** - Fade LEDs smoothly (⭐⭐ Medium)
+- **[Interrupts 101 Tutorial](tutorials/INTERRUPTS_101.md)** - Event-driven button handling (⭐⭐ Medium)
+- **[I2C Sensor Tutorial](tutorials/I2C_SENSOR.md)** - Read BMP280 temperature/pressure (⭐⭐ Medium)
+- **[Multi-Threading Tutorial](tutorials/MULTI_THREADING.md)** - Concurrent GPIO tasks (⭐⭐⭐ Hard)
+- **[Tutorial Index](tutorials/README.md)** - Full catalog with learning paths
+
+### Help & Troubleshooting
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
+- **[FAQ](FAQ.md)** - Frequently asked questions
+- **[Code Standards](CODE_STANDARDS.md)** - Coding style and conventions
 
 ---
 
@@ -98,23 +116,27 @@ sudo ./examples/example_arduino_style
 
 ## 🔧 Current Status
 
-**Version:** 0.3.7 (Production-ready with full Arduino API compatibility!)  
+**Version:** 0.4.0 (Production-ready with 73.5% test coverage!)  
 **Platform:** Raspberry Pi (all models with 40-pin GPIO)  
 **Language:** C++17  
 **License:** MIT  
 
 ### ✅ Available Features:
-- Digital I/O (LED control, button reading)
-- Arduino-style API (`pinMode`, `digitalWrite`, etc.)
-- Object-oriented `Pin` class with RAII
-- Timing functions (`millis`, `micros`, `delay`)
-- Interrupts with edge detection
-- Software PWM
-- I2C/Wire communication
-- SPI communication
-- Math and utility functions
+- **Digital I/O** - LED control, button reading with pull resistors
+- **Arduino API** - `pinMode`, `digitalWrite`, `digitalRead`, `delay`, `millis`
+- **Object-Oriented** - Modern `Pin` class with RAII and exceptions
+- **Timing** - High-precision `millis`, `micros`, `delay`, `delayMicroseconds`
+- **Interrupts** - Edge detection with `attachInterrupt`/`detachInterrupt`
+- **PWM** - Software PWM (`analogWrite`) and hardware PWM support
+- **I²C/Wire** - Full Arduino Wire API with auto-detection (Pi 5 support)
+- **SPI** - Hardware SPI communication
+- **Serial/UART** - Arduino Serial API
+- **Platform Detection** - Auto-detect Pi model, GPIO chip, I2C bus
+- **CLI Tool** - `pipinpp` command for testing and diagnostics
+- **Math & Utilities** - `map`, `constrain`, bit manipulation, trig functions
+- **Performance Tools** - GPIO profiling, timing benchmarks, CSV logging
 
-See our [ROADMAP.md](planning/ROADMAP.md) for future development plans.
+See our [Roadmap](ROADMAP.md) for future development plans.
 
 ---
 
