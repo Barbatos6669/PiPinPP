@@ -453,7 +453,7 @@ PIPINPP_REGISTER_PLUGIN(MCP3008);
 1. Pick a task from the roadmap
 2. Open a GitHub issue: "Implement: [Task Name]"
 3. Submit PR with tests and documentation
-4. See [CONTRIBUTING.md](../CONTRIBUTING.md)
+4. See [CONTRIBUTING.md](../.github/CONTRIBUTING.md)
 
 ### **For Users**
 1. Report bugs and suggest features

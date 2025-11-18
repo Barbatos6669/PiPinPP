@@ -472,7 +472,7 @@ void cmd_doctor()
     printCheck("Running as root", isRoot, "Optional (sudo) for quick tests");
 
     PlatformInfo& platform = PlatformInfo::instance();
-    cout << "\nDetected platform: " << platform.getModel() << endl;
+    cout << "\nDetected platform: " << platform.getPlatformName() << endl;
     cout << "Default GPIO chip: " << platform.getDefaultGPIOChip() << endl;
     cout << "Default I2C bus: /dev/i2c-" << platform.getDefaultI2CBus() << endl;
 
