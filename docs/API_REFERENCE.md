@@ -1179,6 +1179,19 @@ delayMicroseconds(100);   // Wait 100 microseconds
 digitalWrite(17, LOW);
 ```
 
+#### Performance Profiling Example
+Use `examples/performance_profiler/` to capture real-world drift and jitter data for the timing
+APIs:
+
+```bash
+cd /path/to/PiPinPP/build
+make example_performance_profiler
+./examples/example_performance_profiler   # requires GPIO permissions or sudo
+```
+
+The program prints summary tables and writes `performance_profile.csv` (delay drift + loop jitter)
+so you can graph the distribution in Python, Excel, or Grafana.
+
 ### Pin State Query Functions
 
 #### `bool isOutput(int pin)`

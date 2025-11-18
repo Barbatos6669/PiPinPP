@@ -11,8 +11,9 @@ Start here if you're new to Raspberry Pi GPIO!
 | Tutorial | What You'll Learn | Time | Difficulty |
 |----------|-------------------|------|------------|
 | **[Getting Started](../GETTING_STARTED.md)** | Install PiPin++, blink your first LED | 10 min | ⭐ Easy |
+| **[Controlling an LED](LED_BLINK.md)** | Wire + blink a single LED with PiPin++ | 10 min | ⭐ Easy |
+| **[Button Input](BUTTON_INPUT.md)** | Read push buttons with pull-ups | 10 min | ⭐ Easy |
 | **[Traffic Light](TRAFFIC_LIGHT.md)** | Control multiple LEDs, create sequences | 15 min | ⭐ Easy |
-| **Button Input** *(coming soon)* | Read buttons, handle user input | 15 min | ⭐ Easy |
 
 ### Intermediate Tutorials
 
@@ -20,9 +21,10 @@ Ready for more complex projects?
 
 | Tutorial | What You'll Learn | Time | Difficulty |
 |----------|-------------------|------|------------|
-| **PWM Basics** *(coming soon)* | Fade LEDs smoothly with PWM | 20 min | ⭐⭐ Medium |
-| **Interrupts** *(coming soon)* | Respond instantly to button presses | 25 min | ⭐⭐ Medium |
-| **Multi-Threading** *(coming soon)* | Run multiple tasks at once | 30 min | ⭐⭐ Medium |
+| **[PWM Basics](PWM_BASICS.md)** | Fade LEDs smoothly with PWM | 20 min | ⭐⭐ Medium |
+| **[Interrupts 101](INTERRUPTS_101.md)** | Use attachInterrupt for buttons | 25 min | ⭐⭐ Medium |
+| **[I2C Sensor](I2C_SENSOR.md)** | Read sensors via Wire/BMP280 | 20 min | ⭐⭐ Medium |
+| **Coming Soon: SPI Devices** | Control high-speed peripherals | 30 min | ⭐⭐ Medium |
 
 ### Advanced Tutorials
 
@@ -30,8 +32,8 @@ Push your skills to the limit!
 
 | Tutorial | What You'll Learn | Time | Difficulty |
 |----------|-------------------|------|------------|
+| **[Multi-Threading](MULTI_THREADING.md)** | Coordinate multiple GPIO tasks with threads | 30 min | ⭐⭐⭐ Hard |
 | **I2C Communication** *(coming soon)* | Talk to sensors and displays | 30 min | ⭐⭐⭐ Hard |
-| **SPI Devices** *(coming soon)* | Control high-speed peripherals | 35 min | ⭐⭐⭐ Hard |
 | **Custom Protocols** *(coming soon)* | Create your own communication methods | 40 min | ⭐⭐⭐ Hard |
 
 ---

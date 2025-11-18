@@ -67,3 +67,49 @@ If broken links are found, the script will show:
 - Uses regex to parse markdown links
 - Resolves relative paths using `pathlib`
 - Handles edge cases like anchor links (#section) and external URLs
+
+## run_examples.sh
+
+Batch-builds every example target (`example_<name>`) and can optionally run the resulting binaries.
+
+### Usage
+
+```bash
+# Build everything
+scripts/run_examples.sh
+
+# Build only PWM-related examples and run them after build
+scripts/run_examples.sh --filter "pwm*" --execute
+
+# List detected examples without building
+scripts/run_examples.sh --list
+```
+
+Key options:
+- `-x, --execute` – run binaries after building (output appended to the log)
+- `-f, --filter <glob>` – select specific example directories (e.g., `pwm*`, `i2c_*`)
+- `-l, --list` – print the example names and exit
+- `-j, --jobs <N>` – pass `--parallel N` to the `cmake --build` invocation
+
+Environment variables:
+- `BUILD_DIR` – override the build directory (default: `build`)
+- `GENERATOR_ARGS` – optional CMake generator flags (e.g., `-G Ninja`)
+- `RUN_EXAMPLES_LOG` – log file path (default: `build/example_builds.log`)
+- `JOBS` – alternative way to set parallelism
+
+### What it does
+
+1. Configures CMake (if `CMakeCache.txt` is missing) with `BUILD_EXAMPLES=ON`
+2. Discovers directories inside `examples/` (respecting filters)
+3. Builds the matching `example_<folder>` target
+4. Optionally executes each binary
+5. Logs stdout/stderr to `build/example_builds.log`
+
+### Exit codes
+- `0` – all targets (and optional runs) succeeded
+- `1` – one or more builds or executions failed (see the log)
+
+### CI Integration
+
+Ideal for nightly jobs, hardware smoke tests, or PR checks that need to ensure tutorial code stays
+healthy. Pair with `--execute` on a development Pi to keep runtime regressions in check.

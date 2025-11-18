@@ -1,0 +1,54 @@
+name: docs-and-coverage
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build doxygen graphviz lcov
+
+      - name: Configure (coverage build)
+        run: cmake -S . -B build -G Ninja -DBUILD_TESTS=ON -DBUILD_EXAMPLES=OFF -DENABLE_COVERAGE=ON -DPIPINPP_ENABLE_LOGGING=OFF
+
+      - name: Build library
+        run: cmake --build build
+
+      - name: Run tests
+        working-directory: build
+        run: ctest --output-on-failure
+
+      - name: Generate coverage report
+        run: cmake --build build --target coverage
+
+      - name: Generate Doxygen docs
+        run: doxygen Doxyfile
+
+      - name: Collect documentation artifacts
+        run: |
+          rm -rf public
+          mkdir -p public/doxygen public/coverage
+          cp -r docs/html/. public/doxygen/
+          cp -r build/coverage_html/. public/coverage/
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true

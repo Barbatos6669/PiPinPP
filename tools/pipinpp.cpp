@@ -30,6 +30,9 @@
 #include <cstdlib>
 #include <csignal>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <grp.h>
+#include <pwd.h>
 
 #include "ArduinoCompat.hpp"
 #include "Wire.hpp"
@@ -60,6 +63,43 @@ void signal_handler(int signum)
     (void)signum;  // Suppress unused parameter warning
     running = false;
     cout << "\nInterrupted. Cleaning up...\n";
+}
+
+bool isUserInGroup(const std::string& groupName)
+{
+    struct group* grp = getgrnam(groupName.c_str());
+    if (!grp)
+    {
+        return false;
+    }
+
+    struct passwd* pw = getpwuid(getuid());
+    if (!pw)
+    {
+        return false;
+    }
+
+    int ngroups = 0;
+    getgrouplist(pw->pw_name, pw->pw_gid, nullptr, &ngroups);
+    if (ngroups <= 0)
+    {
+        return false;
+    }
+
+    std::vector<gid_t> groups(static_cast<size_t>(ngroups));
+    if (getgrouplist(pw->pw_name, pw->pw_gid, groups.data(), &ngroups) == -1)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < ngroups; i++)
+    {
+        if (groups[static_cast<size_t>(i)] == grp->gr_gid)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void print_banner() 
@@ -99,7 +139,9 @@ void print_usage()
     
     cout << COLOR_BOLD << "Testing Commands:\n" << COLOR_RESET;
     cout << "  test                    Run all self-tests\n";
-    cout << "  benchmark               GPIO speed benchmark\n\n";
+    cout << "  benchmark               GPIO speed benchmark\n";
+    cout << "  monitor <pin> [ms]      Monitor pin transitions (default 10 ms)\n";
+    cout << "  doctor                  Run environment diagnostics\n\n";
     
     cout << COLOR_BOLD << "Examples:\n" << COLOR_RESET;
     cout << "  pipinpp mode 17 out     # Set GPIO17 as output\n";
@@ -368,6 +410,78 @@ void cmd_benchmark()
     }
 }
 
+void cmd_monitor(int pin, int intervalMs)
+{
+    if (intervalMs < 1)
+    {
+        intervalMs = 1;
+    }
+
+    try
+    {
+        pinMode(pin, INPUT);
+        signal(SIGINT, signal_handler);
+
+        int lastValue = digitalRead(pin);
+        unsigned long lastChange = millis();
+
+        cout << "Monitoring GPIO" << pin << " (interval " << intervalMs << " ms). Press Ctrl+C to stop." << endl;
+        cout << "Initial state: " << lastValue << endl;
+
+        while (running)
+        {
+            int value = digitalRead(pin);
+            if (value != lastValue)
+            {
+                unsigned long now = millis();
+                cout << "[" << now << " ms] " << lastValue << " -> " << value
+                     << " (Δ" << (now - lastChange) << " ms)" << endl;
+                lastValue = value;
+                lastChange = now;
+            }
+            delay(intervalMs);
+        }
+    }
+    catch (const exception& e)
+    {
+        cerr << COLOR_RED << "Error: " << e.what() << COLOR_RESET << endl;
+        exit(1);
+    }
+}
+
+void cmd_doctor()
+{
+    cout << COLOR_BOLD << "PiPin++ Doctor" << COLOR_RESET << endl;
+    cout << "Checking common setup issues...\n";
+
+    struct stat gpioStat{};
+    bool chipPresent = (stat("/dev/gpiochip0", &gpioStat) == 0);
+    bool chipRW = (access("/dev/gpiochip0", R_OK | W_OK) == 0);
+    bool gpioGroup = isUserInGroup("gpio");
+    bool isRoot = (getuid() == 0);
+
+    auto printCheck = [&](const string& label, bool ok, const string& help)
+    {
+        cout << (ok ? COLOR_GREEN + string("✓ ") : COLOR_RED + string("✗ "))
+             << COLOR_RESET << label << (ok ? "" : (" — " + help)) << endl;
+    };
+
+    printCheck("/dev/gpiochip0 present", chipPresent, "Install Raspberry Pi OS GPIO packages");
+    printCheck("GPIO read/write access", chipRW, "Run install.sh or adjust udev permissions");
+    printCheck("User in gpio group", gpioGroup, "sudo usermod -a -G gpio $USER");
+    printCheck("Running as root", isRoot, "Optional (sudo) for quick tests");
+
+    PlatformInfo& platform = PlatformInfo::instance();
+    cout << "\nDetected platform: " << platform.getModel() << endl;
+    cout << "Default GPIO chip: " << platform.getDefaultGPIOChip() << endl;
+    cout << "Default I2C bus: /dev/i2c-" << platform.getDefaultI2CBus() << endl;
+
+    cout << "\nTips:\n";
+    cout << " - Run ./install.sh to install libgpiod 2.2.1 automatically\n";
+    cout << " - Use pipinpp info to print board detection details\n";
+    cout << " - Enable I2C/SPI via raspi-config if you use those peripherals\n";
+}
+
 int main(int argc, char* argv[]) 
 {
     if (argc < 2) {
@@ -427,6 +541,14 @@ int main(int argc, char* argv[])
             int interval = (argc >= 4) ? atoi(argv[3]) : 500;
             cmd_blink(atoi(argv[2]), interval);
         }
+        else if (command == "monitor") {
+            if (argc < 3) {
+                cerr << "Usage: pipinpp monitor <pin> [interval_ms]\n";
+                return 1;
+            }
+            int interval = (argc >= 4) ? atoi(argv[3]) : 10;
+            cmd_monitor(atoi(argv[2]), interval);
+        }
         else if (command == "pwm") {
             if (argc < 4) {
                 cerr << "Usage: pipinpp pwm <pin> <value>\n";
@@ -472,6 +594,9 @@ int main(int argc, char* argv[])
         }
         else if (command == "benchmark") {
             cmd_benchmark();
+        }
+        else if (command == "doctor") {
+            cmd_doctor();
         }
         else {
             cerr << COLOR_RED << "Unknown command: " << command << COLOR_RESET << "\n\n";

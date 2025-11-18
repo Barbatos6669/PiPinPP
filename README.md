@@ -29,11 +29,22 @@
 
 ---
 
+## Quick Links
+
+- [Getting Started Guide](docs/GETTING_STARTED.md)
+- [Build Instructions](docs/BUILD.md)
+- [API Reference (Markdown)](docs/API_REFERENCE.md) · [Doxygen HTML](https://barbatos6669.github.io/PiPinPP/doxygen/index.html)
+- [Examples Directory](examples/)
+- [Tutorial Collection](docs/tutorials/README.md)
+- [Python Bindings (`pypipinpp`)](bindings/python/README.md)
+- [pipinpp CLI Usage](docs/CLI_USAGE.md)
+- [Developer Onboarding](docs/DEVELOPER.md) · [Contributing](.github/CONTRIBUTING.md)
+- [Platform Support Matrix](docs/PLATFORMS.md)
+
 ## Project Vision
 
 **PiPin++** aims to make Raspberry Pi GPIO control easy and familiar for makers, especially those coming from Arduino. Our goal is a modern, lightweight, and extensible C++ library that feels instantly comfortable for Arduino users—removing the hassle of adapting to Pi-specific APIs.
 
-## Why?
 
 - **Arduino makers often struggle to migrate projects to Raspberry Pi**, facing steep learning curves and inconsistent libraries.
 - **We want PiPin++ to bridge that gap** with a clean, intuitive API and modern C++ features.
@@ -54,14 +65,14 @@
 #include <ArduinoCompat.hpp>
 
 int main() {
-    pinMode(17, OUTPUT);              // Set GPIO 17 as output
+  pinMode(17, OUTPUT);
     
-    while (true) {
-        digitalWrite(17, HIGH);       // Turn LED on
-        delay(1000);                  // Wait 1 second
-        digitalWrite(17, LOW);        // Turn LED off
-        delay(1000);                  // Wait 1 second
-    }
+  while (true) {
+    digitalWrite(17, HIGH);
+    delay(1000);
+    digitalWrite(17, LOW);
+    delay(1000);
+  }
 }
 ```
 
@@ -84,9 +95,18 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 3. 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Fix common issues
 4. 📖 **[API Reference](docs/API_REFERENCE.md)** - Complete function documentation
 
+Featured walkthroughs:
+- [Controlling an LED](docs/tutorials/LED_BLINK.md)
+- [Button Input](docs/tutorials/BUTTON_INPUT.md)
+- [Interrupts 101](docs/tutorials/INTERRUPTS_101.md)
+- [I2C Sensor Dashboard](docs/tutorials/I2C_SENSOR.md)
+- [PWM Basics](docs/tutorials/PWM_BASICS.md)
+- [Multi-Threading](docs/tutorials/MULTI_THREADING.md)
+
 **Coming from Arduino?** Check out:
 - [Arduino Migration Example](examples/arduino_migration/) - Side-by-side comparison
 - [Arduino Style Example](examples/arduino_style/) - Familiar `setup()` and `loop()`
+- [Tutorial Index](docs/tutorials/README.md) - Curated learning paths and hardware checklists
 
 ---
 
@@ -126,15 +146,46 @@ That's it! If you know Arduino, you already know PiPin++. 🚀
 - ✅ **GitHub Actions CI/CD**: Multi-platform builds, automated testing, CodeQL security analysis
 - ✅ **Modern CMake**: find_package() support, shared/static library options, pkg-config compatibility
 - ✅ **25+ Examples with Full Documentation**: Every example includes comprehensive README with wiring diagrams, troubleshooting, and extension ideas
+- ✅ **Performance profiler**: `examples/performance_profiler` logs drift/jitter metrics and GPIO throughput to CSV for reproducible tuning sessions
 - ✅ **Clean project structure**: Organized documentation, no root clutter
 - ✅ **Platform detection**: Automatic Raspberry Pi model detection and configuration
 
 **v0.4.0 is production-ready with full Arduino API compatibility and extensive test coverage!**
 
+## Test Coverage
+
+[![Coverage](https://img.shields.io/badge/coverage-73.5%25-brightgreen)](https://barbatos6669.github.io/PiPinPP/coverage/index.html)
+
+- **Overall:** 73.5% line coverage / 94.8% function coverage (gcov + lcov)
+- **Hot spots:** Core `Pin`, Wire/SPI stacks, ArduinoCompat, math utilities
+- **Next targets:** Software PWM edge cases (`pwm.cpp`), CLI integration tests, high-frequency interrupt fuzzing
+- **How to view locally:** `cmake -S . -B build -DENABLE_COVERAGE=ON && cmake --build build --target coverage` → open `build/coverage_html/index.html`
+- **Public docs:** https://barbatos6669.github.io/PiPinPP/coverage/
+
 ### Longer-Term Goals (v0.4.0+)
 - [ ] **Multi-platform support**: Orange Pi and other ARM SBCs
 - [ ] **Advanced features**: Analog input, GPIO monitoring tools
 - [ ] **Development tools**: VS Code extensions and debugging utilities
+
+---
+
+## Performance Profiling Tools
+
+Need real numbers for timing drift or GPIO throughput? Build the profiling example and log the
+results for later analysis:
+
+- **Delay drift** – Verifies `delay()` accuracy across multiple samples
+- **Loop jitter** – Measures `delayMicroseconds()` while maintaining a 1 kHz loop
+- **GPIO throughput** – Reports average cost of paired `digitalWrite()` calls (default GPIO 17)
+- **CSV export** – Saves `performance_profile.csv` so you can plot histograms in Python/Excel
+
+```bash
+cd /path/to/PiPinPP/build
+make example_performance_profiler
+./examples/example_performance_profiler   # add sudo if your user is not in the gpio group
+```
+
+See `examples/performance_profiler/README.md` for tuning tips and sample output.
 
 ---
 
@@ -158,30 +209,46 @@ sudo bash install.sh
 ### Manual Installation
 
 ```bash
-# 1. Install dependencies
 sudo apt-get update
+sudo apt-get install build-essential cmake pkg-config git ninja-build curl
+# Install libgpiod 2.2.1 from source or run ./install.sh --libgpiod-only (see docs/PLATFORMS.md)
 sudo apt-get install build-essential cmake pkg-config git libgpiod-dev
 
 # 2. Build and install
-git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-git checkout v0.3.12
+git checkout v0.4.0
 ./build.sh
 cd build
 sudo make install
 sudo ldconfig
+sudo ldconfig
 
 # 3. Configure permissions
+# Log out and back in for group changes to apply
 sudo usermod -a -G gpio $USER
 # Log out and back in for this to take effect
 ```
 
-**Verify installation:**
+pkg-config --modversion pipinpp  # Should show: 0.4.0
 ```bash
 pkg-config --modversion pipinpp  # Should show: 0.3.7
 ```
 
 📖 **For detailed installation options and troubleshooting, see [INSTALL.md](docs/INSTALL.md)**
+
+## Platform & Compatibility Matrix
+
+- Supported boards: Raspberry Pi 5, 4, 3, Zero 2 W, CM4 (see [docs/PLATFORMS.md](docs/PLATFORMS.md) for notes)
+- Experimental targets: Orange Pi 5, Jetson Nano, BeagleBone (roadmap v0.5+)
+
+| PiPin++ Version | Tested libgpiod | Notes |
+|-----------------|-----------------|-------|
+| 0.4.0 (current) | 2.2.1 (preferred), 2.0.2 | Full feature set incl. platform detector + interrupts |
+| 0.3.7           | 2.0.x            | Transitional release before platform detector |
+| ≤0.3.0          | 1.6.3 (legacy)   | Deprecated – upgrade ASAP |
+
+`install.sh` automatically builds libgpiod 2.2.1 on Raspberry Pi OS so you don't have to source
+packages manually.
 
 ### Using in Your Projects
 
@@ -195,6 +262,26 @@ g++ main.cpp $(pkg-config --cflags --libs pipinpp) -o main
 find_package(PiPinPP REQUIRED)
 target_link_libraries(your_app PiPinPP::pipinpp)
 ```
+
+---
+
+## pipinpp CLI Tool
+
+Prefer quick experiments over editing C++? Build the CLI (`cmake --build build --target pipinpp_cli`) and run
+commands such as:
+
+```bash
+pipinpp info
+pipinpp mode 17 out
+pipinpp write 17 1
+pipinpp i2c scan
+pipinpp benchmark
+pipinpp monitor 23 5
+pipinpp doctor
+```
+
+The CLI mirrors the Arduino-compatible API, making it great for smoke tests and lab automation. See
+`docs/CLI_USAGE.md` for the full command matrix, installation tips, and environment overrides.
 
 ---
 
@@ -216,6 +303,20 @@ We have a comprehensive [2026 Roadmap](docs/ROADMAP.md) with exciting plans:
 - 🖥️ [Report platform testing](https://github.com/Barbatos6669/PiPinPP/issues/new?template=platform_support.md)
 
 **Read the full roadmap**: [docs/ROADMAP.md](docs/ROADMAP.md)
+
+---
+
+## Developer Onboarding
+
+Ready to contribute? Start with:
+
+- [Developer Guide](docs/DEVELOPER.md) – environment setup, formatting rules, coverage targets
+- [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) – branching, PR etiquette, issue workflow
+- [Test Matrix](docs/BUILD.md) & [TESTING.md](docs/TESTING.md) – build knobs, hardware guidance
+- `scripts/run_examples.sh` – batch-build/execute examples (`--filter`, `--execute`, `--jobs`)
+
+The TL;DR workflow: `./build.sh --clean --debug`, make your change, run `ctest`, update docs/examples,
+then open a PR referencing the relevant issue.
 
 ---
 
