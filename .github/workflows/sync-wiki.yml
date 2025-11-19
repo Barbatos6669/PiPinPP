@@ -1,0 +1,100 @@
+name: sync-wiki
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'docs/**'
+      - 'scripts/sync_wiki.sh'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout wiki repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync documentation to wiki
+        run: |
+          # Copy documentation files
+          cp docs/WIKI_HOME.md wiki/Home.md
+          cp docs/_Sidebar.md wiki/_Sidebar.md
+          
+          # Main documentation
+          cp docs/INSTALL.md wiki/Installation.md
+          cp docs/GETTING_STARTED.md wiki/Getting-Started.md
+          cp docs/BUILD.md wiki/Build-Instructions.md
+          cp docs/API_REFERENCE.md wiki/API-Reference.md
+          cp docs/CLI_USAGE.md wiki/CLI-Tool.md
+          cp docs/PIN_NUMBERING.md wiki/Pin-Numbering.md
+          cp docs/PLATFORMS.md wiki/Platform-Support.md
+          cp docs/TROUBLESHOOTING.md wiki/Troubleshooting.md
+          cp docs/FAQ.md wiki/FAQ.md
+          cp docs/DEVELOPER.md wiki/Developer-Guide.md
+          cp docs/CODE_STANDARDS.md wiki/Code-Standards.md
+          cp docs/TESTING.md wiki/Testing.md
+          cp docs/ROADMAP.md wiki/Roadmap.md
+          cp docs/PERMISSIONS.md wiki/Permissions.md
+          
+          # Tutorials
+          cp docs/tutorials/LED_BLINK.md wiki/Tutorial-LED-Blink.md
+          cp docs/tutorials/BUTTON_INPUT.md wiki/Tutorial-Button-Input.md
+          cp docs/tutorials/TRAFFIC_LIGHT.md wiki/Tutorial-Traffic-Light.md
+          cp docs/tutorials/PWM_BASICS.md wiki/Tutorial-PWM-Basics.md
+          cp docs/tutorials/INTERRUPTS_101.md wiki/Tutorial-Interrupts.md
+          cp docs/tutorials/I2C_SENSOR.md wiki/Tutorial-I2C-Sensor.md
+          cp docs/tutorials/MULTI_THREADING.md wiki/Tutorial-Multi-Threading.md
+          cp docs/tutorials/README.md wiki/Tutorials-Index.md
+
+      - name: Fix internal links for wiki structure
+        working-directory: wiki
+        run: |
+          find . -name "*.md" -type f -exec sed -i \
+            -e 's/](INSTALL\.md)/](Installation)/g' \
+            -e 's/](GETTING_STARTED\.md)/](Getting-Started)/g' \
+            -e 's/](BUILD\.md)/](Build-Instructions)/g' \
+            -e 's/](API_REFERENCE\.md)/](API-Reference)/g' \
+            -e 's/](CLI_USAGE\.md)/](CLI-Tool)/g' \
+            -e 's/](PIN_NUMBERING\.md)/](Pin-Numbering)/g' \
+            -e 's/](PLATFORMS\.md)/](Platform-Support)/g' \
+            -e 's/](TROUBLESHOOTING\.md)/](Troubleshooting)/g' \
+            -e 's/](FAQ\.md)/](FAQ)/g' \
+            -e 's/](DEVELOPER\.md)/](Developer-Guide)/g' \
+            -e 's/](CODE_STANDARDS\.md)/](Code-Standards)/g' \
+            -e 's/](TESTING\.md)/](Testing)/g' \
+            -e 's/](ROADMAP\.md)/](Roadmap)/g' \
+            -e 's/](PERMISSIONS\.md)/](Permissions)/g' \
+            -e 's/](tutorials\/LED_BLINK\.md)/](Tutorial-LED-Blink)/g' \
+            -e 's/](tutorials\/BUTTON_INPUT\.md)/](Tutorial-Button-Input)/g' \
+            -e 's/](tutorials\/TRAFFIC_LIGHT\.md)/](Tutorial-Traffic-Light)/g' \
+            -e 's/](tutorials\/PWM_BASICS\.md)/](Tutorial-PWM-Basics)/g' \
+            -e 's/](tutorials\/INTERRUPTS_101\.md)/](Tutorial-Interrupts)/g' \
+            -e 's/](tutorials\/I2C_SENSOR\.md)/](Tutorial-I2C-Sensor)/g' \
+            -e 's/](tutorials\/MULTI_THREADING\.md)/](Tutorial-Multi-Threading)/g' \
+            -e 's/](tutorials\/README\.md)/](Tutorials-Index)/g' \
+            -e 's/](WIKI_HOME\.md)/](Home)/g' \
+            {} \;
+
+      - name: Commit and push to wiki
+        working-directory: wiki
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: sync from main repository (automated)"
+            git push
+          fi

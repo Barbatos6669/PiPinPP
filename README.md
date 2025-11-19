@@ -8,7 +8,8 @@
 </div>
 
 [![CI](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-73.5%25-brightgreen)](build/coverage_html/index.html)
+[![Docs](https://github.com/Barbatos6669/PiPinPP/actions/workflows/docs.yml/badge.svg)](https://github.com/Barbatos6669/PiPinPP/actions/workflows/docs.yml)
+[![Coverage](https://img.shields.io/badge/coverage-73.5%25-brightgreen)](https://barbatos6669.github.io/PiPinPP/coverage/)
 [![CodeQL](https://img.shields.io/badge/CodeQL-passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP/security/code-scanning)
 [![CodeFactor](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP/badge)](https://www.codefactor.io/repository/github/Barbatos6669/PiPinPP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -18,8 +19,11 @@
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![libgpiod](https://img.shields.io/badge/libgpiod-2.2.1-green.svg)](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git)
 [![Tests](https://img.shields.io/badge/tests-672%20passing-brightgreen)](https://github.com/Barbatos6669/PiPinPP)
+[![Examples](https://img.shields.io/badge/examples-25+-blue)](examples/)
+[![Tutorials](https://img.shields.io/badge/tutorials-7-success)](docs/tutorials/)
+[![Wiki](https://img.shields.io/badge/wiki-comprehensive-informational)](https://github.com/Barbatos6669/PiPinPP/wiki)
 
-🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 📖 **[API Reference](docs/API_REFERENCE.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 📌 **[Pin Numbering](docs/PIN_NUMBERING.md)**
+🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 📖 **[Wiki](https://github.com/Barbatos6669/PiPinPP/wiki)** | 📘 **[API Reference](docs/API_REFERENCE.md)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)**
 
 ---
 
