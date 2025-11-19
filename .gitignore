@@ -77,3 +77,4 @@ CTestTestfile.cmake
 # Backup files
 *.bak
 *.backup
+wiki/
