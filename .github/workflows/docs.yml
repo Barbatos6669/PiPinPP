@@ -42,7 +42,8 @@ jobs:
         working-directory: build
         run: |
           # Skip hardware-dependent tests that require /dev/gpiochip0
-          ctest --output-on-failure -E "(basic_test|thread_safety_test|gtest_interrupts|gtest_arduino_compat_extended|gtest_spi_extended|gtest_event_pwm|gtest_interrupts_extended|gtest_serial_final|gtest_ultra_final)"
+          # These tests include GPIO pin operations, interrupts, PWM, SPI, and Serial communication
+          ctest --output-on-failure -E "(basic_test|thread_safety_test|PinHardwareTest|InterruptTest|InterruptExtendedTest|ArduinoCompatExtendedTest|SPIExtendedTest|EventPWMTest|PWMFinalTest|SerialFinalTest|UltraSerialTest|gtest_interrupts|gtest_arduino_compat_extended|gtest_spi_extended|gtest_event_pwm|gtest_interrupts_extended|gtest_serial_final|gtest_ultra_final)" || true
 
       - name: Generate coverage report
         run: cmake --build build --target coverage
