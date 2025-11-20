@@ -33,7 +33,7 @@ jobs:
           sudo ldconfig
 
       - name: Configure (coverage build)
-        run: cmake -S . -B build -G Ninja -DBUILD_TESTS=ON -DBUILD_EXAMPLES=OFF -DENABLE_COVERAGE=ON -DPIPINPP_ENABLE_LOGGING=OFF
+        run: cmake -S . -B build -G Ninja -DBUILD_TESTS=ON -DBUILD_EXAMPLES=OFF -DPIPINPP_ENABLE_COVERAGE=ON -DPIPINPP_ENABLE_LOGGING=OFF
 
       - name: Build library
         run: cmake --build build
