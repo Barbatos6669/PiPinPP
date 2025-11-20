@@ -23,7 +23,7 @@
 [![Tutorials](https://img.shields.io/badge/tutorials-7-success)](docs/tutorials/)
 [![Wiki](https://img.shields.io/badge/wiki-comprehensive-informational)](https://github.com/Barbatos6669/PiPinPP/wiki)
 
-🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 📖 **[Wiki](https://github.com/Barbatos6669/PiPinPP/wiki)** | 📘 **[API Reference](docs/API_REFERENCE.md)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 🔒 **[Security](/.github/SECURITY.md)**
+🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 📖 **[Wiki](https://github.com/Barbatos6669/PiPinPP/wiki)** | 📘 **[API Reference](docs/API_REFERENCE.md)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 🔒 **[Security](.github/SECURITY.md)**
 
 ---
 

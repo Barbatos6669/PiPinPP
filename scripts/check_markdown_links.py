@@ -158,7 +158,11 @@ def main():
                 else:
                     print(f"\n   Location unknown:")
                 print(f"   Link: [{broken['link_text']}]({broken['link_url']})")
-                print(f"   Target: {broken['resolved_path'].relative_to(repo_root)}")
+                try:
+                    print(f"   Target: {broken['resolved_path'].relative_to(repo_root)}")
+                except ValueError:
+                    # Path is not relative to repo root (e.g., absolute path)
+                    print(f"   Target: {broken['resolved_path']}")
                 print(f"   Status: ❌ {broken['reason']}")
         
         print("\n" + "=" * 80)
