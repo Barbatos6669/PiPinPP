@@ -61,11 +61,27 @@ CTestTestfile.cmake
 # IDE and Editor files
 .vscode/
 .idea/
+.vs/
 *.swp
 *.swo
+*.swn
 *~
 *.tmp
 .DS_Store
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.project
+.cproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.vimrc.local
+Session.vim
+.netrwhist
+tags
+*.code-workspace
 
 # Package files
 *.pc
@@ -73,8 +89,53 @@ CTestTestfile.cmake
 
 # Logs
 *.log
+*.tlog
 
 # Backup files
 *.bak
 *.backup
+*.orig
+
+# Coverage files
+*.gcov
+*.gcda
+*.gcno
+coverage/
+coverage.info
+lcov.info
+
+# Profiling and performance
+*.prof
+gmon.out
+perf.data
+perf.data.old
+callgrind.out.*
+
+# Sanitizers
+*.san
+
+# Documentation build artifacts
+html/
+latex/
+docs/html/
+docs/latex/
+docs/generated/
+
+# Temporary and cache files
+*.cache
+*.pid
+core
+core.*
+
+# Python (for helper scripts)
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# OS-specific
+Thumbs.db
+Desktop.ini
+
+# Project-specific
 wiki/

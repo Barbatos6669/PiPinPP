@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🔧 Build System
+- **Enhanced build.sh** with new options:
+  - `--tests-only` - Build only tests (skip examples)
+  - `--examples-only` - Build only examples (skip tests)
+  - `--no-tests` - Skip building tests
+  - `--no-examples` - Skip building examples
+  - `--verbose, -v` - Show detailed build output
+  - Improved dependency checking with better error messages
+  - Build summary at completion
+  - Better error handling and exit codes
+
+### 📝 Project Infrastructure
+- **NEW: PR Checks workflow** - Automated validation for pull requests:
+  - Conventional commit title enforcement
+  - CHANGELOG update detection
+  - Documentation completeness checks
+  - Large file detection
+  - Merge conflict validation
+  - Markdown link checking
+- **Enhanced .gitignore** - Comprehensive coverage for:
+  - Additional IDE files (Visual Studio, Sublime, Vim session files)
+  - Coverage artifacts (gcov, gcda, gcno)
+  - Profiling files (gmon.out, perf.data, callgrind)
+  - Documentation build artifacts
+  - Python cache files
+  - OS-specific files (Thumbs.db, Desktop.ini)
+- **Added Security Policy link** in README quick links
+
 ## [0.4.0] - 2025-11-16
 
 ### 🚀 Major Features

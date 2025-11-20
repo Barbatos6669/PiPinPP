@@ -1,0 +1,115 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [ main, develop ]
+
+jobs:
+  pr-validation:
+    name: PR Validation
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check PR title format
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if ! echo "$PR_TITLE" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+'; then
+            echo "❌ PR title must follow conventional commits format:"
+            echo "   type(scope): description"
+            echo "   Example: feat(gpio): add PWM support"
+            echo "   Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+            exit 1
+          fi
+          echo "✅ PR title format is valid"
+      
+      - name: Check for CHANGELOG update
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "CHANGELOG.md"; then
+            echo "✅ CHANGELOG.md has been updated"
+          else
+            echo "⚠️  Warning: CHANGELOG.md not updated. Consider adding an entry."
+            echo "   This is recommended but not required for minor changes."
+          fi
+      
+      - name: Check for documentation updates
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          
+          # Check if any .hpp or .cpp files changed
+          if echo "$CHANGED_FILES" | grep -qE '\.(hpp|cpp)$'; then
+            echo "Code files changed, checking for documentation..."
+            
+            # Check if docs were updated
+            if echo "$CHANGED_FILES" | grep -qE '^docs/'; then
+              echo "✅ Documentation updated"
+            else
+              echo "⚠️  Warning: Code changed but no documentation updates detected."
+              echo "   Consider updating docs/ if you added new features."
+            fi
+          else
+            echo "✅ No code changes requiring documentation"
+          fi
+      
+      - name: Check file sizes
+        run: |
+          echo "Checking for large files..."
+          LARGE_FILES=$(find . -type f -size +1M -not -path "./.git/*" -not -path "./build/*" -not -path "./wiki/*")
+          
+          if [ -n "$LARGE_FILES" ]; then
+            echo "⚠️  Large files detected (>1MB):"
+            echo "$LARGE_FILES"
+            echo "Consider using Git LFS for binary files"
+          else
+            echo "✅ No large files detected"
+          fi
+      
+      - name: Check for merge conflicts
+        run: |
+          if git diff --check origin/${{ github.base_ref }}...HEAD; then
+            echo "✅ No merge conflict markers found"
+          else
+            echo "❌ Merge conflict markers detected"
+            exit 1
+          fi
+      
+      - name: Validate markdown links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          config-file: '.github/workflows/markdown-link-check-config.json'
+          check-modified-files-only: 'yes'
+        continue-on-error: true
+      
+      - name: PR Summary
+        if: always()
+        run: |
+          echo "### 📋 PR Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PR Title:** ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Base Branch:** ${{ github.base_ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Changed Files:** $(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ PR checks completed" >> $GITHUB_STEP_SUMMARY
+
+  label-check:
+    name: Check Labels
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: Check for labels
+        run: |
+          LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+          
+          if [ -z "$LABELS" ]; then
+            echo "⚠️  No labels applied to this PR"
+            echo "   Consider adding labels like: enhancement, bug, documentation, etc."
+          else
+            echo "✅ Labels applied: $LABELS"
+          fi
