@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+message: "If you use PiPinPP in your research or project, please cite it as below."
+title: "PiPinPP: A Modern C++ GPIO Library for Raspberry Pi"
+version: 0.4.0
+date-released: "2025-11-16"
+url: "https://github.com/Barbatos6669/PiPinPP"
+repository-code: "https://github.com/Barbatos6669/PiPinPP"
+license: MIT
+type: software
+
+authors:
+  - family-names: "PiPinPP Contributors"
+    alias: "Barbatos6669"
+
+keywords:
+  - Raspberry Pi
+  - GPIO
+  - libgpiod
+  - embedded systems
+  - Arduino
+  - C++17
+  - hardware control
+  - PWM
+  - I2C
+  - SPI
+  - UART
+  - interrupts
+
+abstract: |
+  PiPinPP is a modern C++ library for GPIO control on Raspberry Pi that provides
+  an Arduino-compatible API built on top of libgpiod v2. It features comprehensive
+  digital I/O, PWM, interrupts, and communication protocols (I2C, SPI, UART) with
+  extensive test coverage (73.5%) and thread-safe operations. Designed for makers,
+  educators, and embedded systems developers who want the familiarity of Arduino
+  with the power of Raspberry Pi.
+
+references:
+  - type: software
+    title: "libgpiod"
+    authors:
+      - name: "Linux Kernel GPIO Subsystem"
+    url: "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git"
+    version: "2.2.1"
+    notes: "Core GPIO access library used by PiPinPP"
+
+preferred-citation:
+  type: software
+  title: "PiPinPP: Arduino-Compatible GPIO Library for Raspberry Pi"
+  authors:
+    - family-names: "PiPinPP Contributors"
+      alias: "Barbatos6669"
+  version: 0.4.0
+  date-released: "2025-11-16"
+  url: "https://github.com/Barbatos6669/PiPinPP"
+  repository-code: "https://github.com/Barbatos6669/PiPinPP"
+  license: MIT

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🆕 Project Infrastructure
+- **New GitHub issue templates**:
+  - Documentation Improvement template for doc feedback
+  - Performance Issue template with benchmark structure
+  - Hardware Compatibility Request for new board support
+- **Dependabot configuration** for automated GitHub Actions updates
+- **CITATION.cff** for academic citations and research use
+- **Enhanced README** with 4 quick start examples:
+  - LED blink, button input, PWM fade, I2C sensor
+  - Hardware requirements listed for each example
+- **New project badges**: PRs Welcome, Good First Issue, Discord, Maintenance status, GitHub stars
+
 ### 🔧 Build System
 - **Enhanced build.sh** with new options:
   - `--tests-only` - Build only tests (skip examples)

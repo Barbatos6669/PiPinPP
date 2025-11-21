@@ -23,6 +23,12 @@
 [![Tutorials](https://img.shields.io/badge/tutorials-7-success)](docs/tutorials/)
 [![Wiki](https://img.shields.io/badge/wiki-comprehensive-informational)](https://github.com/Barbatos6669/PiPinPP/wiki)
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Barbatos6669/PiPinPP/blob/main/.github/CONTRIBUTING.md)
+[![Good First Issue](https://img.shields.io/github/issues/Barbatos6669/PiPinPP/good%20first%20issue?label=good%20first%20issues)](https://github.com/Barbatos6669/PiPinPP/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289da)](https://discord.gg/wXeZP8Ev)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Barbatos6669/PiPinPP/graphs/commit-activity)
+[![GitHub stars](https://img.shields.io/github/stars/Barbatos6669/PiPinPP?style=social)](https://github.com/Barbatos6669/PiPinPP/stargazers)
+
 🚀 **[Getting Started](docs/GETTING_STARTED.md)** | 📚 **[Tutorials](docs/tutorials/)** | 📖 **[Wiki](https://github.com/Barbatos6669/PiPinPP/wiki)** | 📘 **[API Reference](docs/API_REFERENCE.md)** | 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)** | 🗺️ **[Roadmap](docs/ROADMAP.md)** | 🔒 **[Security](.github/SECURITY.md)**
 
 ---
@@ -61,9 +67,10 @@
 
 ---
 
-## Quick Start Example
+## Quick Start Examples
 
-**Blink an LED in 10 lines of code:**
+### 🔵 Blink an LED
+**Hardware:** LED + 220Ω resistor on GPIO 17
 
 ```cpp
 #include <ArduinoCompat.hpp>
@@ -80,13 +87,79 @@ int main() {
 }
 ```
 
-**Compile and run:**
-```bash
-g++ blink.cpp $(pkg-config --cflags --libs pipinpp) -o blink
-sudo ./blink
+### 🔘 Read a Button
+**Hardware:** Push button on GPIO 23 (pull-up enabled)
+
+```cpp
+#include <ArduinoCompat.hpp>
+
+int main() {
+  pinMode(23, INPUT_PULLUP);
+  pinMode(17, OUTPUT);
+  
+  while (true) {
+    if (digitalRead(23) == LOW) {  // Button pressed
+      digitalWrite(17, HIGH);      // LED on
+    } else {
+      digitalWrite(17, LOW);       // LED off
+    }
+    delay(50);
+  }
+}
 ```
 
-That's it! If you know Arduino, you already know PiPin++. 🚀
+### 💡 PWM LED Fade
+**Hardware:** LED + 220Ω resistor on GPIO 18
+
+```cpp
+#include <ArduinoCompat.hpp>
+
+int main() {
+  pinMode(18, OUTPUT);
+  
+  while (true) {
+    for (int brightness = 0; brightness < 256; brightness++) {
+      analogWrite(18, brightness);
+      delay(5);
+    }
+    for (int brightness = 255; brightness >= 0; brightness--) {
+      analogWrite(18, brightness);
+      delay(5);
+    }
+  }
+}
+```
+
+### 📡 I2C Sensor (BMP280)
+**Hardware:** BMP280 sensor on I2C bus
+
+```cpp
+#include <Wire.hpp>
+
+int main() {
+  pipinpp::Wire.begin();
+  
+  // Read temperature from BMP280 (address 0x76)
+  pipinpp::Wire.beginTransmission(0x76);
+  pipinpp::Wire.write(0xFA);  // Temperature register
+  pipinpp::Wire.endTransmission();
+  
+  pipinpp::Wire.requestFrom(0x76, 3);
+  int temp = (pipinpp::Wire.read() << 12) | 
+             (pipinpp::Wire.read() << 4) | 
+             (pipinpp::Wire.read() >> 4);
+  
+  std::cout << "Temperature: " << temp / 100.0 << "°C\n";
+}
+```
+
+**Compile and run any example:**
+```bash
+g++ example.cpp $(pkg-config --cflags --libs pipinpp) -o example
+sudo ./example
+```
+
+**If you know Arduino, you already know PiPin++!** 🚀
 
 ---
 
