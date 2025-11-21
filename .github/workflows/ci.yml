@@ -253,7 +253,7 @@ jobs:
       
       # Initialize CodeQL - this sets up the C++ scanner
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: cpp
           # CodeQL will analyze C++ code for:
@@ -271,7 +271,7 @@ jobs:
       
       # Run the actual analysis
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         # Results appear in GitHub's Security tab
         # You'll get alerts if any security issues are found
 
