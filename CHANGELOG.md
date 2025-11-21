@@ -21,9 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **GitHub automation workflows**:
   - Auto-labeling for issues and PRs based on content and file changes
   - Stale bot to manage inactive issues (60 days) and PRs (30 days)
+  - Code format checker with helpful PR comments and fix instructions
+  - Automated release workflow with tarball generation and checksums
 - **Code style configuration**:
   - `.clang-format` - Allman brace style, 4-space indentation, 100-char line limit
   - `.editorconfig` - Cross-editor consistency for all file types
+- **VS Code workspace configuration**:
+  - Recommended extensions (C++, CMake, Doxygen, Git, Remote SSH)
+  - Editor settings with format-on-save and 100-char ruler
+  - 16 pre-configured build/test/debug tasks
+  - Launch configurations for debugging examples and tests
 
 ### 🔧 Build System
 - **Enhanced build.sh** with new options:
@@ -229,19 +236,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Both `Pin(int, PinDirection)` and `Pin(int, PinMode)` constructors now delegate to shared implementation
   - Improved maintainability with single source of truth for GPIO setup
   - No behavioral changes - all 88 unit tests pass
-  
+
 - **Exception Consistency** - Standardized custom exception types throughout codebase
   - Replaced `std::invalid_argument` with `InvalidPinError` across all throw sites
   - Replaced `std::runtime_error` with `GpioAccessError` for hardware errors
   - Updated `interrupts.cpp` (6 locations) and `ArduinoCompat.cpp` (1 location)
   - Provides better error categorization for library users
-  
+
 - **Logging Optimization** - Improved logging performance by 10-100x
   - Changed `DEBUG`/`INFO`/`WARNING` macros to use `\n` instead of `std::endl`
   - Avoids unnecessary flush operations on every log statement
   - `ERROR` level retains `std::endl` for immediate visibility
   - Critical for high-frequency logging scenarios (GPIO toggle, PWM)
-  
+
 - **Library Code Quality** - Removed direct console output from library code
   - Replaced `std::cerr` in `validatePinNumber()` with `PIPINPP_LOG_WARNING` macro
   - Library now consistently uses logging framework instead of direct output
@@ -251,14 +258,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CODE_STANDARDS.md** - Updated with modern C++ patterns
   - Changed constant examples from `#define` to `constexpr bool`
   - Clarified header naming convention (PascalCase for classes, lowercase for utilities)
-  
+
 - **API_REFERENCE.md** - Comprehensive accuracy improvements
   - Added missing `INPUT_PULLDOWN` to `ArduinoPinMode` enum documentation
   - Updated `pinMode()` examples to demonstrate pull-down resistor usage
   - Corrected exception type documentation throughout (InvalidPinError, GpioAccessError)
   - Fixed Pin constructor exception documentation
   - Updated exception handling examples to use custom exception types
-  
+
 ### Quality Metrics
 - Zero behavioral changes - all 88 unit tests pass
 - No new compiler warnings introduced
@@ -422,7 +429,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Your first program with line-by-line explanations
   - Interactive button example
   - Troubleshooting section for common issues
-  
+
 - **Troubleshooting Guide** - Comprehensive issue resolution (595 lines)
   - Installation issues and fixes
   - Permission errors and solutions
@@ -430,7 +437,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Compilation and runtime errors
   - Pin numbering confusion help
   - Performance tips and advanced debugging
-  
+
 - **FAQ** - Frequently Asked Questions (577 lines)
   - 30+ common questions answered
   - Getting started help
@@ -438,7 +445,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Programming guidance
   - Performance expectations
   - Community resources
-  
+
 - **Tutorials Directory** - Step-by-step projects
   - Traffic Light tutorial with challenges (419 lines)
   - Tutorial index with learning paths
@@ -882,8 +889,8 @@ This major release brings PiPinPP to production-ready status with 8 major featur
 
 ## Project Information
 
-**Repository**: [PiPinPP](https://github.com/Barbatos6669/PiPinPP)  
-**Author**: HobbyHacker / Barbatos6669  
-**License**: See LICENSE file  
-**Language**: C++  
+**Repository**: [PiPinPP](https://github.com/Barbatos6669/PiPinPP)
+**Author**: HobbyHacker / Barbatos6669
+**License**: See LICENSE file
+**Language**: C++
 **Platform**: Raspberry Pi (Linux)

@@ -1,0 +1,141 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 0.4.1)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+            echo "version=v$VERSION" >> $GITHUB_OUTPUT
+            echo "version_number=$VERSION" >> $GITHUB_OUTPUT
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "version_number=${VERSION#v}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if release notes exist
+        id: check_notes
+        run: |
+          VERSION="${{ steps.version.outputs.version_number }}"
+          if [ -f "release_notes/v${VERSION}.md" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release notes found: release_notes/v${VERSION}.md"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No release notes found, will generate from CHANGELOG"
+          fi
+
+      - name: Extract release notes from file
+        if: steps.check_notes.outputs.exists == 'true'
+        id: notes_from_file
+        run: |
+          VERSION="${{ steps.version.outputs.version_number }}"
+          cat "release_notes/v${VERSION}.md" > release_body.md
+
+      - name: Extract release notes from CHANGELOG
+        if: steps.check_notes.outputs.exists == 'false'
+        id: notes_from_changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version_number }}"
+
+          # Extract the section for this version from CHANGELOG
+          awk "/## \[$VERSION\]/,/## \[/" CHANGELOG.md | sed '$d' > release_body.md
+
+          # If nothing extracted, create a basic release note
+          if [ ! -s release_body.md ]; then
+            echo "## PiPinPP v${VERSION}" > release_body.md
+            echo "" >> release_body.md
+            echo "See [CHANGELOG.md](CHANGELOG.md) for details." >> release_body.md
+          fi
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build pkg-config autoconf-archive autoconf libtool
+
+      - name: Build libgpiod v2
+        run: |
+          git clone --depth 1 --branch v2.2.1 https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /tmp/libgpiod
+          cd /tmp/libgpiod
+          ./autogen.sh --enable-tools=yes --enable-bindings-cxx --prefix=/usr/local
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+
+      - name: Build release artifacts
+        run: |
+          # Build Release version
+          cmake -S . -B build-release -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=OFF \
+            -DBUILD_EXAMPLES=ON
+          cmake --build build-release
+
+          # Create source tarball
+          VERSION="${{ steps.version.outputs.version_number }}"
+          tar -czf "pipinpp-${VERSION}-source.tar.gz" \
+            --exclude='build*' \
+            --exclude='.git' \
+            --exclude='wiki' \
+            --exclude='*.o' \
+            --exclude='*.a' \
+            --transform "s,^,pipinpp-${VERSION}/," \
+            src/ include/ examples/ docs/ CMakeLists.txt LICENSE README.md install.sh
+
+      - name: Generate checksum
+        run: |
+          VERSION="${{ steps.version.outputs.version_number }}"
+          sha256sum "pipinpp-${VERSION}-source.tar.gz" > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: PiPinPP ${{ steps.version.outputs.version }}
+          body_path: release_body.md
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease || false }}
+          files: |
+            pipinpp-${{ steps.version.outputs.version_number }}-source.tar.gz
+            checksums.txt
+          fail_on_unmatched_files: false
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Release Created Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag**: \`${{ steps.version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Source tarball: \`pipinpp-${{ steps.version.outputs.version_number }}-source.tar.gz\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Checksums: \`checksums.txt\`" >> $GITHUB_STEP_SUMMARY

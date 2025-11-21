@@ -1,0 +1,134 @@
+name: Code Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+      - '**.h'
+      - '**.cc'
+      - '**.cxx'
+      - '.clang-format'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  clang-format-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+          clang-format --version
+          
+      - name: Check code formatting
+        id: format-check
+        run: |
+          # Find all C++ files that differ from main branch
+          FILES=$(git diff --name-only --diff-filter=ACMRT origin/${{ github.base_ref }} | grep -E '\.(cpp|hpp|h|cc|cxx)$' || true)
+          
+          if [ -z "$FILES" ]; then
+            echo "No C++ files changed"
+            echo "formatted=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "Checking formatting for:"
+          echo "$FILES"
+          
+          # Check formatting
+          FORMATTED=true
+          UNFORMATTED_FILES=""
+          
+          for FILE in $FILES; do
+            if [ -f "$FILE" ]; then
+              # Create a temporary formatted version
+              clang-format "$FILE" > "$FILE.formatted"
+              
+              # Compare with original
+              if ! diff -q "$FILE" "$FILE.formatted" > /dev/null; then
+                FORMATTED=false
+                UNFORMATTED_FILES="$UNFORMATTED_FILES\n- $FILE"
+                echo "❌ $FILE needs formatting"
+              else
+                echo "✅ $FILE is properly formatted"
+              fi
+              
+              rm "$FILE.formatted"
+            fi
+          done
+          
+          echo "formatted=$FORMATTED" >> $GITHUB_OUTPUT
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$UNFORMATTED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          if [ "$FORMATTED" = "false" ]; then
+            exit 1
+          fi
+          
+      - name: Comment on PR with formatting issues
+        if: failure() && steps.format-check.outputs.formatted == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = `${{ steps.format-check.outputs.files }}`;
+            const body = `## 🎨 Code Formatting Issues
+            
+            Some files need to be formatted according to the project's \`.clang-format\` configuration.
+            
+            ### Files that need formatting:
+            ${files}
+            
+            ### How to fix:
+            
+            **Option 1: Format all files automatically**
+            \`\`\`bash
+            # Format all C++ files in the project
+            find src include tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+            
+            # Commit the changes
+            git add -u
+            git commit -m "style: apply clang-format"
+            git push
+            \`\`\`
+            
+            **Option 2: Format specific files**
+            \`\`\`bash
+            clang-format -i path/to/file.cpp
+            \`\`\`
+            
+            **Option 3: Use VS Code extension**
+            Install the \`xaver.clang-format\` extension and it will format on save.
+            
+            ### Check formatting before pushing:
+            \`\`\`bash
+            clang-format --dry-run --Werror src/MyFile.cpp
+            \`\`\`
+            
+            Once you've formatted the code, push the changes and this check will pass. ✅`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+            
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.format-check.outputs.formatted }}" = "true" ]; then
+            echo "✅ All C++ files are properly formatted according to .clang-format" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some files need formatting. See the PR comment for details." >> $GITHUB_STEP_SUMMARY
+          fi
