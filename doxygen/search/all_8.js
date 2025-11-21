@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['i2cbuses_81',['i2cBuses',['../structpipinpp_1_1PlatformCapabilities.html#aecac5b64b4978f972b9f68491fb1fe84',1,'pipinpp::PlatformCapabilities']]],
+  ['i2cbusinfo_82',['I2CBusInfo',['../structpipinpp_1_1I2CBusInfo.html',1,'pipinpp']]],
+  ['input_83',['INPUT',['../pin_8hpp.html#a15c0c34a3baec6b9d2390a426bd3ba96aa84cc046d48610b05c21fd3670d0c829',1,'INPUT():&#160;pin.hpp'],['../pin_8hpp.html#a8ff912d511000d542e6ad34966166f38aa84cc046d48610b05c21fd3670d0c829',1,'INPUT():&#160;pin.hpp'],['../ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08ae310c909d76b003d016bef8bdf16936a',1,'INPUT():&#160;ArduinoCompat.hpp']]],
+  ['input_5fpulldown_84',['INPUT_PULLDOWN',['../pin_8hpp.html#a15c0c34a3baec6b9d2390a426bd3ba96a5953ff74bf620b2bb72efb16d1a9b26e',1,'INPUT_PULLDOWN():&#160;pin.hpp'],['../ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08a58b097229d3b2a4afa0eb445c1334927',1,'INPUT_PULLDOWN():&#160;ArduinoCompat.hpp']]],
+  ['input_5fpullup_85',['INPUT_PULLUP',['../pin_8hpp.html#a15c0c34a3baec6b9d2390a426bd3ba96ace9c2fb3e41547f8dfb11145f7485786',1,'INPUT_PULLUP():&#160;pin.hpp'],['../ArduinoCompat_8hpp.html#a48d2e2b17be97c0de9cb9bf78378fb08a851c2ac60276ada62e8d9ba216c7a487',1,'INPUT_PULLUP():&#160;ArduinoCompat.hpp']]],
+  ['instance_86',['instance',['../classpipinpp_1_1PlatformInfo.html#a0e9dc99187bd0e0751ff7417d0e151d3',1,'pipinpp::PlatformInfo']]],
+  ['interruptcallback_87',['InterruptCallback',['../interrupts_8hpp.html#a43c16977c969b7f7535627dd6fcbcc05',1,'interrupts.hpp']]],
+  ['interrupthandler_88',['InterruptHandler',['../structInterruptHandler.html',1,'InterruptHandler'],['../structInterruptHandler.html#a2fe85721d474d4cea46f7e2b6f10aae3',1,'InterruptHandler::InterruptHandler()']]],
+  ['interruptmanager_89',['InterruptManager',['../classInterruptManager.html#a101383366b9127defa47dd1c936dc0ce',1,'InterruptManager::InterruptManager()'],['../classInterruptManager.html',1,'InterruptManager']]],
+  ['interruptmode_90',['InterruptMode',['../interrupts_8hpp.html#aa004d28b3cc128fb30f577f93d370794',1,'interrupts.hpp']]],
+  ['interrupts_2ecpp_91',['interrupts.cpp',['../interrupts_8cpp.html',1,'']]],
+  ['interrupts_2ehpp_92',['interrupts.hpp',['../interrupts_8hpp.html',1,'']]],
+  ['invalidpinerror_93',['InvalidPinError',['../classInvalidPinError.html#a6b1c82cffd41a21bde4af67109014278',1,'InvalidPinError::InvalidPinError(int pin, const std::string &amp;reason)'],['../classInvalidPinError.html#a7e86aa997623a58d8e7f7308182fa1e8',1,'InvalidPinError::InvalidPinError(const std::string &amp;message)'],['../classInvalidPinError.html',1,'InvalidPinError']]],
+  ['inversed_94',['INVERSED',['../namespacepipinpp.html#ad72b044ec32c780acb6c57946ea549afa9c4d8f2bd9b15365fc9a778acf04cd84',1,'pipinpp']]],
+  ['isactive_95',['isActive',['../classpipinpp_1_1EventPWM.html#a5b1aaaa33d2327693f30e0e6552078f1',1,'pipinpp::EventPWM::isActive()'],['../classpipinpp_1_1EventPWMManager.html#a5237371d859fbbf4f918a3f2e68e6e85',1,'pipinpp::EventPWMManager::isActive()'],['../classPWMManager.html#a9bb52f5a3a2d2bf3f93f6b2abf13d589',1,'PWMManager::isActive()']]],
+  ['isattached_96',['isAttached',['../classInterruptManager.html#a3e7bb2fcdd12495a95e70318fb745dba',1,'InterruptManager']]],
+  ['isenabled_97',['isEnabled',['../classpipinpp_1_1HardwarePWM.html#a0fc878d6930e3459db08523c98d80d65',1,'pipinpp::HardwarePWM']]],
+  ['isinitialized_98',['isInitialized',['../classpipinpp_1_1SPIClass.html#ad7010f4595f90f6013e6da25e88a82ea',1,'pipinpp::SPIClass']]],
+  ['isinput_99',['isInput',['../ArduinoCompat_8hpp.html#a588b38c7001df781d9f27721c7096347',1,'isInput(int pin):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8cpp.html#a588b38c7001df781d9f27721c7096347',1,'isInput(int pin):&#160;ArduinoCompat.cpp']]],
+  ['isopen_100',['isOpen',['../classpipinpp_1_1SerialPort.html#a78fc1eabce1e83ff0d69de08357cd4fd',1,'pipinpp::SerialPort']]],
+  ['isoutput_101',['isOutput',['../ArduinoCompat_8hpp.html#a60f9eaeafd8dd95e2270186b4d26a364',1,'isOutput(int pin):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8cpp.html#a60f9eaeafd8dd95e2270186b4d26a364',1,'isOutput(int pin):&#160;ArduinoCompat.cpp']]],
+  ['israspberrypi_102',['isRaspberryPi',['../classpipinpp_1_1PlatformInfo.html#a48733bc2d19c3a24a7e07390fd3ea90b',1,'pipinpp::PlatformInfo']]],
+  ['issupported_103',['isSupported',['../classpipinpp_1_1PlatformInfo.html#aa212576f5fac1cbbd87c7e77346ed5c3',1,'pipinpp::PlatformInfo']]]
+];

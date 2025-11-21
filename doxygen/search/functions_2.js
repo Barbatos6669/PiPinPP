@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['constrain_299',['constrain',['../ArduinoCompat_8hpp.html#aca0e96194e7b8f7d6d26cf5609486c6e',1,'constrain(int x, int min, int max):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8hpp.html#a58e8528b684f6181fea314e9e94c21fa',1,'constrain(long x, long min, long max):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8hpp.html#a7b27d0d4f9bf6939813594b2d0c60aa2',1,'constrain(float x, float min, float max):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8cpp.html#aca0e96194e7b8f7d6d26cf5609486c6e',1,'constrain(int x, int min, int max):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8cpp.html#a58e8528b684f6181fea314e9e94c21fa',1,'constrain(long x, long min, long max):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8cpp.html#a7b27d0d4f9bf6939813594b2d0c60aa2',1,'constrain(float x, float min, float max):&#160;ArduinoCompat.cpp']]]
+];

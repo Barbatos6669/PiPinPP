@@ -1,0 +1,27 @@
+var classpipinpp_1_1WireClass =
+[
+    [ "WireClass", "classpipinpp_1_1WireClass.html#a869bb78633d1187b1134947fff361cee", null ],
+    [ "~WireClass", "classpipinpp_1_1WireClass.html#a0d5e317fe1653155592c502aeccc227d", null ],
+    [ "WireClass", "classpipinpp_1_1WireClass.html#a9f0fd5f93a3724deec1309cea0c33195", null ],
+    [ "available", "classpipinpp_1_1WireClass.html#a7b4e3b72b846f0ff8f95d0f8eb182ec3", null ],
+    [ "begin", "classpipinpp_1_1WireClass.html#a1bd40f9b9f46d2cd8bb948ef2ed72cd5", null ],
+    [ "begin", "classpipinpp_1_1WireClass.html#a68c732a3f03b38585e4ed866c96c6bf3", null ],
+    [ "beginTransmission", "classpipinpp_1_1WireClass.html#a6756ad15966ad89f4aa27ef5bca3cddd", null ],
+    [ "end", "classpipinpp_1_1WireClass.html#a57706a1344300b027f23317a7ef365a5", null ],
+    [ "endTransmission", "classpipinpp_1_1WireClass.html#a3c9d3ec2c2ca3ff346eaab9d9e1a897c", null ],
+    [ "endTransmission", "classpipinpp_1_1WireClass.html#a17417b3e52ea8a459d6fc5f1ae2bdaf4", null ],
+    [ "exists", "classpipinpp_1_1WireClass.html#a7cc800057bd6ca3e1eb855cb3f8bdbaf", null ],
+    [ "getClock", "classpipinpp_1_1WireClass.html#ac38a67146257cab87a4e9b30ca69abc3", null ],
+    [ "operator=", "classpipinpp_1_1WireClass.html#a6562026da372d7f404fe253cfc46e8fc", null ],
+    [ "peek", "classpipinpp_1_1WireClass.html#a7a397cd64fb9dc63f26e260ca52ff6cd", null ],
+    [ "read", "classpipinpp_1_1WireClass.html#a6a3cfeca089bb0c7eb8b5e8f6207311c", null ],
+    [ "readRegister", "classpipinpp_1_1WireClass.html#ab5392c4f4db325fc6c796c4bbcb3242d", null ],
+    [ "readRegisters", "classpipinpp_1_1WireClass.html#af0c727f96ad6800e33f908e7f0c4b365", null ],
+    [ "requestFrom", "classpipinpp_1_1WireClass.html#a49d8cd933ac4d150ee177a3fa22537dd", null ],
+    [ "requestFrom", "classpipinpp_1_1WireClass.html#aa240ee97d1529c2931b93b7cc4f472e8", null ],
+    [ "scan", "classpipinpp_1_1WireClass.html#a3f958f7f4f6e0a9c687de26bd3aed8b5", null ],
+    [ "setClock", "classpipinpp_1_1WireClass.html#a6b6fa5b06de8da81759d31f4761b9efb", null ],
+    [ "write", "classpipinpp_1_1WireClass.html#a54187c60363c0bf08193e2b171c4ab0f", null ],
+    [ "write", "classpipinpp_1_1WireClass.html#a861154cca19d941329adb5b1252eefcb", null ],
+    [ "writeRegister", "classpipinpp_1_1WireClass.html#a44ce27a0505d612e69d36a385285f8ab", null ]
+];

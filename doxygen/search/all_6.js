@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['getactivecount_50',['getActiveCount',['../classpipinpp_1_1EventPWMManager.html#aaf104a8a8af723b21c63d13cf8fb5f96',1,'pipinpp::EventPWMManager::getActiveCount()'],['../classInterruptManager.html#abfcecfb481c5b583dea607d33203f954',1,'InterruptManager::getActiveCount()'],['../classPWMManager.html#ae6cd1e8f470cf5168a3fdf7feb0d8cf6',1,'PWMManager::getActiveCount()']]],
+  ['getbaudrate_51',['getBaudRate',['../classpipinpp_1_1SerialPort.html#a1f565d7dfc6c323b2f4739a41acc2cab',1,'pipinpp::SerialPort']]],
+  ['getcapabilities_52',['getCapabilities',['../classpipinpp_1_1PlatformInfo.html#ad1b34f1449d805ad744d972e0dffc34b',1,'pipinpp::PlatformInfo']]],
+  ['getclock_53',['getClock',['../classpipinpp_1_1SPIClass.html#af9c15944b0e0a9519fec4ce815aaa2a2',1,'pipinpp::SPIClass::getClock()'],['../classpipinpp_1_1WireClass.html#ac38a67146257cab87a4e9b30ca69abc3',1,'pipinpp::WireClass::getClock()']]],
+  ['getdefaultgpiochip_54',['getDefaultGPIOChip',['../classpipinpp_1_1PlatformInfo.html#a11bcb6e58e9d1f200df3ca7265d647a7',1,'pipinpp::PlatformInfo']]],
+  ['getdefaulti2cbus_55',['getDefaultI2CBus',['../classpipinpp_1_1PlatformInfo.html#abe4f4efa331b896be819271f99f8f6c5',1,'pipinpp::PlatformInfo']]],
+  ['getdutycycle_56',['getDutyCycle',['../classpipinpp_1_1EventPWM.html#a3267de3e46001f1a02a862dd2bc0014d',1,'pipinpp::EventPWM::getDutyCycle()'],['../classpipinpp_1_1HardwarePWM.html#aa9277c8f9a659471a7c61c1cc6c60ef1',1,'pipinpp::HardwarePWM::getDutyCycle()'],['../classPWMManager.html#a3413da5409a6400f66242c6ff01428ab',1,'PWMManager::getDutyCycle()']]],
+  ['getdutycyclens_57',['getDutyCycleNs',['../classpipinpp_1_1HardwarePWM.html#a6af9c5c6a5ea37b54771efd132a630e5',1,'pipinpp::HardwarePWM']]],
+  ['getfrequency_58',['getFrequency',['../classPWMManager.html#abf22df56fb38defe58b10727929750f8',1,'PWMManager::getFrequency()'],['../classpipinpp_1_1HardwarePWM.html#a51ef934f07392a265711ef07a4240a14',1,'pipinpp::HardwarePWM::getFrequency()'],['../classpipinpp_1_1EventPWM.html#a973c6da26b1fbb871c95eac636edf162',1,'pipinpp::EventPWM::getFrequency()']]],
+  ['getinstance_59',['getInstance',['../classInterruptManager.html#a2906641c2fd4e98095e8adffb62f97be',1,'InterruptManager::getInstance()'],['../classPWMManager.html#ab25dd74cbe22a70a56a7c4c3c6a6fd02',1,'PWMManager::getInstance()'],['../classpipinpp_1_1EventPWMManager.html#ade6c89aa1a330a8d21802129a6c599f3',1,'pipinpp::EventPWMManager::getInstance()']]],
+  ['getkernelversion_60',['getKernelVersion',['../classpipinpp_1_1PlatformInfo.html#af5a1280f6b51619cabc3060f28b74a65',1,'pipinpp::PlatformInfo']]],
+  ['getlibgpiodversion_61',['getLibgpiodVersion',['../classpipinpp_1_1PlatformInfo.html#a388fa4f6db9c675a4b892860c976612f',1,'pipinpp::PlatformInfo']]],
+  ['getmode_62',['getMode',['../ArduinoCompat_8cpp.html#adca69d76a1a0e4f2582df3f68dc4e831',1,'getMode(int pin):&#160;ArduinoCompat.cpp'],['../ArduinoCompat_8hpp.html#adca69d76a1a0e4f2582df3f68dc4e831',1,'getMode(int pin):&#160;ArduinoCompat.cpp']]],
+  ['getperiodns_63',['getPeriodNs',['../classpipinpp_1_1HardwarePWM.html#a49122b12dad031eab058992b58dc17a6',1,'pipinpp::HardwarePWM']]],
+  ['getpin_64',['getPin',['../classpipinpp_1_1EventPWM.html#a763a4c6dceaac371b8ea6f8291d77228',1,'pipinpp::EventPWM']]],
+  ['getplatform_65',['getPlatform',['../classpipinpp_1_1PlatformInfo.html#a3acdfe80c66f6c4215696141ea9aa1d2',1,'pipinpp::PlatformInfo']]],
+  ['getplatformname_66',['getPlatformName',['../classpipinpp_1_1PlatformInfo.html#a6720bbec61a96f98e9564601e9b029d4',1,'pipinpp::PlatformInfo']]],
+  ['globalpins_67',['globalPins',['../ArduinoCompat_8cpp.html#a159c9dc1f524382a88c6bea2c0cbf67d',1,'ArduinoCompat.cpp']]],
+  ['globalpinsmutex_68',['globalPinsMutex',['../ArduinoCompat_8cpp.html#af4efd43c11d4874e9d7943d8805c3e56',1,'ArduinoCompat.cpp']]],
+  ['gpioaccesserror_69',['GpioAccessError',['../classGpioAccessError.html#a48a6efb0d9e116c092b407eaf3c630fc',1,'GpioAccessError::GpioAccessError(const std::string &amp;device, const std::string &amp;reason)'],['../classGpioAccessError.html#a55fb155e3b9516718b4ec23896d6800f',1,'GpioAccessError::GpioAccessError(const std::string &amp;message)'],['../classGpioAccessError.html',1,'GpioAccessError']]],
+  ['gpiochipinfo_70',['GPIOChipInfo',['../structpipinpp_1_1GPIOChipInfo.html',1,'pipinpp']]],
+  ['gpiochips_71',['gpioChips',['../structpipinpp_1_1PlatformCapabilities.html#a193b4fcefbe94d0be73212d5bb5848cc',1,'pipinpp::PlatformCapabilities']]],
+  ['gpiopin_72',['gpioPin',['../structpipinpp_1_1PWMChannelInfo.html#a4552d21e56e12e970f1cb35ddc961bfe',1,'pipinpp::PWMChannelInfo']]],
+  ['gpiotopwm_73',['gpioToPWM',['../classpipinpp_1_1HardwarePWM.html#a1ddfd3167d66879bbeecc31d9a46a326',1,'pipinpp::HardwarePWM']]]
+];
