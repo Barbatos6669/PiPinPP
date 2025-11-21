@@ -1,0 +1,182 @@
+name: Issue Response Automation
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  welcome-first-time:
+    name: Welcome First-Time Contributors
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+
+    steps:
+      - name: Check if first-time contributor
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const creator = context.payload.issue.user.login;
+
+            // Check if this is their first issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              creator: creator,
+              state: 'all'
+            });
+
+            if (issues.data.length === 1) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `👋 Welcome to PiPinPP, @${creator}! Thanks for opening your first issue!\n\n` +
+                      `We appreciate your interest in the project. A maintainer will review your issue soon.\n\n` +
+                      `**Quick tips:**\n` +
+                      `- Check our [Documentation](https://github.com/Barbatos6669/PiPinPP/tree/main/docs) for common questions\n` +
+                      `- See [CONTRIBUTING.md](https://github.com/Barbatos6669/PiPinPP/blob/main/CONTRIBUTING.md) if you'd like to help\n` +
+                      `- Join our [Discussions](https://github.com/Barbatos6669/PiPinPP/discussions) for community support`
+              });
+
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['first-time contributor']
+              });
+            }
+
+  request-more-info:
+    name: Request Missing Information
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+
+    steps:
+      - name: Check for insufficient details
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const body = (issue.body || '').toLowerCase();
+            const title = issue.title.toLowerCase();
+
+            // Check if bug report is missing key information
+            if (title.includes('bug') || title.includes('error') || title.includes('issue')) {
+              const hasVersion = body.includes('version') || body.includes('0.3') || body.includes('0.4');
+              const hasOS = body.includes('raspberry pi') || body.includes('ubuntu') || body.includes('debian');
+              const hasSteps = body.includes('steps') || body.includes('reproduce') || body.includes('how to');
+              const hasCode = body.includes('```') || body.includes('code');
+
+              const missing = [];
+              if (!hasVersion) missing.push('PiPinPP version');
+              if (!hasOS) missing.push('Operating system / Raspberry Pi model');
+              if (!hasSteps) missing.push('Steps to reproduce');
+              if (!hasCode) missing.push('Code example');
+
+              if (missing.length >= 2) {
+                await github.rest.issues.createComment({
+                  issue_number: issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `👋 Thanks for reporting this issue!\n\n` +
+                        `To help us investigate, could you please provide:\n\n` +
+                        missing.map(item => `- [ ] ${item}`).join('\n') + '\n\n' +
+                        `**Example format:**\n` +
+                        `\`\`\`\n` +
+                        `PiPinPP Version: 0.4.0\n` +
+                        `Raspberry Pi Model: Pi 4B\n` +
+                        `OS: Raspberry Pi OS Bookworm (64-bit)\n` +
+                        `\`\`\`\n\n` +
+                        `Adding these details will help us resolve your issue faster! 🚀`
+                });
+
+                await github.rest.issues.addLabels({
+                  issue_number: issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['needs-info']
+                });
+              }
+            }
+
+  hardware-issue-help:
+    name: Provide Hardware Troubleshooting
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'labeled'
+
+    steps:
+      - name: Hardware troubleshooting tips
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const label = context.payload.label.name;
+
+            if (label === 'hardware') {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🔧 **Hardware Issue Detected**\n\n` +
+                      `Before we dive into code, let's verify the hardware:\n\n` +
+                      `**Quick Checklist:**\n` +
+                      `- [ ] LED/component is connected to correct GPIO pin (BCM numbering)\n` +
+                      `- [ ] Wiring is secure and correct (GPIO → resistor → LED → GND)\n` +
+                      `- [ ] Using appropriate resistor (220Ω-1kΩ for LEDs)\n` +
+                      `- [ ] Pin voltage is 3.3V (NOT 5V - can damage Pi!)\n` +
+                      `- [ ] GPIO permissions set: \`sudo usermod -aG gpio $USER\` then logout/login\n` +
+                      `- [ ] Test with \`gpio readall\` or \`gpioinfo\` commands\n\n` +
+                      `**Useful Resources:**\n` +
+                      `- [Pin Numbering Guide](https://github.com/Barbatos6669/PiPinPP/blob/main/docs/PIN_NUMBERING.md)\n` +
+                      `- [Troubleshooting Guide](https://github.com/Barbatos6669/PiPinPP/blob/main/docs/TROUBLESHOOTING.md)\n` +
+                      `- [Permissions Setup](https://github.com/Barbatos6669/PiPinPP/blob/main/docs/PERMISSIONS.md)\n\n` +
+                      `Please share the output of \`gpio readall\` if available!`
+              });
+            }
+
+  performance-issue-template:
+    name: Performance Issue Guidance
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'labeled'
+
+    steps:
+      - name: Performance debugging tips
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const label = context.payload.label.name;
+
+            if (label === 'performance') {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `⚡ **Performance Issue - Let's Benchmark!**\n\n` +
+                      `To help diagnose the issue, please run our benchmark example:\n\n` +
+                      `\`\`\`bash\n` +
+                      `cd /path/to/PiPinPP/build\n` +
+                      `./examples/timing_benchmark\n` +
+                      `\`\`\`\n\n` +
+                      `**Please share:**\n` +
+                      `- [ ] Benchmark output (toggle rate, timing accuracy)\n` +
+                      `- [ ] Raspberry Pi model (Pi 3/4/5 have different speeds)\n` +
+                      `- [ ] CPU governor: \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor\`\n` +
+                      `- [ ] CPU frequency: \`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq\`\n` +
+                      `- [ ] System load: \`uptime\`\n\n` +
+                      `**Common fixes:**\n` +
+                      `- Use \`performance\` CPU governor for max speed\n` +
+                      `- Close other applications\n` +
+                      `- Consider hardware PWM for time-critical operations\n` +
+                      `- Check EventPWM for better CPU efficiency\n\n` +
+                      `See [Performance Benchmarks](https://github.com/Barbatos6669/PiPinPP/tree/main/examples/timing_benchmark) for context.`
+              });
+            }

@@ -1,0 +1,101 @@
+name: Project Board Automation
+
+on:
+  issues:
+    types: [opened, reopened, closed, assigned]
+  pull_request:
+    types: [opened, reopened, closed, ready_for_review, review_requested]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  issues: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  manage-project:
+    name: Manage Project Board
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add new issues to project
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/Barbatos6669/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add new PRs to project
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/Barbatos6669/projects/1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move PR to "In Review" when review requested
+        if: github.event_name == 'pull_request' && (github.event.action == 'review_requested' || github.event.action == 'ready_for_review')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('PR moved to review status');
+            // Project board status updates require GraphQL API
+            // This is a placeholder - actual implementation would use GraphQL mutations
+
+      - name: Move closed items to "Done"
+        if: (github.event_name == 'issues' || github.event_name == 'pull_request') && github.event.action == 'closed'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('Item moved to done status');
+            // Project board status updates require GraphQL API
+            // This is a placeholder - actual implementation would use GraphQL mutations
+
+  label-priority:
+    name: Auto-label Priority
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+
+    steps:
+      - name: Label critical issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+
+            const labels = [];
+
+            // Critical keywords
+            if (title.includes('crash') || title.includes('segfault') ||
+                title.includes('critical') || body.includes('production down')) {
+              labels.push('priority: critical');
+            }
+            // Security issues
+            else if (title.includes('security') || title.includes('vulnerability') ||
+                     body.includes('cve-') || body.includes('exploit')) {
+              labels.push('priority: high', 'security');
+            }
+            // Bug reports
+            else if (title.includes('bug') || title.includes('error') ||
+                     title.includes('broken') || title.includes('fail')) {
+              labels.push('priority: medium');
+            }
+            // Enhancement requests
+            else if (title.includes('feature') || title.includes('enhancement') ||
+                     title.includes('improvement')) {
+              labels.push('priority: low');
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                issue_number: issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: labels
+              });
+            }

@@ -1,0 +1,94 @@
+# Pre-commit hooks for PiPinPP
+# Install with: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(.*\.(patch|diff)|docs/html/)
+      - id: end-of-file-fixer
+        exclude: ^docs/html/
+      - id: check-yaml
+        args: ['--unsafe']  # Allow custom YAML tags
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: detect-private-key
+
+  # C++ formatting with clang-format
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v18.1.8
+    hooks:
+      - id: clang-format
+        types_or: [c++, c]
+        args: ['-i', '--style=file']
+        files: \.(cpp|hpp|c|h)$
+        exclude: ^(build/|docs/html/|\.vscode/)
+
+  # CMake formatting
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+      - id: cmake-format
+        args: ['--in-place']
+        files: CMakeLists\.txt$|\.cmake$
+
+  # Python code formatting (for scripts)
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3
+        files: ^scripts/.*\.py$
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        files: \.(sh|bash)$
+        args: ['-x', '--severity=warning']
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix']
+        exclude: ^(CHANGELOG\.md|docs/html/)
+
+  # Commit message validation
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: ['--force-scope']
+
+  # Check for TODO/FIXME comments
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-toml
+      - id: check-xml
+
+# Configuration for specific hooks
+default_language_version:
+  python: python3
+
+# Exclude patterns (global)
+exclude: |
+  (?x)^(
+    build/.*|
+    \.vscode/.*|
+    docs/html/.*|
+    .*\.patch|
+    .*\.diff
+  )$

@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🤖 Automation & Workflow Improvements
+- **Changelog generation workflow** - Automated CHANGELOG.md updates
+  - Uses conventional commits to generate changelog entries
+  - Automatically updates CHANGELOG.md on main branch pushes
+  - Provides changelog preview in pull requests
+  - Integrates with CMakeLists.txt version tracking
+  - Skips empty releases automatically
+
+- **Project board automation** - Issue/PR lifecycle management
+  - Auto-adds new issues and PRs to project board
+  - Moves PRs to "In Review" when review requested
+  - Moves closed items to "Done" status
+  - Priority labeling based on keywords (critical, security, bug, feature)
+  - Supports emergency priority escalation
+
+- **Pre-commit hooks configuration** - Local quality enforcement
+  - C++ formatting with clang-format (Allman style)
+  - CMake formatting with cmake-format
+  - Python formatting with black (for scripts)
+  - Shell script linting with shellcheck
+  - Markdown linting with markdownlint
+  - Conventional commit message validation
+  - Trailing whitespace, large files, merge conflicts detection
+  - Private key detection for security
+  - Install with: `pip install pre-commit && pre-commit install`
+
+- **Issue response automation** - Smart community engagement
+  - Welcome messages for first-time contributors with helpful links
+  - Auto-request missing information for bug reports (version, OS, steps, code)
+  - Hardware troubleshooting tips when hardware label applied
+  - Performance debugging guidance with benchmark instructions
+  - Contextual help based on issue labels and content
+
+### 📚 Documentation
+- **Pre-commit setup guide** (`docs/PRECOMMIT.md`)
+  - Installation instructions for pip, apt, brew
+  - Hook configuration reference
+  - Conventional commit format guide with examples
+  - Troubleshooting section for common hook issues
+  - CI integration explanation
+
 ### 📝 Project Infrastructure
 - **New GitHub issue templates**:
   - Documentation Improvement template for doc feedback

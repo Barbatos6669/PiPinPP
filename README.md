@@ -1,9 +1,9 @@
 <div align="center">
   <img src="assets/logo_transparent.png" alt="PiPin++ Logo" width="300">
-  
+
   # PiPin++
-  
-  **A modern C++ GPIO library for Raspberry Pi**  
+
+  **A modern C++ GPIO library for Raspberry Pi**
   *Clean API, low-level control, and room to grow.*
 </div>
 
@@ -77,7 +77,7 @@
 
 int main() {
   pinMode(17, OUTPUT);
-    
+
   while (true) {
     digitalWrite(17, HIGH);
     delay(1000);
@@ -96,7 +96,7 @@ int main() {
 int main() {
   pinMode(23, INPUT_PULLUP);
   pinMode(17, OUTPUT);
-  
+
   while (true) {
     if (digitalRead(23) == LOW) {  // Button pressed
       digitalWrite(17, HIGH);      // LED on
@@ -116,7 +116,7 @@ int main() {
 
 int main() {
   pinMode(18, OUTPUT);
-  
+
   while (true) {
     for (int brightness = 0; brightness < 256; brightness++) {
       analogWrite(18, brightness);
@@ -138,17 +138,17 @@ int main() {
 
 int main() {
   pipinpp::Wire.begin();
-  
+
   // Read temperature from BMP280 (address 0x76)
   pipinpp::Wire.beginTransmission(0x76);
   pipinpp::Wire.write(0xFA);  // Temperature register
   pipinpp::Wire.endTransmission();
-  
+
   pipinpp::Wire.requestFrom(0x76, 3);
-  int temp = (pipinpp::Wire.read() << 12) | 
-             (pipinpp::Wire.read() << 4) | 
+  int temp = (pipinpp::Wire.read() << 12) |
+             (pipinpp::Wire.read() << 4) |
              (pipinpp::Wire.read() >> 4);
-  
+
   std::cout << "Temperature: " << temp / 100.0 << "°C\n";
 }
 ```
@@ -389,11 +389,16 @@ Ready to contribute? Start with:
 
 - [Developer Guide](docs/DEVELOPER.md) – environment setup, formatting rules, coverage targets
 - [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) – branching, PR etiquette, issue workflow
+- [Pre-commit Hooks](docs/PRECOMMIT.md) – automated code quality checks (clang-format, linting, commit validation)
 - [Test Matrix](docs/BUILD.md) & [TESTING.md](docs/TESTING.md) – build knobs, hardware guidance
 - `scripts/run_examples.sh` – batch-build/execute examples (`--filter`, `--execute`, `--jobs`)
 
-The TL;DR workflow: `./build.sh --clean --debug`, make your change, run `ctest`, update docs/examples,
-then open a PR referencing the relevant issue.
+**Workflow:**
+1. Install pre-commit: `pip install pre-commit && pre-commit install`
+2. Make changes: `./build.sh --clean --debug`
+3. Test locally: `cd build && ctest --output-on-failure`
+4. Commit (pre-commit runs automatically): `git commit -m "feat: your change"`
+5. Open PR referencing the issue
 
 ---
 
@@ -404,7 +409,7 @@ then open a PR referencing the relevant issue.
 ## 💬 Community & Support
 
 **Join our Discord community for real-time support and discussions:**
-- 🚀 **Quick help** with setup, coding issues, and troubleshooting  
+- 🚀 **Quick help** with setup, coding issues, and troubleshooting
 - 💡 **Feature discussions** and Arduino migration questions
 - 🔧 **Hardware projects** and GPIO usage examples
 - 📢 **Development updates** and release announcements
