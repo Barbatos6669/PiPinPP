@@ -1,15 +1,10 @@
 ## [0.5.0](https://github.com/Barbatos6669/PiPinPP/compare/v0.4.0...v0.5.0) (2025-11-21)
 
 
-### Community & Project Management
-- **Issue template config** - Added helpful contact links (Discussions, Docs, Troubleshooting)
-- **Pull request template** - Comprehensive checklist for contributors with testing requirements
-- **Funding configuration** - Added `.github/FUNDING.yml` template for sponsorship options
-- **Enhanced .gitignore** - Added patterns for VS Code workspace, clangd, debuggers, virtual environments
-
 ### Features
 
 * add auto wiki sync workflow, improve issue/PR templates, enhance badges and CONTRIBUTING.md ([2bb7d3f](https://github.com/Barbatos6669/PiPinPP/commit/2bb7d3f221a9b3035498c70c095fe82a68ca9112))
+* add community infrastructure and contributor templates ([e37fb6b](https://github.com/Barbatos6669/PiPinPP/commit/e37fb6bb4550ac20afa85b1907f8e46e83a5545c))
 * Add complete Python bindings (pypipinpp) ([43aff1e](https://github.com/Barbatos6669/PiPinPP/commit/43aff1e5941bc6864263cee692ccacbc0043e4fd))
 * Add comprehensive 2026 roadmap to 'Super Champ' status ([a98e1d9](https://github.com/Barbatos6669/PiPinPP/commit/a98e1d9ed72ff62d86435a0762e862e306722f70))
 * add comprehensive automation workflows and pre-commit hooks ([c6786f9](https://github.com/Barbatos6669/PiPinPP/commit/c6786f955fb4a72e7f5f636797624734e623442c))
