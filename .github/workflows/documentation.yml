@@ -25,37 +25,37 @@ jobs:
   build-docs:
     name: Build Documentation
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      
+
       - name: Check markdown links
         run: |
           python3 scripts/check_markdown_links.py
           echo "✓ All internal documentation links are valid"
-      
+
       - name: Install Doxygen
         run: |
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz
-      
+
       - name: Generate documentation
         run: |
-          doxygen Doxyfile
+          doxygen docs/Doxyfile
           echo "✓ Documentation generated"
-      
+
       - name: Create .nojekyll file
         run: |
           # GitHub Pages uses Jekyll by default
           # .nojekyll tells it to serve raw HTML instead
           touch docs/html/.nojekyll
-      
+
       - name: Upload documentation artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -65,11 +65,11 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: build-docs
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

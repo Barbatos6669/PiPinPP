@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 📁 Project Organization
+- **Reorganized root directory** for better structure
+  - Moved `build.sh`, `coverage.sh`, `install.sh` → `scripts/` directory
+  - Moved `Doxyfile` → `docs/` directory
+  - Updated all references in documentation, workflows, and VS Code tasks
+  - Cleaner root directory with only essential configuration files
+
 ### 🤖 Automation & Workflow Improvements
 - **Changelog generation workflow** - Automated CHANGELOG.md updates
   - Uses conventional commits to generate changelog entries

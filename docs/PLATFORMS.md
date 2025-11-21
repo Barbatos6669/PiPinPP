@@ -30,9 +30,9 @@ been verified, what is pending, and how to report new data.
 
 | OS | Status | Notes |
 |----|--------|-------|
-| Raspberry Pi OS (64-bit) Bookworm | ✅ | Primary target; `install.sh` builds libgpiod 2.2.1 automatically |
+| Raspberry Pi OS (64-bit) Bookworm | ✅ | Primary target; `scripts/install.sh` builds libgpiod 2.2.1 automatically |
 | Raspberry Pi OS (32-bit) Bookworm | ✅ | Works, but CPU-bound tasks saturate earlier |
-| Ubuntu Server 22.04/24.04 for Pi | ✅ | Remove distro `libgpiod-dev` before running `install.sh` |
+| Ubuntu Server 22.04/24.04 for Pi | ✅ | Remove distro `libgpiod-dev` before running `scripts/install.sh` |
 | Debian Bullseye | ⚠️ | Ships libgpiod v1.x; run `install.sh --libgpiod-only` first |
 | Manjaro ARM | ⚠️ | Works if you install `gpiod` 2.x from community repos; please report results |
 | DietPi | ⚠️ | Minimal image—install `build-essential` + `cmake` manually |

@@ -26,7 +26,7 @@ LED anode -> GPIO24 -> 220 Ω resistor -> LED -> GND
 
 1. **Build the example**:
    ```bash
-   ./build.sh
+   ./scripts/build.sh
    cmake --build build --target example_button_interrupt
    ```
 

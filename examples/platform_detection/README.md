@@ -25,7 +25,7 @@ This example shows how PiPinPP automatically detects:
 
 ```bash
 cd /home/larry/Development/PiPinPP
-./build.sh
+./scripts/build.sh
 ```
 
 The example will be at: `build/examples/example_platform_detection`

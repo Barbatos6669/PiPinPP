@@ -152,7 +152,7 @@ Use our [feature request template](https://github.com/Barbatos6669/PiPinPP/issue
 ## 🔄 Pull Request Process
 
 ### Before Submitting
-1. ✅ **Code compiles** without warnings (`./build.sh`)
+1. ✅ **Code compiles** without warnings (`./scripts/build.sh`)
 2. ✅ **Tests pass** (`cd build && ctest`)
 3. ✅ **Code follows standards** (check [Code Standards](https://github.com/Barbatos6669/PiPinPP/wiki/Code-Standards))
 4. ✅ **Documentation updated** (API docs, tutorials, examples)

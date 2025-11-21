@@ -13,10 +13,10 @@
 ### Critical Build Commands
 ```bash
 # Standard development build
-./build.sh --clean --debug
+./scripts/build.sh --clean --debug
 
 # Release build with tests
-./build.sh
+./scripts/build.sh
 
 # Build with logging (for debugging GPIO operations)
 cmake -DPIPINPP_ENABLE_LOGGING=ON -DPIPINPP_LOG_LEVEL=0 -B build
@@ -77,9 +77,9 @@ PinError (base)
 ### Coding Style (CODE_STANDARDS.md)
 - **Braces**: Allman style (opening brace on new line)
 ```cpp
-void function() 
+void function()
 {
-    if (condition) 
+    if (condition)
     {
         doWork();
     }
@@ -87,7 +87,7 @@ void function()
 ```
 - **Indentation**: 4 spaces (never tabs)
 - **Line length**: 100 characters max
-- **Naming**: 
+- **Naming**:
   - Classes: `PascalCase`
   - Functions/variables: `camelCase`
   - Constants: `SCREAMING_SNAKE_CASE`
@@ -142,7 +142,7 @@ docs/          - Comprehensive markdown docs
 ### Permission Requirements
 - GPIO access requires membership in `gpio` group
 - `/dev/gpiochip*` devices must be accessible
-- `install.sh` creates udev rules for non-root access
+- `scripts/install.sh` creates udev rules for non-root access
 
 ## Testing in CI (.github/workflows/ci.yml)
 
@@ -274,7 +274,7 @@ docs/          - Comprehensive markdown docs
 
 ## When Making Changes
 
-1. **Run tests locally**: `./build.sh && cd build && ctest --output-on-failure`
+1. **Run tests locally**: `./scripts/build.sh && cd build && ctest --output-on-failure`
 2. **Check logging output**: Build with `PIPINPP_ENABLE_LOGGING=ON` for GPIO debugging
 3. **Verify examples compile**: `BUILD_EXAMPLES=ON` in CMake
 4. **Update API docs**: Keep `docs/API_REFERENCE.md` synchronized
@@ -288,7 +288,7 @@ When adding new functionality, **update ALL of these files** (version numbers mu
 - [ ] `CMakeLists.txt` - `project(PiPinPP VERSION 0.3.7 ...)`
 - [ ] `README.md` - Badge version, install script URLs, all references
 - [ ] `docs/API_REFERENCE.md` - Version at top of file
-- [ ] `install.sh` - VERSION variable
+- [ ] `scripts/install.sh` - VERSION variable
 - [ ] Create `release_notes/vX.Y.Z.md` for the new version
 
 ### API Documentation
@@ -318,7 +318,7 @@ When preparing to release a new version, follow this routine to prevent version 
 # Update CMakeLists.txt
 # Change: project(PiPinPP VERSION 0.3.7 ...)
 
-# Update install.sh
+# Update scripts/install.sh
 # Change: VERSION="v0.3.7"
 
 # Update docs/API_REFERENCE.md header
@@ -329,7 +329,7 @@ When preparing to release a new version, follow this routine to prevent version 
 ### 2. Update All Documentation References
 Run this search to find all version references:
 ```bash
-grep -r "0\.3\.6" docs/ README.md examples/ install.sh CMakeLists.txt --include="*.md" --include="*.cpp" --include="*.sh" | grep -v "CHANGELOG" | grep -v "release_notes"
+grep -r "0\.3\.6" docs/ README.md examples/ scripts/install.sh CMakeLists.txt --include="*.md" --include="*.cpp" --include="*.sh" | grep -v "CHANGELOG" | grep -v "release_notes"
 ```
 
 Update each file found:
@@ -375,7 +375,7 @@ Add new version entry at the top with:
 # Check all versions match
 echo "CMakeLists.txt:" && grep "VERSION 0.3" CMakeLists.txt | head -1
 echo "README.md badge:" && grep "badge/version" README.md
-echo "install.sh:" && grep "^VERSION=" install.sh
+echo "scripts/install.sh:" && grep "^VERSION=" scripts/install.sh
 echo "API_REFERENCE.md:" && head -5 docs/API_REFERENCE.md | grep "Version:"
 ```
 

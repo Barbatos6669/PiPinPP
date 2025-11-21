@@ -55,7 +55,7 @@ jobs:
           lcov --list coverage.info.cleaned
 
       - name: Generate Doxygen docs
-        run: doxygen Doxyfile
+        run: doxygen docs/Doxyfile
 
       - name: Collect documentation artifacts
         run: |

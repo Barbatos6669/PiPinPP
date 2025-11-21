@@ -17,7 +17,7 @@ Coordinate multiple GPIO tasks at once using C++ threads without stepping on eac
 
 1. **Build the example:**
    ```bash
-   ./build.sh --debug
+   ./scripts/build.sh --debug
    cmake --build build --target example_thread_safety
    ```
 

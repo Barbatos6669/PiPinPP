@@ -71,7 +71,7 @@ Configuration is in `.pre-commit-config.yaml`. Hooks include:
 - **black** - Formats Python scripts (PEP 8 compliant)
 
 ### Linting
-- **shellcheck** - Validates shell scripts (build.sh, install.sh)
+- **shellcheck** - Validates shell scripts (scripts/build.sh, scripts/install.sh, scripts/*.sh)
 - **markdownlint** - Checks Markdown formatting (except CHANGELOG.md)
 
 ### Validation

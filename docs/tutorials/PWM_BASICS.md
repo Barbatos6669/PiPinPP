@@ -23,7 +23,7 @@ GPIO18 is a hardware PWM pin, but this tutorial intentionally uses the software 
 
 1. **Build the example:**
    ```bash
-   ./build.sh --debug
+   ./scripts/build.sh --debug
    cmake --build build --target example_led_fade
    ```
 

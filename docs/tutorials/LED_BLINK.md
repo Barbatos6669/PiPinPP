@@ -30,7 +30,7 @@ LED cathode (-) ───────> GND
 
 2. **Build the example** (from the repo root):
    ```bash
-   ./build.sh --debug
+   ./scripts/build.sh --debug
    cmake --build build --target example_basic_led
    ```
 

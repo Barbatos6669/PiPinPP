@@ -33,7 +33,7 @@
 
 ---
 
-> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.4.0/install.sh | sudo bash`
+> **⚡ Quick Install:** `curl -sSL https://raw.githubusercontent.com/Barbatos6669/PiPinPP/v0.4.0/scripts/install.sh | sudo bash`
 
 > **🗺️ NEW: [2026 Roadmap](docs/ROADMAP.md)** - See our path to becoming the #1 GPIO library! **[Vote on features →](https://github.com/Barbatos6669/PiPinPP/issues/new?template=roadmap_feature.md)**
 
@@ -324,7 +324,7 @@ pkg-config --modversion pipinpp  # Should show: 0.3.7
 | 0.3.7           | 2.0.x            | Transitional release before platform detector |
 | ≤0.3.0          | 1.6.3 (legacy)   | Deprecated – upgrade ASAP |
 
-`install.sh` automatically builds libgpiod 2.2.1 on Raspberry Pi OS so you don't have to source
+`scripts/install.sh` automatically builds libgpiod 2.2.1 on Raspberry Pi OS so you don't have to source
 packages manually.
 
 ### Using in Your Projects
@@ -395,7 +395,7 @@ Ready to contribute? Start with:
 
 **Workflow:**
 1. Install pre-commit: `pip install pre-commit && pre-commit install`
-2. Make changes: `./build.sh --clean --debug`
+2. Make changes: `./scripts/build.sh --clean --debug`
 3. Test locally: `cd build && ctest --output-on-failure`
 4. Commit (pre-commit runs automatically): `git commit -m "feat: your change"`
 5. Open PR referencing the issue

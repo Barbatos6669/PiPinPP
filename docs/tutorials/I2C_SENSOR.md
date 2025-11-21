@@ -27,7 +27,7 @@ BMP280 SDA  -> GPIO2 / SDA (pin 3)
 
 2. **Build PiPin++ with examples**:
    ```bash
-   ./build.sh
+   ./scripts/build.sh
    cmake --build build --target example_i2c_bmp280
    ```
 

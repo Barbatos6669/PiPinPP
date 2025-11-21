@@ -8,7 +8,7 @@ test, and ship changes confidently.
 ```bash
 git clone https://github.com/Barbatos6669/PiPinPP.git
 cd PiPinPP
-./install.sh              # Simplest route (builds libgpiod 2.2.1+ automatically)
+./scripts/install.sh              # Simplest route (builds libgpiod 2.2.1+ automatically)
 ```
 
 Need a custom build? Install dependencies manually:
@@ -19,7 +19,7 @@ Need a custom build? Install dependencies manually:
 
 ## 2. Recommended Workflow
 
-1. `./build.sh --clean --debug` for a fresh debug build.
+1. `./scripts/build.sh --clean --debug` for a fresh debug build.
 2. `cmake --build build` or `cmake --build build --target <target>` for incremental work.
 3. `cd build && ctest --output-on-failure` before opening a PR.
 4. Run relevant examples on real hardware when touching GPIO/driver code.
@@ -57,8 +57,8 @@ Need a custom build? Install dependencies manually:
 
 | Script | Purpose |
 |--------|---------|
-| `build.sh --clean --debug` | One-liner to rebuild from scratch |
-| `install.sh` | Ensures libgpiod 2.2.1+ and installs to `/usr/local` |
+| `scripts/build.sh --clean --debug` | One-liner to rebuild from scratch |
+| `scripts/install.sh` | Ensures libgpiod 2.2.1+ and installs to `/usr/local` |
 | `scripts/format.sh` *(coming soon)* | Project-wide formatting |
 | `scripts/run_examples.sh` | Batch-builds (and optionally runs) examples; supports `--filter`, `--execute`, `--jobs` |
 

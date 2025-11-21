@@ -24,7 +24,7 @@ We'll use the Pi's internal pull-up so no resistor is required.
 
 1. **Build the example:**
    ```bash
-   ./build.sh
+   ./scripts/build.sh
    cmake --build build --target example_button_input
    ```
 

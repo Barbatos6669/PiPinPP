@@ -100,7 +100,7 @@ make example_spi_74hc595
 
 Or rebuild everything:
 ```bash
-./build.sh
+./scripts/build.sh
 ```
 
 ## Running

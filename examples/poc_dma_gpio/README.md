@@ -69,7 +69,7 @@ g++ -o poc_dma_gpio main.cpp -std=c++17 -pthread
 
 ```bash
 cd /path/to/PiPinPP
-./build.sh
+./scripts/build.sh
 ```
 
 The PoC will be at: `build/examples/example_poc_dma_gpio`

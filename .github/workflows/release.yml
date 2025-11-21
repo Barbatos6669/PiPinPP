@@ -109,7 +109,7 @@ jobs:
             --exclude='*.o' \
             --exclude='*.a' \
             --transform "s,^,pipinpp-${VERSION}/," \
-            src/ include/ examples/ docs/ CMakeLists.txt LICENSE README.md install.sh
+            src/ include/ examples/ docs/ CMakeLists.txt LICENSE README.md scripts/install.sh scripts/build.sh
 
       - name: Generate checksum
         run: |
