@@ -1,0 +1,142 @@
+name: Auto Label Issues and PRs
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request_target:
+    types: [opened, edited, synchronize]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  label-issues:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    
+    steps:
+      - name: Label based on title prefix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+            const labels = [];
+            
+            // Check title prefixes
+            if (title.startsWith('[docs]')) labels.push('documentation');
+            if (title.startsWith('[perf]')) labels.push('performance');
+            if (title.startsWith('[hardware]')) labels.push('hardware');
+            if (title.startsWith('[bug]')) labels.push('bug');
+            if (title.startsWith('[feature]')) labels.push('enhancement');
+            
+            // Check content for common patterns
+            if (body.includes('raspberry pi 5') || title.includes('pi 5')) labels.push('pi-5');
+            if (body.includes('raspberry pi 4') || title.includes('pi 4')) labels.push('pi-4');
+            if (body.includes('raspberry pi zero') || title.includes('pi zero')) labels.push('pi-zero');
+            
+            if (body.includes('pwm') || title.includes('pwm')) labels.push('pwm');
+            if (body.includes('i2c') || body.includes('wire') || title.includes('i2c')) labels.push('i2c');
+            if (body.includes('spi') || title.includes('spi')) labels.push('spi');
+            if (body.includes('serial') || body.includes('uart') || title.includes('uart')) labels.push('serial');
+            if (body.includes('interrupt') || title.includes('interrupt')) labels.push('interrupts');
+            
+            if (body.includes('arduino') || title.includes('arduino')) labels.push('arduino-compatibility');
+            if (body.includes('tutorial') || title.includes('tutorial')) labels.push('tutorial');
+            if (body.includes('example') || title.includes('example')) labels.push('examples');
+            
+            // Check for beginner indicators
+            if (body.includes('beginner') || body.includes('new to') || body.includes('first time')) {
+              labels.push('good first issue');
+            }
+            
+            // Apply labels if any were identified
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: [...new Set(labels)] // Remove duplicates
+              });
+              
+              console.log(`Added labels: ${labels.join(', ')}`);
+            }
+
+  label-prs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target'
+    
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      - name: Label based on changed files
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = [];
+            
+            // Get changed files
+            const files = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+            
+            const changedFiles = files.data.map(f => f.filename);
+            console.log('Changed files:', changedFiles);
+            
+            // Categorize by file patterns
+            const patterns = {
+              'documentation': [/^docs\//, /README\.md$/, /\.md$/],
+              'tests': [/^tests\//, /test_.*\.cpp$/, /gtest_.*\.cpp$/],
+              'examples': [/^examples\//],
+              'ci': [/^\.github\/workflows\//, /\.yml$/],
+              'build': [/CMakeLists\.txt$/, /\.cmake$/, /build\.sh$/],
+              'core': [/^src\//, /^include\//],
+              'arduino-compatibility': [/ArduinoCompat\.(hpp|cpp)$/],
+              'pwm': [/pwm\.(hpp|cpp)$/, /EventPWM/],
+              'i2c': [/Wire\.(hpp|cpp)$/],
+              'spi': [/SPI\.(hpp|cpp)$/],
+              'serial': [/Serial\.(hpp|cpp)$/],
+              'interrupts': [/interrupt/i]
+            };
+            
+            for (const [label, regexList] of Object.entries(patterns)) {
+              if (changedFiles.some(file => regexList.some(regex => regex.test(file)))) {
+                labels.push(label);
+              }
+            }
+            
+            // Check PR title for conventional commit type
+            const title = pr.title.toLowerCase();
+            if (title.startsWith('feat:') || title.startsWith('feat(')) labels.push('enhancement');
+            if (title.startsWith('fix:') || title.startsWith('fix(')) labels.push('bug');
+            if (title.startsWith('docs:') || title.startsWith('docs(')) labels.push('documentation');
+            if (title.startsWith('test:') || title.startsWith('test(')) labels.push('tests');
+            if (title.startsWith('refactor:') || title.startsWith('refactor(')) labels.push('refactoring');
+            if (title.startsWith('perf:') || title.startsWith('perf(')) labels.push('performance');
+            
+            // Determine size label based on changes
+            const totalChanges = files.data.reduce((sum, f) => sum + f.changes, 0);
+            if (totalChanges < 50) labels.push('size/small');
+            else if (totalChanges < 200) labels.push('size/medium');
+            else labels.push('size/large');
+            
+            // Apply labels
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: [...new Set(labels)]
+              });
+              
+              console.log(`Added labels: ${labels.join(', ')}`);
+            }

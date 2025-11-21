@@ -1,0 +1,70 @@
+# EditorConfig for PiPinPP
+# Ensures consistent coding style across different editors and IDEs
+# https://editorconfig.org
+
+root = true
+
+# Default for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C++ source files
+[*.{cpp,hpp,h,cc,cxx,hxx}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# CMake files
+[{CMakeLists.txt,*.cmake}]
+indent_style = space
+indent_size = 4
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 4
+
+# Python scripts
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# YAML files (GitHub Actions, workflows)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Makefiles must use tabs
+[{Makefile,*.mk}]
+indent_style = tab
+indent_size = 4
+
+# Configuration files
+[*.{conf,config,ini}]
+indent_style = space
+indent_size = 2
+
+# Git configuration
+[.gitattributes]
+indent_style = space
+indent_size = 2
+
+[.gitignore]
+indent_style = space
+indent_size = 2

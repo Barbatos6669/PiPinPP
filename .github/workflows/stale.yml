@@ -1,0 +1,96 @@
+name: Stale Issues and PRs
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Mark stale issues and PRs
+        uses: actions/stale@v9
+        with:
+          # Issue settings
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'pinned,security,roadmap,help wanted,good first issue'
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has not had recent activity in the last 60 days.
+            
+            **Why is this being marked stale?**
+            To keep the issue tracker manageable and focused on active work, issues without recent activity are marked as stale.
+            
+            **What happens next?**
+            - If this is still relevant, please comment to keep it open
+            - Add more information or context if available
+            - The issue will be closed in 14 days if there's no activity
+            
+            **Is this a bug?**
+            - If you're still experiencing this issue, please comment with updated details
+            - Include your PiPinPP version and system information
+            
+            **Is this a feature request?**
+            - Let us know if you're still interested in this feature
+            - Consider contributing if you'd like to see this implemented
+            
+            Thank you for your contributions to PiPinPP! 🙏
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity.
+            
+            **Can it be reopened?**
+            Yes! If this issue is still relevant, please:
+            - Comment on this issue with updated information
+            - Open a new issue with reference to this one
+            
+            We're always happy to revisit closed issues with new information. Thank you for understanding!
+          
+          # PR settings
+          days-before-pr-stale: 30
+          days-before-pr-close: 7
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'pinned,security,dependencies,work-in-progress'
+          stale-pr-message: |
+            This pull request has been automatically marked as stale because it has not had recent activity in the last 30 days.
+            
+            **Why is this being marked stale?**
+            Pull requests need active development and review to be merged. Stale PRs can create merge conflicts and outdated changes.
+            
+            **What happens next?**
+            - If you're still working on this, please comment to keep it open
+            - Push new commits to show active development
+            - Request a review if the PR is ready
+            - The PR will be closed in 7 days if there's no activity
+            
+            **Need help?**
+            - Ask questions in the comments
+            - Join our [Discord](https://discord.gg/wXeZP8Ev) for assistance
+            - Review our [Contributing Guide](.github/CONTRIBUTING.md)
+            
+            Thank you for your contribution! 🚀
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity.
+            
+            **Can it be reopened?**
+            Yes! If you'd like to continue working on this:
+            - Comment on this PR to reopen it
+            - Rebase your branch if there are conflicts
+            - Ping maintainers for a review
+            
+            We appreciate your contribution and would love to see this merged if it's still relevant!
+          
+          # General settings
+          operations-per-run: 30
+          remove-stale-when-updated: true
+          ascending: true
+          
+          # Exempt drafts
+          exempt-draft-pr: true

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### 🆕 Project Infrastructure
+### 📝 Project Infrastructure
 - **New GitHub issue templates**:
   - Documentation Improvement template for doc feedback
   - Performance Issue template with benchmark structure
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - LED blink, button input, PWM fade, I2C sensor
   - Hardware requirements listed for each example
 - **New project badges**: PRs Welcome, Good First Issue, Discord, Maintenance status, GitHub stars
+- **GitHub automation workflows**:
+  - Auto-labeling for issues and PRs based on content and file changes
+  - Stale bot to manage inactive issues (60 days) and PRs (30 days)
+- **Code style configuration**:
+  - `.clang-format` - Allman brace style, 4-space indentation, 100-char line limit
+  - `.editorconfig` - Cross-editor consistency for all file types
 
 ### 🔧 Build System
 - **Enhanced build.sh** with new options:
