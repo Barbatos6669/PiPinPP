@@ -41,7 +41,7 @@ jobs:
       # actions/checkout is a pre-made GitHub Action that clones your repo
       # v4 is the version - always use latest stable version
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       # Step 2: Install base dependencies
       - name: Install base dependencies
@@ -181,7 +181,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Build PiPinPP
         run: |
@@ -224,7 +224,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Install base dependencies
         run: |
@@ -282,7 +282,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Set up Python
         uses: actions/setup-python@v5
