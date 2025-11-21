@@ -1,6 +1,12 @@
 ## [0.5.0](https://github.com/Barbatos6669/PiPinPP/compare/v0.4.0...v0.5.0) (2025-11-21)
 
 
+### Community & Project Management
+- **Issue template config** - Added helpful contact links (Discussions, Docs, Troubleshooting)
+- **Pull request template** - Comprehensive checklist for contributors with testing requirements
+- **Funding configuration** - Added `.github/FUNDING.yml` template for sponsorship options
+- **Enhanced .gitignore** - Added patterns for VS Code workspace, clangd, debuggers, virtual environments
+
 ### Features
 
 * add auto wiki sync workflow, improve issue/PR templates, enhance badges and CONTRIBUTING.md ([2bb7d3f](https://github.com/Barbatos6669/PiPinPP/commit/2bb7d3f221a9b3035498c70c095fe82a68ca9112))
