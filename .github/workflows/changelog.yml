@@ -17,6 +17,8 @@ jobs:
   generate-changelog:
     name: Generate Changelog
     runs-on: ubuntu-latest
+    # Skip on Dependabot branches to avoid permission issues
+    if: github.actor != 'dependabot[bot]'
 
     steps:
       - name: Checkout repository

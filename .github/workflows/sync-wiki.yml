@@ -11,7 +11,7 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-22.04
-    
+
     steps:
       - name: Checkout main repository
         uses: actions/checkout@v4
@@ -19,18 +19,32 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout wiki repository
+        id: checkout-wiki
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check if wiki exists
+        id: wiki-check
+        run: |
+          if [ -d "wiki/.git" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Wiki repository not initialized. Please create the wiki on GitHub first."
+            echo "Visit: https://github.com/${{ github.repository }}/wiki"
+          fi
+
       - name: Sync documentation to wiki
+        if: steps.wiki-check.outputs.exists == 'true'
         run: |
           # Copy documentation files
           cp docs/WIKI_HOME.md wiki/Home.md
           cp docs/_Sidebar.md wiki/_Sidebar.md
-          
+
           # Main documentation
           cp docs/INSTALL.md wiki/Installation.md
           cp docs/GETTING_STARTED.md wiki/Getting-Started.md
@@ -46,7 +60,7 @@ jobs:
           cp docs/TESTING.md wiki/Testing.md
           cp docs/ROADMAP.md wiki/Roadmap.md
           cp docs/PERMISSIONS.md wiki/Permissions.md
-          
+
           # Tutorials
           cp docs/tutorials/LED_BLINK.md wiki/Tutorial-LED-Blink.md
           cp docs/tutorials/BUTTON_INPUT.md wiki/Tutorial-Button-Input.md
@@ -58,6 +72,7 @@ jobs:
           cp docs/tutorials/README.md wiki/Tutorials-Index.md
 
       - name: Fix internal links for wiki structure
+        if: steps.wiki-check.outputs.exists == 'true'
         working-directory: wiki
         run: |
           find . -name "*.md" -type f -exec sed -i \
@@ -87,6 +102,7 @@ jobs:
             {} \;
 
       - name: Commit and push to wiki
+        if: steps.wiki-check.outputs.exists == 'true'
         working-directory: wiki
         run: |
           git config user.name "github-actions[bot]"
